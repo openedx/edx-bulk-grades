@@ -14,3 +14,4 @@ class BulkGradesConfig(AppConfig):
     """
 
     name = 'bulk_grades'
+    plugin_app = {}
