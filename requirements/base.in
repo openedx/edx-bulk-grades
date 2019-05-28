@@ -1,0 +1,7 @@
+# Core requirements for using this application
+-c constraints.txt
+
+Django>=1.11,<2.0          # Web application framework
+django-model-utils        # Provides TimeStampedModel abstract base class
+edx-opaque-keys
+-e git+https://github.com/davestgermain/super-csv@8ed0daef3e815aef2f9d456c2ca1b1cb7b4e1bdc#egg=super-csv==0.1.0
