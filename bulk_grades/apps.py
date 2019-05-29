@@ -14,4 +14,12 @@ class BulkGradesConfig(AppConfig):
     """
 
     name = 'bulk_grades'
-    plugin_app = {}
+    plugin_app = {
+        'url_config': {
+            'lms.djangoapp': {
+                'namespace': u'bulk_grades',
+                'regex': u'^api/',
+                'relative_path': u'urls',
+            },
+        },
+    }

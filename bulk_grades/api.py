@@ -1,19 +1,51 @@
 from __future__ import absolute_import, unicode_literals
 import logging
 
+from six import iteritems, text_type
 from django.apps import apps
 from django.core.exceptions import ObjectDoesNotExist
+
+from openedx.core.djangoapps.course_groups.cohorts import get_cohort
+from lms.djangoapps.grades import api as grades_api
 
 from super_csv.csv_processor import ChecksumMixin, CSVProcessor, DeferrableMixin
 
 from django.utils.translation import ugettext as _
-from opaque_keys.edx.keys import UsageKey
+from opaque_keys.edx.keys import UsageKey, CourseKey
 
 from .models import ScoreOverrider
+
 
 __all__ = ('ScoreCSVProcessor', 'get_score', 'get_scores', 'set_score')
 
 log = logging.getLogger(__name__)
+
+
+def _get_enrollments(course_id, track=None, cohort=None):
+    enrollments = apps.get_model('student', 'CourseEnrollment').objects.filter(
+        course_id=course_id).select_related('user', 'programcourseenrollment')
+
+    if track:
+        enrollments = enrollments.filter(mode=track)
+    if cohort:
+        enrollments = enrollments.filter(
+            user__cohortmembership__course_id=course_id,
+            user__cohortmembership__course_user_group__name=cohort)
+    for enrollment in enrollments:
+        enrollment_dict = {
+            'user': enrollment.user,
+            'user_id': enrollment.user.id,
+            'username': enrollment.user.username,
+            'full_name': enrollment.user.profile.name,
+            'enrolled': enrollment.is_active,
+            'track': enrollment.mode,
+        }
+        try:
+            pce = enrollment.programcourseenrollment.program_enrollment
+            enrollment_dict['student_uid'] = pce.external_user_key
+        except ObjectDoesNotExist:
+            enrollment_dict['student_uid'] = None
+        yield enrollment_dict
 
 
 class ScoreCSVProcessor(ChecksumMixin, DeferrableMixin, CSVProcessor):
@@ -40,7 +72,7 @@ class ScoreCSVProcessor(ChecksumMixin, DeferrableMixin, CSVProcessor):
         self.users_seen = {}
 
     def get_unique_path(self):
-        return 'csv/state/{}/{}'.format(self.block_id, self.now)
+        return self.block_id
 
     def validate_row(self, row):
         if not super(ScoreCSVProcessor, self).validate_row(row):
@@ -86,34 +118,6 @@ class ScoreCSVProcessor(ChecksumMixin, DeferrableMixin, CSVProcessor):
         set_score(row['block_id'], row['user_id'], row['new_points'], row['max_points'], row['override_user_id'])
         return True, undo
 
-    def _get_enrollments(self, course_id, track=None, cohort=None):
-        """
-        Return iterator of enrollments, as dicts.
-        """
-        enrollments = apps.get_model('student', 'CourseEnrollment').objects.filter(
-            course_id=course_id).select_related('programcourseenrollment')
-        if track:
-            enrollments = enrollments.filter(mode=track)
-        if cohort:
-            enrollments = enrollments.filter(
-                user__cohortmembership__course_id=course_id,
-                user__cohortmembership__course_user_group__name=cohort)
-
-        for enrollment in enrollments:
-            enrollment_dict = {
-                'user_id': enrollment.user.id,
-                'username': enrollment.user.username,
-                'full_name': enrollment.user.profile.name,
-                'enrolled': enrollment.is_active,
-                'track': enrollment.mode,
-            }
-            try:
-                pce = enrollment.programcourseenrollment.program_enrollment
-                enrollment_dict['student_uid'] = pce.external_user_key
-            except ObjectDoesNotExist:
-                enrollment_dict['student_uid'] = None
-            yield enrollment_dict
-
     def get_rows_to_export(self):
         """
         Return iterator of rows for file export.
@@ -123,9 +127,9 @@ class ScoreCSVProcessor(ChecksumMixin, DeferrableMixin, CSVProcessor):
 
         students = get_scores(location)
 
-        enrollments = self._get_enrollments(location.course_key,
-                                            track=self.track,
-                                            cohort=self.cohort)
+        enrollments = _get_enrollments(location.course_key,
+                                       track=self.track,
+                                       cohort=self.cohort)
         for enrollment in enrollments:
             row = {
                 'block_id': location,
@@ -143,6 +147,77 @@ class ScoreCSVProcessor(ChecksumMixin, DeferrableMixin, CSVProcessor):
                 row['date_last_graded'] = score['modified']
                 row['who_last_graded'] = score['who_last_graded']
             yield row
+
+
+class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
+    columns = ['user_id', 'username', 'course_id', 'track', 'cohort']
+    required_columns = ['user_id', 'course_id']
+
+    def __init__(self, **kwargs):
+        self.course_id = None
+        self.track = self.cohort = None
+        super(GradeCSVProcessor, self).__init__(**kwargs)
+        self.course_key = CourseKey.from_string(self.course_id)
+        self.subsections = self._get_graded_subsections(self.course_key)
+
+    def _get_graded_subsections(self, course_id):
+        course_data = grades_api.course_data.CourseData(user=None, course_key=course_id)
+        subsections = {}
+        for subsection in grades_api.context.graded_subsections_for_course(course_data.collected_structure):
+            short_block_id = subsection.location.block_id[:8]
+            if short_block_id not in subsections:
+                for key in ('name', 'grade', 'previous', 'new_grade'):
+                    self.columns.append('{}-{}'.format(key, short_block_id))
+                subsections[short_block_id] = (subsection, subsection.display_name)
+        return subsections
+
+    def validate_row(self, row):
+        if not super(GradeCSVProcessor, self).validate_row(row):
+            return False
+        if row['course_id'] != self.course_id:
+            self.add_error(_('Wrong course id %s != %s', row['course_id'], self.course_id))
+            return False
+        return True
+
+    def preprocess_row(self, row):
+        operation = {}
+        for key in row:
+            if key.startswith('new_grade-'):
+                value = row[key].strip()
+                if value:
+                    short_id = key.split('-', 1)[1]
+                    subsection, display_name = self.subsections[short_id]
+                    operation['user_id'] = row['user_id']
+                    operation['course_id'] = self.course_id
+                    operation['block_id'] = text_type(subsection.location)
+                    operation['new_grade'] = value
+        return operation
+
+    def process_row(self, row):
+        raise NotImplementedError(self.process_row)
+
+    def get_rows_to_export(self):
+        enrollments = list(_get_enrollments(self.course_key, track=self.track, cohort=self.cohort))
+        grades_api.prefetch_course_and_subsection_grades(self.course_key, [enroll['user'] for enroll in enrollments])
+        for enrollment in enrollments:
+            cohort = get_cohort(enrollment['user'], self.course_key, assign=False)
+            row = {
+                'user_id': enrollment['user_id'],
+                'username': enrollment['username'],
+                'track': enrollment['track'],
+                'course_id': self.course_id,
+                'cohort': cohort.name if cohort else None,
+            }
+            course_data = grades_api.course_data.CourseData(user=enrollment['user'], course_key=self.course_key)
+            factory = grades_api.SubsectionGradeFactory(enrollment['user'], course_data=course_data)
+            for block_id, (subsection, display_name) in iteritems(self.subsections):
+                grade = factory.create(subsection, read_only=True)
+                log.info(repr(grade.__dict__))
+                row['name-{}'.format(block_id)] = display_name
+                row['grade-{}'.format(block_id)] = grade.graded_total.earned
+                row['previous-{}'.format(block_id)] = grade.override.earned_all_override if grade.override else None
+            yield row
+
 
 
 def set_score(usage_key, student_id, score, max_points, override_user_id=None, **defaults):
