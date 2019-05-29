@@ -1,4 +1,4 @@
-* bulk-grades version:
+* edx-bulk-grades version:
 * Django version:
 * Python version:
 * Operating System:

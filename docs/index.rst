@@ -1,9 +1,9 @@
-.. bulk-grades documentation master file, created by
+.. edx-bulk-grades documentation master file, created by
    sphinx-quickstart on Fri May 24 16:26:52 2019.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-bulk-grades
+edx-bulk-grades
 ===============================
 Support for bulk scoring and grading
 

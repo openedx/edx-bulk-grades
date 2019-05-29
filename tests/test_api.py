@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Tests for the `bulk-grades` api module.
+Tests for the `edx-bulk-grades` api module.
 """
 
 from __future__ import absolute_import, unicode_literals

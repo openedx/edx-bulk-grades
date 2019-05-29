@@ -4,9 +4,15 @@ URLs for bulk_grades.
 """
 from __future__ import absolute_import, unicode_literals
 
+from django.conf import settings
 from django.conf.urls import url
-from django.views.generic import TemplateView
+
+from . import views
+
 
 urlpatterns = [
-    url(r'', TemplateView.as_view(template_name="bulk_grades/base.html")),
+    url(r'bulk_grades/course/{}'.format(settings.COURSE_ID_PATTERN),
+        views.GradeImportExport.as_view(),
+        name='bulk_grades'
+    )
 ]

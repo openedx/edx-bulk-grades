@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Tests for the `bulk-grades` models module.
+Tests for the `edx-bulk-grades` models module.
 """
 
 from __future__ import absolute_import, unicode_literals
