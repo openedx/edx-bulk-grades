@@ -72,14 +72,14 @@ selfcheck: ## check that the Makefile is well-formed
 
 extract_translations: ## extract strings to be translated, outputting .mo files
 	rm -rf docs/_build
-	cd bulk-grades && ../manage.py makemessages -l en -v1 -d django
-	cd bulk-grades && ../manage.py makemessages -l en -v1 -d djangojs
+	cd edx-bulk-grades && ../manage.py makemessages -l en -v1 -d django
+	cd edx-bulk-grades && ../manage.py makemessages -l en -v1 -d djangojs
 
 compile_translations: ## compile translation files, outputting .po files for each supported language
-	cd bulk-grades && ../manage.py compilemessages
+	cd edx-bulk-grades && ../manage.py compilemessages
 
 detect_changed_source_translations:
-	cd bulk-grades && i18n_tool changed
+	cd edx-bulk-grades && i18n_tool changed
 
 pull_translations: ## pull translations from Transifex
 	tx pull -af --mode reviewed

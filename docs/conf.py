@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=invalid-name
 """
-bulk-grades documentation build configuration file.
+edx-bulk-grades documentation build configuration file.
 
 This file is execfile()d with the current directory set to its
 containing dir.
@@ -96,7 +96,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'bulk-grades'
+project = 'edx-bulk-grades'
 copyright = edx_theme.COPYRIGHT  # pylint: disable=redefined-builtin
 author = edx_theme.AUTHOR
 project_title = 'Bulk Grades'
@@ -183,7 +183,7 @@ html_theme_path = [edx_theme.get_html_theme_path()]
 # The name for this set of Sphinx documents.
 # "<project> v<release> documentation" by default.
 #
-# html_title = 'bulk-grades v0.1.0'
+# html_title = 'edx-bulk-grades v0.1.0'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #

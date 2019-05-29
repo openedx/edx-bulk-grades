@@ -64,13 +64,13 @@ README = open(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
 CHANGELOG = open(os.path.join(os.path.dirname(__file__), 'CHANGELOG.rst')).read()
 
 setup(
-    name='bulk-grades',
+    name='edx-bulk-grades',
     version=VERSION,
     description="""Support for bulk scoring and grading""",
     long_description=README + '\n\n' + CHANGELOG,
     author='edX',
     author_email='oscm@edx.org',
-    url='https://github.com/edx/bulk-grades',
+    url='https://github.com/edx/edx-bulk-grades',
     packages=[
         'bulk_grades',
     ],
