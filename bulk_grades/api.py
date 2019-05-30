@@ -161,9 +161,8 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
         self.subsections = self._get_graded_subsections(self.course_key)
 
     def _get_graded_subsections(self, course_id):
-        course_data = grades_api.course_data.CourseData(user=None, course_key=course_id)
         subsections = {}
-        for subsection in grades_api.context.graded_subsections_for_course(course_data.collected_structure):
+        for subsection in grades_api.graded_subsections_for_course_id(course_id):
             short_block_id = subsection.location.block_id[:8]
             if short_block_id not in subsections:
                 for key in ('name', 'grade', 'previous', 'new_grade'):
@@ -175,7 +174,7 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
         if not super(GradeCSVProcessor, self).validate_row(row):
             return False
         if row['course_id'] != self.course_id:
-            self.add_error(_('Wrong course id %s != %s', row['course_id'], self.course_id))
+            self.add_error(_('Wrong course id {} != {}').format(row['course_id'], self.course_id))
             return False
         return True
 
@@ -190,11 +189,22 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
                     operation['user_id'] = row['user_id']
                     operation['course_id'] = self.course_id
                     operation['block_id'] = text_type(subsection.location)
-                    operation['new_grade'] = value
+                    try:
+                        operation['new_grade'] = float(value)
+                    except ValueError:
+                        self.add_error(_('Grade must be a number'))
+                        return None
         return operation
 
     def process_row(self, row):
-        raise NotImplementedError(self.process_row)
+        grades_api.create_or_update_subsection_grade(
+            row['course_id'],
+            row['block_id'],
+            row['user_id'],
+            self.user,
+            feature='grade-import',
+            earned_all_override=row['new_grade']
+        )
 
     def get_rows_to_export(self):
         enrollments = list(_get_enrollments(self.course_key, track=self.track, cohort=self.cohort))
@@ -217,7 +227,6 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
                 row['grade-{}'.format(block_id)] = grade.graded_total.earned
                 row['previous-{}'.format(block_id)] = grade.override.earned_all_override if grade.override else None
             yield row
-
 
 
 def set_score(usage_key, student_id, score, max_points, override_user_id=None, **defaults):

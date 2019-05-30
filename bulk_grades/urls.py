@@ -11,7 +11,8 @@ from . import views
 
 
 urlpatterns = [
-    url(r'bulk_grades/course/{}'.format(settings.COURSE_ID_PATTERN),
+    url(
+        r'bulk_grades/course/{}'.format(settings.COURSE_ID_PATTERN),
         views.GradeImportExport.as_view(),
         name='bulk_grades'
     )

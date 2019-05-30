@@ -18,16 +18,19 @@ class GradeImportExport(View):
     def dispatch(self, request, course_id, *args, **kwargs):
         if not (request.user.is_staff or user.has_perm('bulk_grades', course_id)):
             return HttpResponseForbidden('Not Staff')
+        self.processor = api.GradeCSVProcessor(
+                                        course_id=course_id,
+                                        user=request.user,
+                                        track=request.GET.get('track'),
+                                        cohort=request.GET.get('cohort')
+                                        )
         return super(GradeImportExport, self).dispatch(request, course_id, *args, **kwargs)
 
     def get(self, request, course_id, *args, **kwargs):
         """
         Export grades in CSV format.
         """
-        track = request.GET.get('track', None)
-        cohort = request.GET.get('cohort', None)
-        processor = api.GradeCSVProcessor(course_id=course_id, track=track, cohort=cohort)
-        iterator = processor.get_iterator()
+        iterator = self.processor.get_iterator()
         response = StreamingHttpResponse(iterator, content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="%s.csv"' % course_id
 
@@ -38,10 +41,9 @@ class GradeImportExport(View):
         """
         Import grades from a CSV file.
         """
-        processor = api.GradeCSVProcessor(course_id=course_id)
         result_id = request.POST.get('result_id', None)
         if result_id:
-            results = processor.get_deferred_result(result_id)
+            results = self.processor.get_deferred_result(result_id)
             if results.ready():
                 data = results.get()
                 log.info('Got results from celery %r', data)
@@ -50,8 +52,8 @@ class GradeImportExport(View):
                 log.info('Still waiting for %s', result_id)
         else:
             the_file = request.FILES['csv']
-            processor.process_file(the_file, autocommit=True)
-            data = processor.status()
+            self.processor.process_file(the_file, autocommit=True)
+            data = self.processor.status()
             log.info('Processed file %s for %s -> %s saved, %s processed, %s error. (async=%s)',
                      the_file.name,
                      course_id,
