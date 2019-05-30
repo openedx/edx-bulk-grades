@@ -55,7 +55,7 @@ snowballstemmer==1.2.1    # via sphinx
 sphinx==1.8.5
 sphinxcontrib-websupport==1.1.2  # via sphinx
 stevedore==1.30.1
-git+https://github.com/davestgermain/super-csv@119aeaca61c1d85341b6ccd8d2a7196d4fa656d2
+git+https://github.com/davestgermain/super-csv@30c719b6165edc393e6e4812582f71ae251ad6aa
 text-unidecode==1.2
 typing==3.6.6             # via sphinx
 wcwidth==0.1.7

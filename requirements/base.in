@@ -4,4 +4,4 @@
 Django>=1.11,<2.0          # Web application framework
 django-model-utils        # Provides TimeStampedModel abstract base class
 edx-opaque-keys
-super-csv @ git+https://github.com/davestgermain/super-csv@119aeaca61c1d85341b6ccd8d2a7196d4fa656d2
+super-csv @ git+https://github.com/davestgermain/super-csv@30c719b6165edc393e6e4812582f71ae251ad6aa

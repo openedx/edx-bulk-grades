@@ -138,8 +138,13 @@ class ScoreCSVProcessor(ChecksumMixin, DeferrableMixin, CSVProcessor):
                 'last_points': None,
                 'date_last_graded': None,
                 'who_last_graded': None,
+                'user_id': enrollment['user_id'],
+                'username': enrollment['username'],
+                'full_name': enrollment['full_name'],
+                'student_uid': enrollment['student_uid'],
+                'enrolled': enrollment['enrolled'],
+                'track': enrollment['track'],
             }
-            row.update(enrollment)
             score = students.get(enrollment['user_id'], None)
 
             if score:
