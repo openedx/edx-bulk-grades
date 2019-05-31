@@ -226,13 +226,13 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
         return operation
 
     def process_row(self, row):
-        grades_api.create_or_update_subsection_grade(
-            row['course_id'],
-            row['block_id'],
-            row['user_id'],
-            self.user,
-            feature='grade-import',
-            earned_all_override=row['new_grade']
+        grades_api.override_subsection_grade(
+                row['user_id'],
+                row['course_id'],
+                row['block_id'],
+                overrider=self.user,
+                earned_all_override=row['new_grade'],
+                feature='grade-import'
         )
 
     def get_rows_to_export(self):
@@ -247,10 +247,9 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
                 'course_id': self.course_id,
                 'cohort': cohort.name if cohort else None,
             }
-            course_data = grades_api.course_data.CourseData(user=enrollment['user'], course_key=self.course_key)
-            factory = grades_api.SubsectionGradeFactory(enrollment['user'], course_data=course_data)
+            grades = grades_api.get_subsection_grades(enrollment['user_id'], self.course_key)
             for block_id, (subsection, display_name) in iteritems(self.subsections):
-                grade = factory.create(subsection, read_only=True)
+                grade = grades[subsection.location]
                 row['name-{}'.format(block_id)] = display_name
                 row['grade-{}'.format(block_id)] = grade.graded_total.earned
                 row['previous-{}'.format(block_id)] = grade.override.earned_graded_override if grade.override else None

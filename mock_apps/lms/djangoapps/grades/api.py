@@ -1,7 +1,7 @@
 def prefetch_course_and_subsection_grades(course_id, users):
     pass
 
-def create_or_update_subsection_grade(course_id, block_id, user_id, override_user, **kwargs):
+def override_subsection_grade(user_id, course_id, block_id, **kwargs):
     pass
 
 class SubsectionGradeFactory:
