@@ -15,9 +15,13 @@ log = logging.getLogger(__name__)
 
 
 class GradeImportExport(View):
-    def dispatch(self, request, course_id, *args, **kwargs):
-        if not (request.user.is_staff or user.has_perm('bulk_grades', course_id)):
+    """
+    CSV Grade import/export view.
+    """
+    def dispatch(self, request, course_id, *args, **kwargs):  # pylint: disable=arguments-differ
+        if not (request.user.is_staff or request.user.has_perm('bulk_grades', course_id)):
             return HttpResponseForbidden('Not Staff')
+        # pylint: disable=attribute-defined-outside-init
         self.processor = api.GradeCSVProcessor(
                                         course_id=course_id,
                                         user=request.user,
@@ -26,7 +30,7 @@ class GradeImportExport(View):
                                         )
         return super(GradeImportExport, self).dispatch(request, course_id, *args, **kwargs)
 
-    def get(self, request, course_id, *args, **kwargs):
+    def get(self, request, course_id, *args, **kwargs):  # pylint: disable=unused-argument
         """
         Export grades in CSV format.
         """
@@ -37,7 +41,7 @@ class GradeImportExport(View):
         log.info('Exporting grade CSV for %s', course_id)
         return response
 
-    def post(self, request, course_id, *args, **kwargs):
+    def post(self, request, course_id, *args, **kwargs):  # pylint: disable=unused-argument
         """
         Import grades from a CSV file.
         """

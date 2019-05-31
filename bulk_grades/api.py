@@ -1,27 +1,42 @@
-from __future__ import absolute_import, unicode_literals
+"""
+Bulk Grading API.
+"""
+from __future__ import absolute_import, division, unicode_literals
 import logging
 
 from six import iteritems, text_type
 from django.apps import apps
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.translation import ugettext as _
 
 from openedx.core.djangoapps.course_groups.cohorts import get_cohort
 from lms.djangoapps.grades import api as grades_api
 
 from super_csv.csv_processor import ChecksumMixin, CSVProcessor, DeferrableMixin
 
-from django.utils.translation import ugettext as _
 from opaque_keys.edx.keys import UsageKey, CourseKey
 
 from .models import ScoreOverrider
 
 
-__all__ = ('ScoreCSVProcessor', 'get_score', 'get_scores', 'set_score')
+__all__ = ('GradeCSVProcessor', 'ScoreCSVProcessor', 'get_score', 'get_scores', 'set_score')
 
 log = logging.getLogger(__name__)
 
 
 def _get_enrollments(course_id, track=None, cohort=None):
+    """
+    Return iterator of enrollment dictionaries.
+    {
+        'user': user object
+        'user_id': user id
+        'username': username
+        'full_name': user's full name
+        'enrolled': bool
+        'track': enrollment mode
+        'student_uid': institution user id from program enrollment
+    }
+    """
     enrollments = apps.get_model('student', 'CourseEnrollment').objects.filter(
         course_id=course_id).select_related('user', 'programcourseenrollment')
 
@@ -155,17 +170,26 @@ class ScoreCSVProcessor(ChecksumMixin, DeferrableMixin, CSVProcessor):
 
 
 class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
-    columns = ['user_id', 'username', 'course_id', 'track', 'cohort']
+    """
+    CSV Processor for subsection grades.
+    """
     required_columns = ['user_id', 'course_id']
 
     def __init__(self, **kwargs):
+        self.columns = ['user_id', 'username', 'course_id', 'track', 'cohort']
         self.course_id = None
-        self.track = self.cohort = None
+        self.track = self.cohort = self.user = None
         super(GradeCSVProcessor, self).__init__(**kwargs)
         self.course_key = CourseKey.from_string(self.course_id)
         self.subsections = self._get_graded_subsections(self.course_key)
 
+    def get_unique_path(self):
+        return self.course_id
+
     def _get_graded_subsections(self, course_id):
+        """
+        Return list of graded subsections.
+        """
         subsections = {}
         for subsection in grades_api.graded_subsections_for_course_id(course_id):
             short_block_id = subsection.location.block_id[:8]
@@ -190,7 +214,7 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
                 value = row[key].strip()
                 if value:
                     short_id = key.split('-', 1)[1]
-                    subsection, display_name = self.subsections[short_id]
+                    subsection = self.subsections[short_id][0]
                     operation['user_id'] = row['user_id']
                     operation['course_id'] = self.course_id
                     operation['block_id'] = text_type(subsection.location)
@@ -227,10 +251,9 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
             factory = grades_api.SubsectionGradeFactory(enrollment['user'], course_data=course_data)
             for block_id, (subsection, display_name) in iteritems(self.subsections):
                 grade = factory.create(subsection, read_only=True)
-                log.info(repr(grade.__dict__))
                 row['name-{}'.format(block_id)] = display_name
                 row['grade-{}'.format(block_id)] = grade.graded_total.earned
-                row['previous-{}'.format(block_id)] = grade.override.earned_all_override if grade.override else None
+                row['previous-{}'.format(block_id)] = grade.override.earned_graded_override if grade.override else None
             yield row
 
 
@@ -241,7 +264,7 @@ def set_score(usage_key, student_id, score, max_points, override_user_id=None, *
     if not isinstance(usage_key, UsageKey):
         usage_key = UsageKey.from_string(usage_key)
     defaults['module_type'] = 'problem'
-    defaults['grade'] = score / (max_points or 1.0)
+    defaults['grade'] = score / float(max_points or 1.0)
     defaults['max_grade'] = max_points
     module = apps.get_model('courseware', 'StudentModule').objects.update_or_create(
         student_id=student_id,

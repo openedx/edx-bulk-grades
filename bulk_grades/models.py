@@ -16,12 +16,17 @@ class ScoreOverrider(TimeStampedModel):
     """
     Records who overrode a score, for bulk score assignments.
     """
+
     module = models.ForeignKey('courseware.StudentModule', on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     class Meta(object):
+        """Django model meta."""
+
         app_label = "bulk_grades"
 
     def __str__(self):
+        """Return string representation."""
+        # pylint: disable=no-member
         return 'ScoreOverrider({}, {})'.format(self.module.module_state_key, self.user)
