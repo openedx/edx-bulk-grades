@@ -12,7 +12,7 @@ from django.utils.translation import ugettext as _
 from openedx.core.djangoapps.course_groups.cohorts import get_cohort
 from lms.djangoapps.grades import api as grades_api
 
-from super_csv.csv_processor import ChecksumMixin, CSVProcessor, DeferrableMixin
+from super_csv.csv_processor import ChecksumMixin, CSVProcessor, DeferrableMixin, ValidationError
 
 from opaque_keys.edx.keys import UsageKey, CourseKey
 
@@ -90,20 +90,15 @@ class ScoreCSVProcessor(ChecksumMixin, DeferrableMixin, CSVProcessor):
         return self.block_id
 
     def validate_row(self, row):
-        if not super(ScoreCSVProcessor, self).validate_row(row):
-            return False
+        super(ScoreCSVProcessor, self).validate_row(row)
         if row['block_id'] != self.block_id:
-            self.add_error(_('The CSV does not match this problem. Check that you uploaded the right CSV.'))
-            return False
+            raise ValidationError(_('The CSV does not match this problem. Check that you uploaded the right CSV.'))
         if row['points']:
             try:
                 if float(row['points']) > self.max_points:
-                    self.add_error(_('Points must not be greater than {}.').format(self.max_points))
-                    return False
+                    raise ValidationError(_('Points must not be greater than {}.').format(self.max_points))
             except ValueError:
-                self.add_error(_('Points must be numbers.'))
-                return False
-        return True
+                raise ValidationError(_('Points must be numbers.'))
 
     def preprocess_row(self, row):
         if row['points'] and row['user_id'] not in self.users_seen:
@@ -200,12 +195,9 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
         return subsections
 
     def validate_row(self, row):
-        if not super(GradeCSVProcessor, self).validate_row(row):
-            return False
+        super(GradeCSVProcessor, self).validate_row(row)
         if row['course_id'] != self.course_id:
-            self.add_error(_('Wrong course id {} != {}').format(row['course_id'], self.course_id))
-            return False
-        return True
+            raise ValidationError(_('Wrong course id {} != {}').format(row['course_id'], self.course_id))
 
     def preprocess_row(self, row):
         operation = {}
@@ -221,8 +213,7 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
                     try:
                         operation['new_grade'] = float(value)
                     except ValueError:
-                        self.add_error(_('Grade must be a number'))
-                        return None
+                        raise ValidationError(_('Grade must be a number'))
         return operation
 
     def process_row(self, row):
@@ -309,7 +300,10 @@ def get_scores(usage_key, user_ids=None):
             'modified': row.modified,
             'state': row.state,
         }
-        last_override = row.scoreoverrider_set.latest('created')
-        if last_override:
+        try:
+            last_override = row.scoreoverrider_set.latest('created')
+        except ObjectDoesNotExist:
+            pass
+        else:
             scores[row.student_id]['who_last_graded'] = last_override.user_id
     return scores

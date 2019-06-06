@@ -11,12 +11,12 @@ celery==3.1.26.post2      # via django-celery
 django-celery==3.3.0
 django-crum==0.7.3
 django-model-utils==3.1.2
-django==1.11.20
-edx-opaque-keys==0.4.4
+django==1.11.21
+edx-opaque-keys==1.0.0
 kombu==3.0.37             # via celery
-pbr==5.2.0                # via stevedore
+pbr==5.2.1                # via stevedore
 pymongo==3.8.0            # via edx-opaque-keys
 pytz==2019.1              # via celery, django
 six==1.12.0               # via edx-opaque-keys, stevedore
 stevedore==1.30.1         # via edx-opaque-keys
-git+https://github.com/davestgermain/super-csv@30c719b6165edc393e6e4812582f71ae251ad6aa
+git+https://github.com/edx/super-csv@de0a29649f27c2be8bbbea6ce559672abe206e89
