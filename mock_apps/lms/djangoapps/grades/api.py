@@ -5,21 +5,17 @@ class Location(object):
     def __eq__(self, other):
         return self.block_id == other.block_id
 
+
 class Subsection(object):
     def __init__(self, block_id, display_name):
         self.display_name = display_name
         self.location = Location()
         self.location.block_id = block_id
 
-class Total(object):
-    def __init__(self, **kwargs):
-        for k, v in kwargs.items():
-            setattr(self, k, v)
-
 
 class Grade(object):
     def __init__(self):
-        self.graded_total = Total(earned=1)
+        self.earned_all = 1
         self.override = None
 
 

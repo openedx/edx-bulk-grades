@@ -84,7 +84,7 @@ class ScoreCSVProcessor(ChecksumMixin, DeferrableMixin, CSVProcessor):
         self.cohort = None
         self.display_name = ''
         super(ScoreCSVProcessor, self).__init__(**kwargs)
-        self.users_seen = {}
+        self._users_seen = set()
 
     def get_unique_path(self):
         return self.block_id
@@ -101,7 +101,7 @@ class ScoreCSVProcessor(ChecksumMixin, DeferrableMixin, CSVProcessor):
                 raise ValidationError(_('Points must be numbers.'))
 
     def preprocess_row(self, row):
-        if row['points'] and row['user_id'] not in self.users_seen:
+        if row['points'] and row['user_id'] not in self._users_seen:
             to_save = {
                 'user_id': row['user_id'],
                 'block_id': self.block_id,
@@ -109,7 +109,7 @@ class ScoreCSVProcessor(ChecksumMixin, DeferrableMixin, CSVProcessor):
                 'max_points': self.max_points,
                 'override_user_id': self.user_id,
             }
-            self.users_seen[row['user_id']] = 1
+            self._users_seen.add(row['user_id'])
             return to_save
 
     def process_row(self, row):
@@ -173,10 +173,11 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
     def __init__(self, **kwargs):
         self.columns = ['user_id', 'username', 'course_id', 'track', 'cohort']
         self.course_id = None
-        self.track = self.cohort = self.user = None
+        self.track = self.cohort = self._user = None
         super(GradeCSVProcessor, self).__init__(**kwargs)
-        self.course_key = CourseKey.from_string(self.course_id)
-        self.subsections = self._get_graded_subsections(self.course_key)
+        self._course_key = CourseKey.from_string(self.course_id)
+        self._subsections = self._get_graded_subsections(self._course_key)
+        self._users_seen = set()
 
     def get_unique_path(self):
         return self.course_id
@@ -201,12 +202,14 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
 
     def preprocess_row(self, row):
         operation = {}
+        if row['user_id'] in self._users_seen:
+            return operation
         for key in row:
             if key.startswith('new_grade-'):
                 value = row[key].strip()
                 if value:
                     short_id = key.split('-', 1)[1]
-                    subsection = self.subsections[short_id][0]
+                    subsection = self._subsections[short_id][0]
                     operation['user_id'] = row['user_id']
                     operation['course_id'] = self.course_id
                     operation['block_id'] = text_type(subsection.location)
@@ -214,6 +217,7 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
                         operation['new_grade'] = float(value)
                     except ValueError:
                         raise ValidationError(_('Grade must be a number'))
+        self._users_seen.add(row['user_id'])
         return operation
 
     def process_row(self, row):
@@ -221,16 +225,16 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
                 row['user_id'],
                 row['course_id'],
                 row['block_id'],
-                overrider=self.user,
+                overrider=self._user,
                 earned_all_override=row['new_grade'],
                 feature='grade-import'
         )
 
     def get_rows_to_export(self):
-        enrollments = list(_get_enrollments(self.course_key, track=self.track, cohort=self.cohort))
-        grades_api.prefetch_course_and_subsection_grades(self.course_key, [enroll['user'] for enroll in enrollments])
+        enrollments = list(_get_enrollments(self._course_key, track=self.track, cohort=self.cohort))
+        grades_api.prefetch_course_and_subsection_grades(self._course_key, [enroll['user'] for enroll in enrollments])
         for enrollment in enrollments:
-            cohort = get_cohort(enrollment['user'], self.course_key, assign=False)
+            cohort = get_cohort(enrollment['user'], self._course_key, assign=False)
             row = {
                 'user_id': enrollment['user_id'],
                 'username': enrollment['username'],
@@ -238,12 +242,13 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
                 'course_id': self.course_id,
                 'cohort': cohort.name if cohort else None,
             }
-            grades = grades_api.get_subsection_grades(enrollment['user_id'], self.course_key)
-            for block_id, (subsection, display_name) in iteritems(self.subsections):
-                grade = grades[subsection.location]
+            grades = grades_api.get_subsection_grades(enrollment['user_id'], self._course_key)
+            for block_id, (subsection, display_name) in iteritems(self._subsections):
                 row['name-{}'.format(block_id)] = display_name
-                row['grade-{}'.format(block_id)] = grade.graded_total.earned
-                row['previous-{}'.format(block_id)] = grade.override.earned_graded_override if grade.override else None
+                grade = grades.get(subsection.location, None)
+                if grade:
+                    row['grade-{}'.format(block_id)] = grade.earned_all
+                    row['previous-{}'.format(block_id)] = grade.override.earned_graded_override if grade.override else None
             yield row
 
 

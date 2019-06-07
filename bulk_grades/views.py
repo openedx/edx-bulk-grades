@@ -3,6 +3,7 @@ CSV import/export API for grades.
 """
 from __future__ import absolute_import, unicode_literals
 
+import datetime
 import json
 import logging
 
@@ -22,21 +23,31 @@ class GradeImportExport(View):
         if not (request.user.is_staff or request.user.has_perm('bulk_grades', course_id)):
             return HttpResponseForbidden('Not Staff')
         # pylint: disable=attribute-defined-outside-init
-        self.processor = api.GradeCSVProcessor(
-                                        course_id=course_id,
-                                        user=request.user,
-                                        track=request.GET.get('track'),
-                                        cohort=request.GET.get('cohort')
-                                        )
+        self.operation_id = request.GET.get('error_id', '')
+        if self.operation_id:
+            self.processor = api.GradeCSVProcessor.load(self.operation_id)
+            if self.processor.course_id != course_id:
+                return HttpResponseForbidden()
+        else:
+            self.processor = api.GradeCSVProcessor(
+                                                  course_id=course_id,
+                                                  _user=request.user,
+                                                  track=request.GET.get('track'),
+                                                  cohort=request.GET.get('cohort')
+                                                )
         return super(GradeImportExport, self).dispatch(request, course_id, *args, **kwargs)
 
     def get(self, request, course_id, *args, **kwargs):  # pylint: disable=unused-argument
         """
         Export grades in CSV format.
         """
-        iterator = self.processor.get_iterator()
+        iterator = self.processor.get_iterator(error_data=bool(self.operation_id))
+        filename = [course_id]
+        if self.operation_id:
+            filename.append('graded-results')
+        filename.append(datetime.datetime.utcnow().isoformat())
         response = StreamingHttpResponse(iterator, content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="%s.csv"' % course_id
+        response['Content-Disposition'] = 'attachment; filename="%s.csv"' % '-'.join(filename)
 
         log.info('Exporting grade CSV for %s', course_id)
         return response
