@@ -7,10 +7,8 @@ from __future__ import absolute_import, unicode_literals
 
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.utils.encoding import python_2_unicode_compatible
 
 
-@python_2_unicode_compatible
 class CourseEnrollment(models.Model):
     """
     Represents a Student's Enrollment record for a single Course. You should
@@ -41,5 +39,24 @@ class CourseEnrollment(models.Model):
     mode = models.CharField(default='audit', max_length=100)
 
     class Meta(object):
-        unique_together = (('user', 'course'),)
-        ordering = ('user', 'course')
+        unique_together = (('user', 'course_id'),)
+        ordering = ('user', 'course_id')
+
+
+class ProgramEnrollment(object):
+    pass
+
+
+class ProgramCourseEnrollment(models.Model):
+    course_enrollment = models.OneToOneField(CourseEnrollment)
+
+    @property
+    def program_enrollment(self):
+        program_enrollment = ProgramEnrollment()
+        program_enrollment.external_user_key = 'ext:%s' % self.course_enrollment.user_id
+        return program_enrollment
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(get_user_model())
+    name = models.CharField(max_length=100)

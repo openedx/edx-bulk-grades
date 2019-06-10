@@ -6,12 +6,21 @@ Tests for the `edx-bulk-grades` models module.
 
 from __future__ import absolute_import, unicode_literals
 
+from django.contrib.auth.models import User
+from django.test import TestCase
+from courseware.models import StudentModule
+from bulk_grades.models import ScoreOverrider
 
-class TestScoreOverrider(object):
+
+class TestScoreOverrider(TestCase):
     """
     Tests of the ScoreOverrider model.
     """
 
-    def test_something(self):
-        """TODO: Write real test cases."""
-        pass
+    def test_str(self):
+        user = User.objects.create(username='test')
+        module = StudentModule.objects.create(
+            student=user,
+            module_state_key='block-v1:text+t+1+type@course+block@course')
+        overrider = ScoreOverrider.objects.create(user=user, module=module)
+        assert str(overrider) == 'ScoreOverrider(block-v1:text+t+1+type@course+block@course, test)'

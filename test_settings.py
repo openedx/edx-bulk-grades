@@ -34,6 +34,7 @@ INSTALLED_APPS = (
     'bulk_grades',
     'super_csv',
     'courseware.apps.CoursewareConfig',
+    'student',
 )
 
 LOCALE_PATHS = [
