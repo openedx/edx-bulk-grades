@@ -8,8 +8,9 @@ from __future__ import absolute_import, unicode_literals
 
 from django.contrib.auth.models import User
 from django.test import TestCase
-from courseware.models import StudentModule
+
 from bulk_grades.models import ScoreOverrider
+from courseware.models import StudentModule
 
 
 class TestScoreOverrider(TestCase):

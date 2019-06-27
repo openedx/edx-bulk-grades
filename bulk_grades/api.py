@@ -2,22 +2,20 @@
 Bulk Grading API.
 """
 from __future__ import absolute_import, division, unicode_literals
+
 import logging
 
-from six import iteritems, text_type
 from django.apps import apps
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext as _
-
-from openedx.core.djangoapps.course_groups.cohorts import get_cohort
-from lms.djangoapps.grades import api as grades_api
-
+from opaque_keys.edx.keys import CourseKey, UsageKey
+from six import iteritems, text_type
 from super_csv.csv_processor import ChecksumMixin, CSVProcessor, DeferrableMixin, ValidationError
 
-from opaque_keys.edx.keys import UsageKey, CourseKey
+from lms.djangoapps.grades import api as grades_api
+from openedx.core.djangoapps.course_groups.cohorts import get_cohort
 
 from .models import ScoreOverrider
-
 
 __all__ = ('GradeCSVProcessor', 'ScoreCSVProcessor', 'get_score', 'get_scores', 'set_score')
 
@@ -27,6 +25,7 @@ log = logging.getLogger(__name__)
 def _get_enrollments(course_id, track=None, cohort=None):
     """
     Return iterator of enrollment dictionaries.
+
     {
         'user': user object
         'user_id': user id
@@ -65,8 +64,9 @@ def _get_enrollments(course_id, track=None, cohort=None):
 
 class ScoreCSVProcessor(ChecksumMixin, DeferrableMixin, CSVProcessor):
     """
-    CSV Processor for file format defined for Staff Graded Points
+    CSV Processor for file format defined for Staff Graded Points.
     """
+
     columns = ['user_id', 'username', 'full_name', 'student_uid',
                'enrolled', 'track', 'block_id', 'title', 'date_last_graded',
                'who_last_graded', 'csum', 'last_points', 'points']
@@ -78,6 +78,9 @@ class ScoreCSVProcessor(ChecksumMixin, DeferrableMixin, CSVProcessor):
     handle_undo = False
 
     def __init__(self, **kwargs):
+        """
+        Create a ScoreCSVProcessor.
+        """
         self.max_points = 1
         self.user_id = None
         self.track = None
@@ -87,9 +90,15 @@ class ScoreCSVProcessor(ChecksumMixin, DeferrableMixin, CSVProcessor):
         self._users_seen = set()
 
     def get_unique_path(self):
+        """
+        Return a unique id for CSVOperations.
+        """
         return self.block_id
 
     def validate_row(self, row):
+        """
+        Validate CSV row.
+        """
         super(ScoreCSVProcessor, self).validate_row(row)
         if row['block_id'] != self.block_id:
             raise ValidationError(_('The CSV does not match this problem. Check that you uploaded the right CSV.'))
@@ -101,6 +110,9 @@ class ScoreCSVProcessor(ChecksumMixin, DeferrableMixin, CSVProcessor):
                 raise ValidationError(_('Points must be numbers.'))
 
     def preprocess_row(self, row):
+        """
+        Preprocess CSV row.
+        """
         if row['points'] and row['user_id'] not in self._users_seen:
             to_save = {
                 'user_id': row['user_id'],
@@ -114,7 +126,8 @@ class ScoreCSVProcessor(ChecksumMixin, DeferrableMixin, CSVProcessor):
 
     def process_row(self, row):
         """
-        Set the score for the given row, returning (status, undo)
+        Set the score for the given row, returning (status, undo).
+
         undo is a dict of an operation which would undo the set_score. In this case,
         that means we would have to call get_score, which could be expensive to do for the entire file.
         """
@@ -168,9 +181,13 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
     """
     CSV Processor for subsection grades.
     """
+
     required_columns = ['user_id', 'course_id']
 
     def __init__(self, **kwargs):
+        """
+        Create GradeCSVProcessor.
+        """
         self.columns = ['user_id', 'username', 'course_id', 'track', 'cohort']
         self.course_id = None
         self.track = self.cohort = self._user = None
@@ -180,6 +197,9 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
         self._users_seen = set()
 
     def get_unique_path(self):
+        """
+        Return a unique id for CSVOperations.
+        """
         return self.course_id
 
     def _get_graded_subsections(self, course_id):
@@ -196,11 +216,17 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
         return subsections
 
     def validate_row(self, row):
+        """
+        Validate row.
+        """
         super(GradeCSVProcessor, self).validate_row(row)
         if row['course_id'] != self.course_id:
             raise ValidationError(_('Wrong course id {} != {}').format(row['course_id'], self.course_id))
 
     def preprocess_row(self, row):
+        """
+        Preprocess the CSV row.
+        """
         operation = {}
         if row['user_id'] in self._users_seen:
             return operation
@@ -221,16 +247,23 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
         return operation
 
     def process_row(self, row):
+        """
+        Save a row to the persistent subsection override table.
+        """
         grades_api.override_subsection_grade(
                 row['user_id'],
                 row['course_id'],
                 row['block_id'],
                 overrider=self._user,
-                earned_all_override=row['new_grade'],
+                earned_all=row['new_grade'],
                 feature='grade-import'
         )
+        return True, None
 
     def get_rows_to_export(self):
+        """
+        Return iterator of rows to export.
+        """
         enrollments = list(_get_enrollments(self._course_key, track=self.track, cohort=self.cohort))
         grades_api.prefetch_course_and_subsection_grades(self._course_key, [enroll['user'] for enroll in enrollments])
         for enrollment in enrollments:

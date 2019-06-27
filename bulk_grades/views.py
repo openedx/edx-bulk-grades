@@ -7,9 +7,9 @@ import datetime
 import json
 import logging
 
+from django.http import HttpResponse, HttpResponseForbidden, StreamingHttpResponse
 from django.views.generic import View
 
-from django.http import HttpResponse, HttpResponseForbidden, StreamingHttpResponse
 from . import api
 
 log = logging.getLogger(__name__)
@@ -19,7 +19,11 @@ class GradeImportExport(View):
     """
     CSV Grade import/export view.
     """
+
     def dispatch(self, request, course_id, *args, **kwargs):  # pylint: disable=arguments-differ
+        """
+        Dispatch django request.
+        """
         if not (request.user.is_staff or request.user.has_perm('bulk_grades', course_id)):
             return HttpResponseForbidden('Not Staff')
         # pylint: disable=attribute-defined-outside-init

@@ -5,13 +5,14 @@ Tests for the `edx-bulk-grades` api module.
 """
 
 from __future__ import absolute_import, unicode_literals
+
 from django.contrib.auth.models import User
 from django.test import TestCase
-from student.models import CourseEnrollment, ProgramCourseEnrollment, Profile
 # from opaque_keys.edx.keys import UsageKey, CourseKey
 from super_csv.csv_processor import ValidationError
 
 from bulk_grades import api
+from student.models import CourseEnrollment, Profile, ProgramCourseEnrollment
 
 
 class BaseTests(TestCase):

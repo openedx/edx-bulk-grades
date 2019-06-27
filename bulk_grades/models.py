@@ -15,6 +15,8 @@ from model_utils.models import TimeStampedModel
 class ScoreOverrider(TimeStampedModel):
     """
     Records who overrode a score, for bulk score assignments.
+
+    .. no_pii:
     """
 
     module = models.ForeignKey('courseware.StudentModule', on_delete=models.CASCADE)
