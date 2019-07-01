@@ -9,7 +9,6 @@ from django.conf.urls import url
 
 from . import views
 
-
 urlpatterns = [
     url(
         r'bulk_grades/course/{}'.format(settings.COURSE_ID_PATTERN),

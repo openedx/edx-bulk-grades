@@ -17,3 +17,7 @@ auth.User:
   ".. pii_retirement:" : consumer_api
 contenttypes.ContentType:
   ".. no_pii:": "This model has no PII"
+student.Profile:
+  ".. no_pii:": "This model has no PII (it's fake)"
+student.ProgramCourseEnrollment:
+  ".. no_pii:": "This model has no PII (it's fake)"
