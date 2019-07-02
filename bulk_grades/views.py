@@ -81,3 +81,28 @@ class GradeImportExport(View):
                      len(data.get('error_rows', [])),
                      data.get('waiting', False))
         return HttpResponse(json.dumps(data), content_type='application/json')
+
+
+class GradeOperationHistoryView(View):
+    """
+    Collection View for history of grade override file uploads.
+    """
+
+    def get(self, request, course_id):
+        """
+        Get all previous times grades have been overwritten for this course.
+        """
+        history = self.processor.get_committed_history()
+        return HttpResponse(json.dumps(history), content_type='application/json')
+
+    def dispatch(self, request, course_id, *args, **kwargs):  # pylint: disable=arguments-differ
+        """
+        General set-up method for all handler messages in this view.
+        """
+        if not (request.user.is_staff or request.user.has_perm('bulk_grades', course_id)):
+            return HttpResponseForbidden('Not Staff')
+        self.processor = api.GradeCSVProcessor(  # pylint: disable=attribute-defined-outside-init
+            course_id=course_id,
+            _user=request.user
+        )
+        return super(GradeOperationHistoryView, self).dispatch(request, course_id, *args, **kwargs)

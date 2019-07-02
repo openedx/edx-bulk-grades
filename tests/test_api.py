@@ -16,6 +16,9 @@ from student.models import CourseEnrollment, Profile, ProgramCourseEnrollment
 
 
 class BaseTests(TestCase):
+    """
+    Common setup functionality for all test cases
+    """
     def setUp(self):
         super(BaseTests, self).setUp()
         self.learner = User.objects.create(username='student@example.com')
@@ -47,7 +50,13 @@ class TestApi(BaseTests):
 
 
 class TestScoreProcessor(BaseTests):
+    """
+    Tests exercising the processing performed by ScoreCSVProcessor
+    """
     def _get_row(self, **kwargs):
+        """
+        Get a properly shaped row
+        """
         row = {
             'block_id': self.block_id,
             'points': 0,
@@ -109,6 +118,9 @@ class TestScoreProcessor(BaseTests):
 
 
 class TestGradeProcessor(BaseTests):
+    """
+    Tests exercising the processing performed by GradeCSVProcessor
+    """
     def test_export(self):
         self._make_enrollments()
         processor = api.GradeCSVProcessor(course_id=self.course_id)
