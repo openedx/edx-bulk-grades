@@ -171,7 +171,7 @@ class ScoreCSVProcessor(ChecksumMixin, DeferrableMixin, CSVProcessor):
             score = students.get(enrollment['user_id'], None)
 
             if score:
-                row['last_points'] = int(score['grade'] * self.max_points)
+                row['last_points'] = float(score['grade'] * self.max_points)
                 row['date_last_graded'] = score['modified']
                 row['who_last_graded'] = score['who_last_graded']
             yield row
