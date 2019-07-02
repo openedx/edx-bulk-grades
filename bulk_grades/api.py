@@ -104,10 +104,11 @@ class ScoreCSVProcessor(ChecksumMixin, DeferrableMixin, CSVProcessor):
             raise ValidationError(_('The CSV does not match this problem. Check that you uploaded the right CSV.'))
         if row['points']:
             try:
-                if float(row['points']) > self.max_points:
-                    raise ValidationError(_('Points must not be greater than {}.').format(self.max_points))
+                points = float(row['points'])
             except ValueError:
                 raise ValidationError(_('Points must be numbers.'))
+            if points > self.max_points:
+                raise ValidationError(_('Points must not be greater than {}.').format(self.max_points))
 
     def preprocess_row(self, row):
         """
