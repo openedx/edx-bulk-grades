@@ -16,6 +16,10 @@ Unreleased
 
 *
 
+[0.1.4] - 2019-07-02
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Added an endpoint for this history of bulk management operations on grade overrides. 
+
 [0.1.0] - 2019-05-24
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

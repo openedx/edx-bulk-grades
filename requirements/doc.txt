@@ -13,7 +13,8 @@ babel==2.7.0              # via sphinx
 billiard==3.3.0.23
 bleach==3.1.0             # via readme-renderer
 celery==3.1.26.post2
-chardet==3.0.4            # via doc8
+certifi==2019.6.16        # via requests
+chardet==3.0.4            # via doc8, requests
 click==7.0
 code-annotations==0.3.2
 configparser==3.7.4
@@ -22,12 +23,15 @@ coverage==4.5.3
 django-celery==3.3.0
 django-crum==0.7.3
 django-model-utils==3.2.0
-django==1.11.21
+django-rest-framework==0.1.0
+django==1.11.22
+djangorestframework==3.9.4
 doc8==0.8.0
 docutils==0.14            # via doc8, readme-renderer, restructuredtext-lint, sphinx
 edx-opaque-keys==1.0.1
 edx-sphinx-theme==1.5.0
 funcsigs==1.0.2
+idna==2.8                 # via requests
 imagesize==1.1.0          # via sphinx
 importlib-metadata==0.18
 jinja2==2.10.1
@@ -43,8 +47,8 @@ pygments==2.4.2           # via readme-renderer, sphinx
 pymongo==3.8.0
 pyparsing==2.4.0
 pytest-cov==2.7.1
-pytest-django==3.5.0
-pytest==4.6.3
+pytest-django==3.5.1
+pytest==4.6.4
 python-slugify==3.0.2
 pytz==2019.1
 pyyaml==5.1.1
@@ -57,9 +61,10 @@ snowballstemmer==1.9.0    # via sphinx
 sphinx==1.8.5
 sphinxcontrib-websupport==1.1.2  # via sphinx
 stevedore==1.30.1
-super-csv==0.3
+super-csv==0.5
 text-unidecode==1.2
 typing==3.7.4             # via sphinx
+urllib3==1.25.3           # via requests
 wcwidth==0.1.7
 webencodings==0.5.1       # via bleach
 zipp==0.5.1

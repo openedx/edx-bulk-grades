@@ -282,7 +282,8 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
                 grade = grades.get(subsection.location, None)
                 if grade:
                     row['grade-{}'.format(block_id)] = grade.earned_all
-                    row['previous-{}'.format(block_id)] = grade.override.earned_graded_override if grade.override else None
+                    row['previous-{}'.format(block_id)] = (
+                        grade.override.earned_graded_override if grade.override else None)
             yield row
 
 
