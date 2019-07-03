@@ -19,7 +19,7 @@ class ScoreOverrider(TimeStampedModel):
     .. no_pii:
     """
 
-    module = models.ForeignKey('courseware.StudentModule', on_delete=models.CASCADE)
+    module = models.ForeignKey('courseware.StudentModule', db_constraint=False, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 

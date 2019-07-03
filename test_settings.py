@@ -17,6 +17,9 @@ def root(*args):
     return join(abspath(dirname(__file__)), *args)
 
 
+COURSE_KEY_PATTERN = r'(?P<course_key_string>[^/+]+(/|\+)[^/+]+(/|\+)[^/?]+)'
+COURSE_ID_PATTERN = COURSE_KEY_PATTERN.replace('course_key_string', 'course_id')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
