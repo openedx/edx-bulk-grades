@@ -10,7 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext as _
 from opaque_keys.edx.keys import CourseKey, UsageKey
 from six import iteritems, text_type
-from super_csv.csv_processor import ChecksumMixin, CSVProcessor, DeferrableMixin, ValidationError
+from super_csv.csv_processor import CSVProcessor, DeferrableMixin, ValidationError
 
 from lms.djangoapps.grades import api as grades_api
 from openedx.core.djangoapps.course_groups.cohorts import get_cohort
@@ -62,16 +62,16 @@ def _get_enrollments(course_id, track=None, cohort=None):
         yield enrollment_dict
 
 
-class ScoreCSVProcessor(ChecksumMixin, DeferrableMixin, CSVProcessor):
+class ScoreCSVProcessor(DeferrableMixin, CSVProcessor):
     """
     CSV Processor for file format defined for Staff Graded Points.
     """
 
     columns = ['user_id', 'username', 'full_name', 'student_uid',
                'enrolled', 'track', 'block_id', 'title', 'date_last_graded',
-               'who_last_graded', 'csum', 'last_points', 'points']
-    required_columns = ['user_id', 'points', 'csum', 'block_id', 'last_points']
-    checksum_columns = ['user_id', 'block_id', 'last_points']
+               'who_last_graded', 'last_points', 'points']
+    required_columns = ['user_id', 'points', 'block_id', 'last_points']
+
     # files larger than 100 rows will be processed asynchronously
     size_to_defer = 100
     max_file_size = 4 * 1024 * 1024
