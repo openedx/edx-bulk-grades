@@ -20,4 +20,9 @@ urlpatterns = [
         views.GradeOperationHistoryView.as_view(),
         name='bulk_grades.history'
     ),
+    url(
+        r'^bulk_grades/course/{}/intervention/$'.format(settings.COURSE_ID_PATTERN),
+        views.InterventionsExport.as_view(),
+        name='interventions'
+    ),
 ]

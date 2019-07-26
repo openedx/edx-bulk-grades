@@ -15,18 +15,17 @@ from . import api
 log = logging.getLogger(__name__)
 
 
-class GradeImportExport(View):
+class GradeOnlyExportMixin:
     """
-    CSV Grade import/export view.
+    CSV Export of grade information only. To be used by both bulk grade export and interventions.
     """
 
-    def dispatch(self, request, course_id, *args, **kwargs):  # pylint: disable=arguments-differ
+    def _configure(self, request, course_id):
         """
         Dispatch django request.
         """
         if not (request.user.is_staff or request.user.has_perm('bulk_grades', course_id)):
             return HttpResponseForbidden('Not Staff')
-        # pylint: disable=attribute-defined-outside-init
         self.operation_id = request.GET.get('error_id', '')
         if self.operation_id:
             self.processor = api.GradeCSVProcessor.load(self.operation_id)
@@ -39,19 +38,39 @@ class GradeImportExport(View):
                                                   track=request.GET.get('track'),
                                                   cohort=request.GET.get('cohort')
                                                 )
+
+    def _create_iterator_for_export(self, course_id):
+        """
+        Create an iterator to do for export of grades.
+        """
+        iterator = self.processor.get_iterator(error_data=bool(self.operation_id))
+        self.filename = [course_id]
+
+        if self.operation_id:
+            self.filename.append('graded-results')
+        self.filename.append(datetime.datetime.utcnow().isoformat())
+        return iterator
+
+
+class GradeImportExport(View, GradeOnlyExportMixin):
+    """
+    CSV Grade import/export view.
+    """
+
+    def dispatch(self, request, course_id, *args, **kwargs):  # pylint: disable=arguments-differ
+        """
+        Dispatch django request.
+        """
+        self._configure(request, course_id)
         return super(GradeImportExport, self).dispatch(request, course_id, *args, **kwargs)
 
     def get(self, request, course_id, *args, **kwargs):  # pylint: disable=unused-argument
         """
         Export grades in CSV format.
         """
-        iterator = self.processor.get_iterator(error_data=bool(self.operation_id))
-        filename = [course_id]
-        if self.operation_id:
-            filename.append('graded-results')
-        filename.append(datetime.datetime.utcnow().isoformat())
+        iterator = self._create_iterator_for_export(course_id)
         response = StreamingHttpResponse(iterator, content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="%s.csv"' % '-'.join(filename)
+        response['Content-Disposition'] = 'attachment; filename="%s.csv"' % '-'.join(self.filename)
 
         log.info('Exporting grade CSV for %s', course_id)
         return response
@@ -106,3 +125,28 @@ class GradeOperationHistoryView(View):
             _user=request.user
         )
         return super(GradeOperationHistoryView, self).dispatch(request, course_id, *args, **kwargs)
+
+
+class InterventionsExport(View, GradeOnlyExportMixin):
+    """
+    Interventions export view.
+    """
+
+    def dispatch(self, request, course_id, *args, **kwargs):  # pylint: disable=arguments-differ
+        """
+        Dispatch django request.
+        """
+        self._configure(request, course_id)
+        return super(InterventionsExport, self).dispatch(request, course_id, *args, **kwargs)
+
+    def get(self, request, course_id, *args, **kwargs):  # pylint: disable=unused-argument
+        """
+        Export intervention data in CSV format.
+        """
+        iterator = self._create_iterator_for_export(course_id)
+        response = StreamingHttpResponse(iterator, content_type='text/csv')
+        self.filename.append('intervention')
+        response['Content-Disposition'] = 'attachment; filename="%s.csv"' % '-'.join(self.filename)
+
+        log.info('Exporting intervention CSV for %s', course_id)
+        return response
