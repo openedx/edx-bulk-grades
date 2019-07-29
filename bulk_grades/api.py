@@ -68,9 +68,9 @@ class ScoreCSVProcessor(DeferrableMixin, CSVProcessor):
     """
 
     columns = ['user_id', 'username', 'full_name', 'student_uid',
-               'enrolled', 'track', 'block_id', 'title', 'date_last_graded',
-               'who_last_graded', 'last_points', 'points']
-    required_columns = ['user_id', 'points', 'block_id', 'last_points']
+               'enrolled', 'track', 'cohort', 'block_id', 'title', 'date_last_graded',
+               'who_last_graded', 'Previous Points', 'New Points']
+    required_columns = ['user_id', 'New Points', 'block_id', 'Previous Points']
 
     # files larger than 100 rows will be processed asynchronously
     size_to_defer = 100
@@ -102,23 +102,25 @@ class ScoreCSVProcessor(DeferrableMixin, CSVProcessor):
         super(ScoreCSVProcessor, self).validate_row(row)
         if row['block_id'] != self.block_id:
             raise ValidationError(_('The CSV does not match this problem. Check that you uploaded the right CSV.'))
-        if row['points']:
+        if row['New Points']:
             try:
-                points = float(row['points'])
+                points = float(row['New Points'])
             except ValueError:
                 raise ValidationError(_('Points must be numbers.'))
             if points > self.max_points:
                 raise ValidationError(_('Points must not be greater than {}.').format(self.max_points))
+            elif points < 0:
+                raise ValidationError(_('Points must be greater than 0'))
 
     def preprocess_row(self, row):
         """
         Preprocess CSV row.
         """
-        if row['points'] and row['user_id'] not in self._users_seen:
+        if row['New Points'] and row['user_id'] not in self._users_seen:
             to_save = {
                 'user_id': row['user_id'],
                 'block_id': self.block_id,
-                'new_points': float(row['points']),
+                'new_points': float(row['New Points']),
                 'max_points': self.max_points,
                 'override_user_id': self.user_id,
             }
@@ -150,16 +152,17 @@ class ScoreCSVProcessor(DeferrableMixin, CSVProcessor):
         my_name = self.display_name
 
         students = get_scores(location)
-
-        enrollments = _get_enrollments(location.course_key,
+        course_key = location.course_key
+        enrollments = _get_enrollments(course_key,
                                        track=self.track,
                                        cohort=self.cohort)
         for enrollment in enrollments:
+            cohort = get_cohort(enrollment['user'], course_key, assign=False)
             row = {
                 'block_id': location,
                 'title': my_name,
-                'points': None,
-                'last_points': None,
+                'New Points': None,
+                'Previous Points': None,
                 'date_last_graded': None,
                 'who_last_graded': None,
                 'user_id': enrollment['user_id'],
@@ -168,12 +171,13 @@ class ScoreCSVProcessor(DeferrableMixin, CSVProcessor):
                 'student_uid': enrollment['student_uid'],
                 'enrolled': enrollment['enrolled'],
                 'track': enrollment['track'],
+                'cohort': cohort.name if cohort else None,
             }
             score = students.get(enrollment['user_id'], None)
 
             if score:
-                row['last_points'] = float(score['grade'] * self.max_points)
-                row['date_last_graded'] = score['modified']
+                row['Previous Points'] = float(score['grade'] * self.max_points)
+                row['date_last_graded'] = score['modified'].strftime('%Y-%m-%d %H:%M')
                 row['who_last_graded'] = score['who_last_graded']
             yield row
 
@@ -341,9 +345,9 @@ def get_scores(usage_key, user_ids=None):
             'state': row.state,
         }
         try:
-            last_override = row.scoreoverrider_set.latest('created')
+            last_override = row.scoreoverrider_set.select_related('user').latest('created')
         except ObjectDoesNotExist:
             pass
         else:
-            scores[row.student_id]['who_last_graded'] = last_override.user_id
+            scores[row.student_id]['who_last_graded'] = last_override.user.username
     return scores

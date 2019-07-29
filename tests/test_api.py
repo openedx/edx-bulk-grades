@@ -43,7 +43,7 @@ class TestApi(BaseTests):
         api.set_score(self.block_id, self.learner.id, 11, 22, override_user_id=self.staff.id)
         score = api.get_score(self.block_id, self.learner.id)
         assert score['grade'] == .5
-        assert score['who_last_graded'] == self.staff.id
+        assert score['who_last_graded'] == self.staff.username
         assert score['score'] == 11
         score = api.get_score(self.block_id, 11)
         assert score is None
@@ -59,11 +59,12 @@ class TestScoreProcessor(BaseTests):
         """
         row = {
             'block_id': self.block_id,
-            'points': 0,
+            'New Points': 0,
             'user_id': self.learner.id,
             'csum': '07ec',
-            'last_points': '',
+            'Previous Points': '',
         }
+        kwargs['New Points'] = kwargs.get('points', 0)
         row.update(kwargs)
         return row
 
