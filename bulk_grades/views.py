@@ -36,7 +36,8 @@ class GradeOnlyExportMixin(object):
                                                   course_id=course_id,
                                                   _user=request.user,
                                                   track=request.GET.get('track'),
-                                                  cohort=request.GET.get('cohort')
+                                                  cohort=request.GET.get('cohort'),
+                                                  subsection=request.GET.get('subsection'),
                                                 )
 
     def _create_iterator_for_export(self, course_id):
@@ -67,6 +68,11 @@ class GradeImportExport(View, GradeOnlyExportMixin):
     def get(self, request, course_id, *args, **kwargs):  # pylint: disable=unused-argument
         """
         Export grades in CSV format.
+
+        GET arguments:
+        track: name of enrollment mode
+        cohort: name of cohort
+        subsection: block id of graded subsection
         """
         iterator = self._create_iterator_for_export(course_id)
         response = StreamingHttpResponse(iterator, content_type='text/csv')

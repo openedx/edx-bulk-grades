@@ -209,7 +209,10 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
         self.track = self.cohort = self._user = None
         super(GradeCSVProcessor, self).__init__(**kwargs)
         self._course_key = CourseKey.from_string(self.course_id)
-        self._subsections = self._get_graded_subsections(self._course_key)
+        self._subsections = self._get_graded_subsections(
+            self._course_key,
+            filter_subsection=kwargs.get('subsection', None)
+        )
         self._users_seen = set()
 
     def get_unique_path(self):
@@ -218,13 +221,18 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
         """
         return self.course_id
 
-    def _get_graded_subsections(self, course_id):
+    def _get_graded_subsections(self, course_id, filter_subsection=None):
         """
         Return list of graded subsections.
+
+        If filter_subsection (block ID) is set, return only that subsection.
         """
         subsections = {}
         for subsection in grades_api.graded_subsections_for_course_id(course_id):
-            short_block_id = subsection.location.block_id[:8]
+            block_id = text_type(subsection.location.block_id)
+            if filter_subsection and block_id != filter_subsection:
+                continue
+            short_block_id = block_id[:8]
             if short_block_id not in subsections:
                 for key in ('name', 'grade', 'previous', 'new_grade'):
                     self.columns.append('{}-{}'.format(key, short_block_id))
