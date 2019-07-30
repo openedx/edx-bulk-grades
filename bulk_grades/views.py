@@ -37,13 +37,19 @@ class GradeImportExport(View):
                                                   course_id=course_id,
                                                   _user=request.user,
                                                   track=request.GET.get('track'),
-                                                  cohort=request.GET.get('cohort')
+                                                  cohort=request.GET.get('cohort'),
+                                                  subsection=request.GET.get('subsection'),
                                                 )
         return super(GradeImportExport, self).dispatch(request, course_id, *args, **kwargs)
 
     def get(self, request, course_id, *args, **kwargs):  # pylint: disable=unused-argument
         """
         Export grades in CSV format.
+
+        GET arguments:
+        track: name of enrollment mode
+        cohort: name of cohort
+        subsection: block id of graded subsection
         """
         iterator = self.processor.get_iterator(error_data=bool(self.operation_id))
         filename = [course_id]
