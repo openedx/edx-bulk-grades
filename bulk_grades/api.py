@@ -176,10 +176,21 @@ class ScoreCSVProcessor(DeferrableMixin, CSVProcessor):
             score = students.get(enrollment['user_id'], None)
 
             if score:
-                row['Previous Points'] = float(score['grade'] * self.max_points)
+                row['Previous Points'] = float(score['grade'])
                 row['date_last_graded'] = score['modified'].strftime('%Y-%m-%d %H:%M')
                 row['who_last_graded'] = score['who_last_graded']
             yield row
+
+    def commit(self, running_task=None):
+        """
+        Commit the data and trigger course grade recalculation.
+        """
+        super(ScoreCSVProcessor, self).commit(running_task=running_task)
+        if running_task or not self.status()['waiting']:
+            # after commit, trigger grade recomputation for the course.
+            # not sure if this is necessary
+            course_key = UsageKey.from_string(self.block_id).course_key
+            grades_api.task_compute_all_grades_for_course.apply_async(kwargs={'course_key': text_type(course_key)})
 
 
 class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
@@ -298,7 +309,7 @@ def set_score(usage_key, student_id, score, max_points, override_user_id=None, *
     if not isinstance(usage_key, UsageKey):
         usage_key = UsageKey.from_string(usage_key)
     defaults['module_type'] = 'problem'
-    defaults['grade'] = score / float(max_points or 1.0)
+    defaults['grade'] = score
     defaults['max_grade'] = max_points
     module = apps.get_model('courseware', 'StudentModule').objects.update_or_create(
         student_id=student_id,
@@ -337,8 +348,7 @@ def get_scores(usage_key, user_ids=None):
     scores = {}
     for row in scores_qset:
         scores[row.student_id] = {
-            'grade': row.grade,
-            'score': row.grade * (row.max_grade or 1),
+            'score': row.grade,
             'max_grade': row.max_grade,
             'created': row.created,
             'modified': row.modified,

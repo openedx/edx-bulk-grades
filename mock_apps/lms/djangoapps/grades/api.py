@@ -41,3 +41,9 @@ def graded_subsections_for_course_id(course_id):
 
 class SubsectionGradeFactory:
     pass
+
+
+class task_compute_all_grades_for_course(object):
+    @classmethod
+    def apply_async(cls, **kwargs):
+        pass
