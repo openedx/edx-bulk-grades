@@ -15,7 +15,7 @@ from . import api
 log = logging.getLogger(__name__)
 
 
-class GradeOnlyExportMixin:
+class GradeOnlyExportMixin(object):
     """
     CSV Export of grade information only. To be used by both bulk grade export and interventions.
     """

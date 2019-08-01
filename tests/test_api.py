@@ -42,9 +42,8 @@ class TestApi(BaseTests):
     def test_set_score(self):
         api.set_score(self.block_id, self.learner.id, 11, 22, override_user_id=self.staff.id)
         score = api.get_score(self.block_id, self.learner.id)
-        assert score['grade'] == .5
-        assert score['who_last_graded'] == self.staff.username
         assert score['score'] == 11
+        assert score['who_last_graded'] == self.staff.username
         score = api.get_score(self.block_id, 11)
         assert score is None
 
