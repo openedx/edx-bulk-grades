@@ -9,6 +9,7 @@ import logging
 
 from django.http import HttpResponse, HttpResponseForbidden, StreamingHttpResponse
 from django.views.generic import View
+from opaque_keys.edx.keys import UsageKey
 
 from . import api
 
@@ -32,11 +33,14 @@ class GradeOnlyExportMixin(object):
             if self.processor.course_id != course_id:
                 return HttpResponseForbidden()
         else:
+            assignment_id = request.GET.get('assignment')
             self.processor = api.GradeCSVProcessor(
                                                   course_id=course_id,
                                                   _user=request.user,
                                                   track=request.GET.get('track'),
-                                                  cohort=request.GET.get('cohort')
+                                                  cohort=request.GET.get('cohort'),
+                                                  subsection=UsageKey.from_string(assignment_id) if assignment_id else None,
+                                                  assignment_type=request.GET.get('assignmentType'),
                                                 )
 
     def _create_iterator_for_export(self, course_id):
@@ -67,6 +71,11 @@ class GradeImportExport(View, GradeOnlyExportMixin):
     def get(self, request, course_id, *args, **kwargs):  # pylint: disable=unused-argument
         """
         Export grades in CSV format.
+
+        GET arguments:
+        track: name of enrollment mode
+        cohort: name of cohort
+        subsection: block id of graded subsection
         """
         iterator = self._create_iterator_for_export(course_id)
         response = StreamingHttpResponse(iterator, content_type='text/csv')

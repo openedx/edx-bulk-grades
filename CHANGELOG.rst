@@ -16,6 +16,10 @@ Unreleased
 
 *
 
+[0.4.1] - 2019-08-01
+~~~~~~~~~~~~~~~~~~~~
+Added ability to filter by subsection & assignment grading type for bulk management CSV downloads.
+
 [0.1.4] - 2019-07-02
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Added an endpoint for this history of bulk management operations on grade overrides. 
