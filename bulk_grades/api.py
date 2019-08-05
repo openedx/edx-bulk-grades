@@ -176,7 +176,7 @@ class ScoreCSVProcessor(DeferrableMixin, CSVProcessor):
             score = students.get(enrollment['user_id'], None)
 
             if score:
-                row['Previous Points'] = float(score['grade'])
+                row['Previous Points'] = float(score['score'])
                 row['date_last_graded'] = score['modified'].strftime('%Y-%m-%d %H:%M')
                 row['who_last_graded'] = score['who_last_graded']
             yield row
