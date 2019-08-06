@@ -207,6 +207,7 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
         self.columns = ['user_id', 'username', 'course_id', 'track', 'cohort']
         self.course_id = None
         self.subsection_grade_max = self.subsection_grade_min = None
+        self.course_grade_min = self.course_grade_max = None
         self.subsection = self.track = self.cohort = self._user = None
         super(GradeCSVProcessor, self).__init__(**kwargs)
         self._course_key = CourseKey.from_string(self.course_id)
@@ -294,7 +295,10 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
         Return iterator of rows to export.
         """
         enrollments = list(_get_enrollments(self._course_key, track=self.track, cohort=self.cohort))
-        grades_api.prefetch_course_and_subsection_grades(self._course_key, [enroll['user'] for enroll in enrollments])
+        enrolled_users = [enroll['user'] for enroll in enrollments]
+
+        grades_api.prefetch_course_and_subsection_grades(self._course_key, enrolled_users)
+
         for enrollment in enrollments:
             cohort = get_cohort(enrollment['user'], self._course_key, assign=False)
             row = {
@@ -319,6 +323,14 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
                 if (self.subsection_grade_min and effective_grade < self.subsection_grade_min) or (
                         self.subsection_grade_max and effective_grade > self.subsection_grade_max):
                     continue
+
+            course_grade = grades_api.CourseGradeFactory().read(enrollment['user'], course_key=self._course_key)
+            course_grade_as_int = int(course_grade.percent * 100)
+
+            if ((self.course_grade_min and course_grade_as_int < self.course_grade_min) or
+                    (self.course_grade_max and course_grade_as_int > self.course_grade_max)):
+                continue
+
             for block_id, (subsection, display_name) in iteritems(self._subsections):
                 row['name-{}'.format(block_id)] = display_name
                 grade = grades.get(subsection.location, None)

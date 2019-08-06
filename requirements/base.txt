@@ -15,9 +15,9 @@ django==1.11.23
 djangorestframework==3.9.4  # via super-csv
 edx-opaque-keys==1.0.1
 kombu==3.0.37             # via celery
-pbr==5.4.1                # via stevedore
+pbr==5.4.2                # via stevedore
 pymongo==3.8.0            # via edx-opaque-keys
 pytz==2019.2              # via celery, django
 six==1.12.0               # via edx-opaque-keys, stevedore
 stevedore==1.30.1         # via edx-opaque-keys
-super-csv==0.8
+super-csv==0.9

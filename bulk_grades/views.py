@@ -34,6 +34,8 @@ class GradeOnlyExportMixin(object):
         else:
             assignment_grade_max = request.GET.get('assignmentGradeMax')
             assignment_grade_min = request.GET.get('assignmentGradeMin')
+            course_grade_min = request.GET.get('courseGradeMin')
+            course_grade_max = request.GET.get('courseGradeMax')
             self.processor = api.GradeCSVProcessor(
                                                   course_id=course_id,
                                                   _user=request.user,
@@ -45,6 +47,8 @@ class GradeOnlyExportMixin(object):
                                                                         if assignment_grade_max else None),
                                                   subsection_grade_min=(float(assignment_grade_min)
                                                                         if assignment_grade_min else None),
+                                                  course_grade_min=(float(course_grade_min) if course_grade_min else None),
+                                                  course_grade_max=(float(course_grade_max) if course_grade_max else None),
                                                 )
 
     def _create_iterator_for_export(self, course_id):

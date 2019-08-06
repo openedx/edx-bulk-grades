@@ -16,7 +16,11 @@ Unreleased
 
 *
 
-[0.4.2] - 2019-08-12
+[0.4.4] - 2019-08-13
+~~~~~~~~~~~~~~~~~~~~
+Add ability to filter by course grade, provided as a percentage to the endpoint.
+
+[0.4.3] - 2019-08-12
 ~~~~~~~~~~~~~~~~~~~~
 Add ability to filter by subsection grade, provided as a percentage to the endpoint
 

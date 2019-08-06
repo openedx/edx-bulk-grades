@@ -17,7 +17,7 @@ certifi==2019.6.16        # via requests
 chardet==3.0.4            # via doc8, requests
 click==7.0
 code-annotations==0.3.2
-configparser==3.7.4
+configparser==3.8.1
 contextlib2==0.5.5
 coverage==4.5.4
 django-celery==3.3.0
@@ -40,7 +40,7 @@ mock==3.0.5
 more-itertools==5.0.0
 packaging==19.1
 pathlib2==2.3.4
-pbr==5.4.1
+pbr==5.4.2
 pluggy==0.12.0
 py==1.8.0
 pygments==2.4.2           # via readme-renderer, sphinx
@@ -48,7 +48,7 @@ pymongo==3.8.0
 pyparsing==2.4.2
 pytest-cov==2.7.1
 pytest-django==3.5.1
-pytest==4.6.4
+pytest==4.6.5
 python-slugify==3.0.3
 pytz==2019.2
 pyyaml==5.1.2
@@ -61,7 +61,7 @@ snowballstemmer==1.9.0    # via sphinx
 sphinx==1.8.5
 sphinxcontrib-websupport==1.1.2  # via sphinx
 stevedore==1.30.1
-super-csv==0.8
+super-csv==0.9
 text-unidecode==1.2
 typing==3.7.4             # via sphinx
 urllib3==1.25.3           # via requests
