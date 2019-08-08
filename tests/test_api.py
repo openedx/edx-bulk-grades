@@ -162,3 +162,36 @@ class TestGradeProcessor(BaseTests):
         processor = api.GradeCSVProcessor(course_id=self.course_id, max_points=100, course_grade_min=10, course_grade_max=60)
         rows = list(processor.get_iterator())
         self.assertEqual(len(rows), self.NUM_USERS+1)
+
+
+class TestInterventionProcessor(BaseTests):
+    """
+    Tests exercising the processing performed by InterventionCSVProcessor
+    """
+
+    @patch('lms.djangoapps.grades.api.CourseGradeFactory.read')
+    @patch('bulk_grades.api.LearnerAPIClient')
+    def test_export(self, mocked_api, mocked_course_grade_factory):
+        self._make_enrollments()
+        data = {
+                'audit@example.com': {'videos_overall': 2, 'videos_last_week': 0, 'problems_overall': 10,
+                                      'problems_last_week': 5,
+                                      'correct_problems_overall': 66, 'correct_problems_last_week': 44,
+                                      'problem_attempts_overall': 233, 'problem_attempts_last_week': 221,
+                                      'correct_problem_attempts_overall': 101, 'correct_problem_attempts_last_week': 99,
+                                      'forum_posts_overall': 2, 'forum_posts_last_week': 0, 'date_last_active': 2},
+                'masters@example.com': {'videos_overall': 12, 'videos_last_week': 0, 'problems_overall': 10,
+                                        'problems_last_week': 5,
+                                        'correct_problems_overall': 66, 'correct_problems_last_week': 44,
+                                        'problem_attempts_overall': 233, 'problem_attempts_last_week': 221,
+                                        'correct_problem_attempts_overall': 101,
+                                        'correct_problem_attempts_last_week': 99,
+                                        'forum_posts_overall': 2, 'forum_posts_last_week': 0, 'date_last_active': 2}
+        }
+        mocked_api.return_value.courses.return_value.intervention.return_value.get.return_value = \
+            data
+        course_grade_mock = Mock(percent=0.5, letter_grade='A')
+        mocked_course_grade_factory.return_value = course_grade_mock
+        processor = api.InterventionCSVProcessor(course_id=self.course_id)
+        rows = list(processor.get_iterator())
+        assert len(rows) == 4

@@ -47,3 +47,11 @@ LOCALE_PATHS = [
 ROOT_URLCONF = 'bulk_grades.urls'
 
 SECRET_KEY = 'insecure-secret-key'
+
+ANALYTICS_API_BASE_URL = {
+        'DEFAULT': 'mock',
+        'mock': {},
+    }
+ANALYTICS_TOKEN = {
+        'DEFAULT': 'edx'
+    }

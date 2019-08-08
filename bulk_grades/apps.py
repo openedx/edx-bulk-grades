@@ -22,4 +22,10 @@ class BulkGradesConfig(AppConfig):
                 'relative_path': u'urls',
             },
         },
+        u'settings_config': {
+            u'lms.djangoapp': {
+                u'common': {'relative_path': u'settings.common'},
+                u'production': {'relative_path': u'settings.production'},
+            },
+        },
     }

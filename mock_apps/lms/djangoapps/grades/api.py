@@ -57,7 +57,6 @@ class CourseGradeFactory(object):
     ):
         pass
 
-
 class task_compute_all_grades_for_course(object):
     @classmethod
     def apply_async(cls, **kwargs):
