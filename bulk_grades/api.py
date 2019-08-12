@@ -206,12 +206,14 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
         """
         self.columns = ['user_id', 'username', 'course_id', 'track', 'cohort']
         self.course_id = None
-        self.track = self.cohort = self._user = None
+        self.subsection_grade_max = self.subsection_grade_min = None
+        self.subsection = self.track = self.cohort = self._user = None
         super(GradeCSVProcessor, self).__init__(**kwargs)
         self._course_key = CourseKey.from_string(self.course_id)
+        self._subsection = UsageKey.from_string(self.subsection) if self.subsection else None
         self._subsections = self._get_graded_subsections(
             self._course_key,
-            filter_subsection=kwargs.get('subsection', None),
+            filter_subsection=self._subsection,
             filter_assignment_type=kwargs.get('assignment_type', None),
         )
         self._users_seen = set()
@@ -303,13 +305,29 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
                 'cohort': cohort.name if cohort else None,
             }
             grades = grades_api.get_subsection_grades(enrollment['user_id'], self._course_key)
+            if self._subsection and (self.subsection_grade_max or self.subsection_grade_min):
+                short_id = self._subsection.block_id[:8]
+                (filtered_subsection, _) = self._subsections[short_id]
+                subsection_grade = grades.get(filtered_subsection.location, None)
+                if not subsection_grade:
+                    continue
+                try:
+                    effective_grade = (subsection_grade.override.earned_all_override
+                                       / subsection_grade.override.possible_all_override) * 100
+                except AttributeError:
+                    effective_grade = (subsection_grade.earned_all / subsection_grade.possible_all) * 100
+                if (self.subsection_grade_min and effective_grade < self.subsection_grade_min) or (
+                        self.subsection_grade_max and effective_grade > self.subsection_grade_max):
+                    continue
             for block_id, (subsection, display_name) in iteritems(self._subsections):
                 row['name-{}'.format(block_id)] = display_name
                 grade = grades.get(subsection.location, None)
                 if grade:
                     row['grade-{}'.format(block_id)] = grade.earned_all
-                    row['previous-{}'.format(block_id)] = (
-                        grade.override.earned_graded_override if grade.override else None)
+                    try:
+                        row['previous-{}'.format(block_id)] = grade.override.earned_all_override
+                    except AttributeError:
+                        row['previous-{}'.format(block_id)] = None
             yield row
 
 

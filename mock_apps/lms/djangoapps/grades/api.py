@@ -17,6 +17,7 @@ class Grade(object):
     def __init__(self):
         self.earned_all = 1
         self.override = None
+        self.possible_all = 1
 
 
 def prefetch_course_and_subsection_grades(course_id, users):

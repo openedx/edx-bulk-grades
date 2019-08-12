@@ -8,7 +8,7 @@ from __future__ import absolute_import, unicode_literals
 
 from django.contrib.auth.models import User
 from django.test import TestCase
-# from opaque_keys.edx.keys import UsageKey, CourseKey
+from mock import MagicMock, patch
 from super_csv.csv_processor import ValidationError
 
 from bulk_grades import api
@@ -23,7 +23,8 @@ class BaseTests(TestCase):
         super(BaseTests, self).setUp()
         self.learner = User.objects.create(username='student@example.com')
         self.staff = User.objects.create(username='staff@example.com')
-        self.block_id = 'block-v1:testX+sg101+2019+type@test+block@85bb02dbd2c14ba5bc31a0264b140dda'
+        self.block_id_in_module_id = '85bb02dbd2c14ba5bc31a0264b140dda'
+        self.block_id = 'block-v1:testX+sg101+2019+type@test+block@%s' % self.block_id_in_module_id
         self.course_id = 'course-v1:testX+sg101+2019'
 
     def _make_enrollments(self):
@@ -121,8 +122,28 @@ class TestGradeProcessor(BaseTests):
     """
     Tests exercising the processing performed by GradeCSVProcessor
     """
+    NUM_USERS = 3
+
     def test_export(self):
         self._make_enrollments()
         processor = api.GradeCSVProcessor(course_id=self.course_id)
         rows = list(processor.get_iterator())
-        assert len(rows) == 4
+        assert len(rows) == self.NUM_USERS + 1
+
+    @patch('lms.djangoapps.grades.api.graded_subsections_for_course_id')
+    def test_subsection_max_min(self, mock_graded_subsections):
+        self._make_enrollments()
+        subsection = MagicMock()
+        subsection.location = MagicMock()
+        subsection.display_name = 'asdf'
+        subsection.location.block_id = self.block_id_in_module_id
+        mock_graded_subsections.return_value = [subsection]
+        # should filter out everything; all grades are 1 from mock_apps grades api
+        processor = api.GradeCSVProcessor(course_id=self.course_id, subsection=self.block_id, subsection_grade_max=50)
+        rows = list(processor.get_iterator())
+        assert len(rows) != self.NUM_USERS + 1
+
+        processor = api.GradeCSVProcessor(course_id=self.course_id, subsection=self.block_id, subsection_grade_min=200)
+        rows = list(processor.get_iterator())
+        assert len(rows) != self.NUM_USERS + 1
+
