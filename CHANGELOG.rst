@@ -16,6 +16,10 @@ Unreleased
 
 *
 
+[0.4.2] - 2019-08-12
+~~~~~~~~~~~~~~~~~~~~
+Add ability to filter by subsection grade, provided as a percentage to the endpoint
+
 [0.4.1] - 2019-08-01
 ~~~~~~~~~~~~~~~~~~~~
 Added ability to filter by subsection & assignment grading type for bulk management CSV downloads.
