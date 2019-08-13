@@ -19,7 +19,7 @@ chardet==3.0.4            # via requests
 click-log==0.3.2          # via edx-lint
 click==7.0
 code-annotations==0.3.2
-configparser==3.7.4
+configparser==3.8.1
 contextlib2==0.5.5
 coverage==4.5.4
 distlib==0.2.9.post0      # via caniusepython3
@@ -45,7 +45,7 @@ mock==3.0.5
 more-itertools==5.0.0
 packaging==19.1
 pathlib2==2.3.4
-pbr==5.4.1
+pbr==5.4.2
 pluggy==0.12.0
 py==1.8.0
 pycodestyle==2.5.0
@@ -58,7 +58,7 @@ pymongo==3.8.0
 pyparsing==2.4.2
 pytest-cov==2.7.1
 pytest-django==3.5.1
-pytest==4.6.4
+pytest==4.6.5
 python-slugify==3.0.3
 pytz==2019.2
 pyyaml==5.1.2
@@ -68,7 +68,7 @@ singledispatch==3.4.0.3   # via astroid, pylint
 six==1.12.0
 snowballstemmer==1.9.0    # via pydocstyle
 stevedore==1.30.1
-super-csv==0.8
+super-csv==0.9
 text-unidecode==1.2
 urllib3==1.25.3           # via requests
 wcwidth==0.1.7

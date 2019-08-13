@@ -8,7 +8,7 @@ from __future__ import absolute_import, unicode_literals
 
 from django.contrib.auth.models import User
 from django.test import TestCase
-from mock import MagicMock, patch
+from mock import MagicMock, Mock, patch
 from super_csv.csv_processor import ValidationError
 
 from bulk_grades import api
@@ -124,8 +124,10 @@ class TestGradeProcessor(BaseTests):
     """
     NUM_USERS = 3
 
-    def test_export(self):
+    @patch('lms.djangoapps.grades.api.CourseGradeFactory.read')
+    def test_export(self, course_grade_factory_mock):
         self._make_enrollments()
+        course_grade_factory_mock.return_value = Mock(percent=0.50)
         processor = api.GradeCSVProcessor(course_id=self.course_id)
         rows = list(processor.get_iterator())
         assert len(rows) == self.NUM_USERS + 1
@@ -147,3 +149,16 @@ class TestGradeProcessor(BaseTests):
         rows = list(processor.get_iterator())
         assert len(rows) != self.NUM_USERS + 1
 
+    @patch('lms.djangoapps.grades.api.CourseGradeFactory.read')
+    def test_course_grade_filters(self, course_grade_factory_mock):
+        self._make_enrollments()
+
+        course_grade_factory_mock.return_value = Mock(percent=0.50)
+
+        processor = api.GradeCSVProcessor(course_id=self.course_id, max_points=100, course_grade_min=60)
+        rows = list(processor.get_iterator())
+        self.assertNotEqual(len(rows), self.NUM_USERS+1)
+
+        processor = api.GradeCSVProcessor(course_id=self.course_id, max_points=100, course_grade_min=10, course_grade_max=60)
+        rows = list(processor.get_iterator())
+        self.assertEqual(len(rows), self.NUM_USERS+1)

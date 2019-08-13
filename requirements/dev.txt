@@ -20,7 +20,7 @@ click-log==0.3.2
 click==7.0
 code-annotations==0.3.2
 codecov==2.0.15
-configparser==3.7.4
+configparser==3.8.1
 contextlib2==0.5.5
 coverage==4.5.4
 diff-cover==2.3.0
@@ -52,7 +52,7 @@ more-itertools==5.0.0
 packaging==19.1
 path.py==11.5.2           # via edx-i18n-tools
 pathlib2==2.3.4
-pbr==5.4.1
+pbr==5.4.2
 pip-tools==4.0.0
 pluggy==0.12.0
 polib==1.1.0              # via edx-i18n-tools
@@ -68,7 +68,7 @@ pymongo==3.8.0
 pyparsing==2.4.2
 pytest-cov==2.7.1
 pytest-django==3.5.1
-pytest==4.6.4
+pytest==4.6.5
 python-slugify==3.0.3
 pytz==2019.2
 pyyaml==5.1.2
@@ -78,7 +78,7 @@ singledispatch==3.4.0.3
 six==1.12.0
 snowballstemmer==1.9.0
 stevedore==1.30.1
-super-csv==0.8
+super-csv==0.9
 text-unidecode==1.2
 toml==0.10.0
 tox-battery==0.5.1
