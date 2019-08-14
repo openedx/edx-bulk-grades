@@ -12,6 +12,7 @@ from opaque_keys.edx.keys import CourseKey, UsageKey
 from six import iteritems, text_type
 from super_csv.csv_processor import CSVProcessor, DeferrableMixin, ValidationError
 
+from bulk_grades.clients import LearnerAPIClient
 from lms.djangoapps.grades import api as grades_api
 from openedx.core.djangoapps.course_groups.cohorts import get_cohort
 
@@ -340,6 +341,87 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
                         row['previous-{}'.format(block_id)] = grade.override.earned_all_override
                     except AttributeError:
                         row['previous-{}'.format(block_id)] = None
+            yield row
+
+
+class InterventionCSVProcessor(CSVProcessor):
+    """
+    CSV Processor for intervention report grades.
+    """
+
+    def __init__(self, **kwargs):
+        """
+        Create InterventionCSVProcessor.
+        """
+        self.columns = ['user_id', 'username', 'email', 'student_key', 'full_name', 'course_id', 'track', 'cohort',
+                        'number of videos overall', 'number of videos last week', 'number of problems overall',
+                        'number of problems last week',
+                        'number of correct problems overall', 'number of correct problems last week',
+                        'number of problem attempts overall', 'number of problem attempts last week',
+                        'number of forum posts overall', 'number of forum posts last week',
+                        'date last active']
+        self.course_id = None
+        self.track = self.cohort = None
+        super(InterventionCSVProcessor, self).__init__(**kwargs)
+        self._course_key = CourseKey.from_string(self.course_id)
+        self._subsections = self._get_graded_subsections(self._course_key)
+        self.columns.append('course grade letter')
+        self.columns.append('course grade numeric')
+
+    def _get_graded_subsections(self, course_id):
+        """
+        Return list of graded subsections.
+        """
+        subsections = {}
+        for subsection in grades_api.graded_subsections_for_course_id(course_id):
+            short_block_id = subsection.location.block_id[:8]
+            if short_block_id not in subsections:
+                for key in ('name', 'grade'):
+                    self.columns.append('{}-{}'.format(key, short_block_id))
+                subsections[short_block_id] = (subsection, subsection.display_name)
+        return subsections
+
+    def get_rows_to_export(self):
+        """
+        Return iterator of rows to export.
+        """
+        enrollments = list(_get_enrollments(self._course_key, track=self.track, cohort=self.cohort))
+        grades_api.prefetch_course_and_subsection_grades(self._course_key, [enroll['user'] for enroll in enrollments])
+        client = LearnerAPIClient()
+        intervention_data = client.courses(self.course_id).intervention().get()
+        for enrollment in enrollments:
+            cohort = get_cohort(enrollment['user'], self._course_key, assign=False)
+            course_grade = grades_api.CourseGradeFactory().read(enrollment['user'], course_key=self._course_key)
+            int_user = intervention_data.get(enrollment['user'].username, {})
+            row = {
+                'user_id': enrollment['user_id'],
+                'username': enrollment['username'],
+                'email': enrollment['user'].email,
+                'student_key': enrollment['student_uid'],
+                'full_name': enrollment['full_name'],
+                'track': enrollment['track'],
+                'course_id': self.course_id,
+                'cohort': cohort.name if cohort else None,
+                'number of videos overall': int_user.get('videos_overall', 0),
+                'number of videos last week': int_user.get('videos_last_week', 0),
+                'number of problems overall': int_user.get('problems_overall', 0),
+                'number of problems last week': int_user.get('problems_last_week', 0),
+                'number of correct problems overall': int_user.get('correct_problems_overall', 0),
+                'number of correct problems last week': int_user.get('correct_problems_last_week', 0),
+                'number of problem attempts overall': int_user.get('problem_attempts_overall', 0),
+                'number of problem attempts last week': int_user.get('problem_attempts_last_week', 0),
+                'number of forum posts overall': int_user.get('forum_posts_overall', 0),
+                'number of forum posts last week': int_user.get('forum_posts_last_week', 0),
+                'date last active': int_user.get('date_last_active', 0),
+                'course grade letter': course_grade.letter_grade,
+                'course grade numeric': course_grade.percent
+            }
+            grades = grades_api.get_subsection_grades(enrollment['user_id'], self._course_key)
+            for block_id, (subsection, display_name) in iteritems(self._subsections):
+                row['name-{}'.format(block_id)] = display_name
+                grade = grades.get(subsection.location, None)
+                if grade:
+                    row['grade-{}'.format(block_id)] = grade.earned_all
             yield row
 
 

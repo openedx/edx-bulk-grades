@@ -14,8 +14,8 @@ backports.functools-lru-cache==1.5  # via astroid, caniusepython3, isort, pylint
 billiard==3.3.0.23
 caniusepython3==7.1.0
 celery==3.1.26.post2
-certifi==2019.6.16        # via requests
-chardet==3.0.4            # via requests
+certifi==2019.6.16
+chardet==3.0.4
 click-log==0.3.2          # via edx-lint
 click==7.0
 code-annotations==0.3.2
@@ -33,7 +33,7 @@ edx-opaque-keys==1.0.1
 enum34==1.1.6             # via astroid
 funcsigs==1.0.2
 futures==3.3.0 ; python_version == "2.7"  # via caniusepython3, isort
-idna==2.8                 # via requests
+idna==2.8
 importlib-metadata==0.19
 isort==4.3.21
 jinja2==2.10.1
@@ -62,15 +62,16 @@ pytest==4.6.5
 python-slugify==3.0.3
 pytz==2019.2
 pyyaml==5.1.2
-requests==2.22.0          # via caniusepython3
+requests==2.22.0
 scandir==1.10.0
 singledispatch==3.4.0.3   # via astroid, pylint
 six==1.12.0
+slumber==0.7.1
 snowballstemmer==1.9.0    # via pydocstyle
 stevedore==1.30.1
 super-csv==0.9
 text-unidecode==1.2
-urllib3==1.25.3           # via requests
+urllib3==1.25.3
 wcwidth==0.1.7
 wrapt==1.11.2             # via astroid
 zipp==0.5.2

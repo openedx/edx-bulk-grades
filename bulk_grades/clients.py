@@ -1,0 +1,67 @@
+# -*- coding: utf-8 -*-
+"""
+slumber client for REST service consumption.
+"""
+from __future__ import absolute_import, unicode_literals
+
+import requests
+from django.conf import settings
+from slumber import API, serialize
+
+
+class TokenAuth(requests.auth.AuthBase):
+    """A requests auth class for DRF-style token-based authentication."""
+
+    def __init__(self, token):
+        """
+        Constructor.
+        """
+        self.token = token
+
+    def __call__(self, r):
+        """
+        Configure headers.
+        """
+        r.headers['Authorization'] = 'Token {}'.format(self.token)
+        return r
+
+
+class TextSerializer(serialize.BaseSerializer):
+    """
+    Slumber API Serializer for text data, e.g. CSV.
+    """
+
+    key = 'text'
+    content_types = ('text/csv', 'text/plain', )
+
+    def unchanged(self, data):
+        """Leaves the request/response data unchanged."""
+        return data
+
+    # Define the abstract methods from BaseSerializer
+    dumps = loads = unchanged
+
+
+class LearnerAPIClient(API):
+
+    def __init__(self, timeout=5, serializer_type='json'):
+        """
+        Constructor.
+        """
+        session = requests.session()
+        session.timeout = timeout
+
+        serializers = serialize.Serializer(
+            default=serializer_type,
+            serializers=[
+                serialize.JsonSerializer(),
+                serialize.YamlSerializer(),
+                TextSerializer(),
+            ]
+        )
+        super(LearnerAPIClient, self).__init__(
+            settings.ANALYTICS_API_CLIENT.get('url'),
+            session=session,
+            auth=TokenAuth(settings.ANALYTICS_API_CLIENT.get('token')),
+            serializer=serializers,
+        )
