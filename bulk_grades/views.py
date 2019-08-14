@@ -26,32 +26,19 @@ class GradeOnlyExport(View):
         """
         super(GradeOnlyExport, self).__init__(**kwargs)
         self.processor = None
-        self.operation_id = ''
-        self.filename = ''
+        self.extra_filename = ''
 
-    def _create_iterator_for_export(self, course_id):
+    def get_export_iterator(self, request):  # pylint: disable=unused-argument
         """
-        Create an iterator to do for export of grades.
+        Return an iterator appropriate for a streaming response.
         """
-        iterator = self.processor.get_iterator(error_data=bool(self.operation_id))
-        self.filename = [course_id]
+        return []
 
-        if self.operation_id:
-            self.filename.append('graded-results')
-        self.filename.append(datetime.datetime.utcnow().isoformat())
-        return iterator
-
-    def initialize_processor(self, request, course_id):  # pylint: disable=unused-argument
+    def initialize_processor(self, request, course_id):
         """
         Abstract method to initialize processor particular to the class.
         """
         pass
-
-
-class GradeImportExport(GradeOnlyExport):
-    """
-    CSV Grade import/export view.
-    """
 
     def dispatch(self, request, course_id, *args, **kwargs):  # pylint: disable=arguments-differ
         """
@@ -59,9 +46,8 @@ class GradeImportExport(GradeOnlyExport):
         """
         if not (request.user.is_staff or request.user.has_perm('bulk_grades', course_id)):
             return HttpResponseForbidden('Not Staff')
-        self.operation_id = request.GET.get('error_id', '')
         self.initialize_processor(request, course_id)
-        return super(GradeImportExport, self).dispatch(request, course_id, *args, **kwargs)
+        return super(GradeOnlyExport, self).dispatch(request, course_id, *args, **kwargs)
 
     def get(self, request, course_id, *args, **kwargs):  # pylint: disable=unused-argument
         """
@@ -72,12 +58,24 @@ class GradeImportExport(GradeOnlyExport):
         cohort: name of cohort
         subsection: block id of graded subsection
         """
-        iterator = self._create_iterator_for_export(course_id)
-        response = StreamingHttpResponse(iterator, content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="%s.csv"' % '-'.join(self.filename)
+        iterator = self.get_export_iterator(request)
+        filename = [course_id]
 
-        log.info('Exporting grade CSV for %s', course_id)
+        if self.extra_filename:
+            filename.append(self.extra_filename)
+        filename.append(datetime.datetime.utcnow().isoformat())
+
+        response = StreamingHttpResponse(iterator, content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="%s.csv"' % '-'.join(filename)
+
+        log.info('Exporting %s CSV for %s', course_id, self.__class__)
         return response
+
+
+class GradeImportExport(GradeOnlyExport):
+    """
+    CSV Grade import/export view.
+    """
 
     def post(self, request, course_id, *args, **kwargs):  # pylint: disable=unused-argument
         """
@@ -105,14 +103,22 @@ class GradeImportExport(GradeOnlyExport):
                      data.get('waiting', False))
         return HttpResponse(json.dumps(data), content_type='application/json')
 
+    def get_export_iterator(self, request):
+        """
+        Create an iterator for exporting grade data.
+        """
+        return self.processor.get_iterator(error_data=bool(request.GET.get('error_id', '')))
+
     def initialize_processor(self, request, course_id):
         """
         Initialize GradeCSVProcessor.
         """
-        if self.operation_id:
-            self.processor = api.GradeCSVProcessor.load(self.operation_id)
+        operation_id = request.GET.get('error_id', '')
+        if operation_id:
+            self.processor = api.GradeCSVProcessor.load(operation_id)
             if self.processor.course_id != course_id:
                 return HttpResponseForbidden()
+            self.extra_filename = 'graded-results'
         else:
             assignment_grade_max = request.GET.get('assignmentGradeMax')
             assignment_grade_min = request.GET.get('assignmentGradeMin')
@@ -143,7 +149,11 @@ class GradeOperationHistoryView(View):
         """
         Get all previous times grades have been overwritten for this course.
         """
-        history = self.processor.get_committed_history()
+        processor = api.GradeCSVProcessor(
+            course_id=course_id,
+            _user=request.user
+        )
+        history = processor.get_committed_history()
         return HttpResponse(json.dumps(history), content_type='application/json')
 
     def dispatch(self, request, course_id, *args, **kwargs):  # pylint: disable=arguments-differ
@@ -152,10 +162,6 @@ class GradeOperationHistoryView(View):
         """
         if not (request.user.is_staff or request.user.has_perm('bulk_grades', course_id)):
             return HttpResponseForbidden('Not Staff')
-        self.processor = api.GradeCSVProcessor(  # pylint: disable=attribute-defined-outside-init
-            course_id=course_id,
-            _user=request.user
-        )
         return super(GradeOperationHistoryView, self).dispatch(request, course_id, *args, **kwargs)
 
 
@@ -164,27 +170,13 @@ class InterventionsExport(GradeOnlyExport):
     Interventions export view.
     """
 
-    def dispatch(self, request, course_id, *args, **kwargs):  # pylint: disable=arguments-differ
-        """
-        Dispatch django request.
-        """
-        if not (request.user.is_staff or request.user.has_perm('bulk_grades', course_id)):
-            return HttpResponseForbidden('Not Staff')
-        self.operation_id = request.GET.get('error_id', '')
-        self.initialize_processor(request, course_id)
-        return super(InterventionsExport, self).dispatch(request, course_id, *args, **kwargs)
+    extra_filename = 'intervention'
 
-    def get(self, request, course_id, *args, **kwargs):  # pylint: disable=unused-argument
+    def get_export_iterator(self, request):
         """
-        Export intervention data in CSV format.
+        Create an iterator for exporting intervention data.
         """
-        iterator = self._create_iterator_for_export(course_id)
-        response = StreamingHttpResponse(iterator, content_type='text/csv')
-        self.filename.append('intervention')
-        response['Content-Disposition'] = 'attachment; filename="%s.csv"' % '-'.join(self.filename)
-
-        log.info('Exporting intervention CSV for %s', course_id)
-        return response
+        return self.processor.get_iterator()
 
     def initialize_processor(self, request, course_id):
         """
