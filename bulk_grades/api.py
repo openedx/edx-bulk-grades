@@ -254,6 +254,13 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
         if row['course_id'] != self.course_id:
             raise ValidationError(_('Wrong course id {} != {}').format(row['course_id'], self.course_id))
 
+    def preprocess_file(self, reader):
+        """
+        Preprocess the file, saving original data no matter whether there are errors.
+        """
+        super(GradeCSVProcessor, self).preprocess_file(reader)
+        self.save()
+
     def preprocess_row(self, row):
         """
         Preprocess the CSV row.
