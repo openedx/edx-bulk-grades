@@ -16,6 +16,10 @@ Unreleased
 
 *
 
+[0.5.2] - 2019-08-15
+~~~~~~~~~~~~~~~~~~~~
+* Bring datasource for grade information inline with what the rest of gradebook uses
+
 [0.4.4] - 2019-08-13
 ~~~~~~~~~~~~~~~~~~~~
 Add ability to filter by course grade, provided as a percentage to the endpoint.

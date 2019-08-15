@@ -293,7 +293,7 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
                 row['course_id'],
                 row['block_id'],
                 overrider=self._user,
-                earned_all=row['new_grade'],
+                earned_graded=row['new_grade'],
                 feature='grade-import'
         )
         return True, None
@@ -324,10 +324,10 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
                 if not subsection_grade:
                     continue
                 try:
-                    effective_grade = (subsection_grade.override.earned_all_override
-                                       / subsection_grade.override.possible_all_override) * 100
+                    effective_grade = (subsection_grade.override.earned_graded_override
+                                       / subsection_grade.override.possible_graded_override) * 100
                 except AttributeError:
-                    effective_grade = (subsection_grade.earned_all / subsection_grade.possible_all) * 100
+                    effective_grade = (subsection_grade.earned_graded / subsection_grade.possible_graded) * 100
                 if (self.subsection_grade_min and effective_grade < self.subsection_grade_min) or (
                         self.subsection_grade_max and effective_grade > self.subsection_grade_max):
                     continue
@@ -343,9 +343,9 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
                 row['name-{}'.format(block_id)] = display_name
                 grade = grades.get(subsection.location, None)
                 if grade:
-                    row['grade-{}'.format(block_id)] = grade.earned_all
+                    row['grade-{}'.format(block_id)] = grade.earned_graded
                     try:
-                        row['previous-{}'.format(block_id)] = grade.override.earned_all_override
+                        row['previous-{}'.format(block_id)] = grade.override.earned_graded_override
                     except AttributeError:
                         row['previous-{}'.format(block_id)] = None
             yield row
@@ -428,7 +428,7 @@ class InterventionCSVProcessor(CSVProcessor):
                 row['name-{}'.format(block_id)] = display_name
                 grade = grades.get(subsection.location, None)
                 if grade:
-                    row['grade-{}'.format(block_id)] = grade.earned_all
+                    row['grade-{}'.format(block_id)] = grade.earned_graded
             yield row
 
 
