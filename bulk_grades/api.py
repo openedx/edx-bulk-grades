@@ -333,10 +333,10 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
                     continue
 
             course_grade = grades_api.CourseGradeFactory().read(enrollment['user'], course_key=self._course_key)
-            course_grade_as_int = int(course_grade.percent * 100)
+            course_grade_normalized = course_grade.percent * 100
 
-            if ((self.course_grade_min and course_grade_as_int < self.course_grade_min) or
-                    (self.course_grade_max and course_grade_as_int > self.course_grade_max)):
+            if ((self.course_grade_min and course_grade_normalized < self.course_grade_min) or
+                    (self.course_grade_max and course_grade_normalized > self.course_grade_max)):
                 continue
 
             for block_id, (subsection, display_name) in iteritems(self._subsections):
@@ -368,20 +368,32 @@ class InterventionCSVProcessor(CSVProcessor):
                         'number of forum posts overall', 'number of forum posts last week',
                         'date last active']
         self.course_id = None
-        self.track = self.cohort = None
+        self.track = self.cohort = self.subsection = \
+            self.assignment_type = self.subsection_grade_min = \
+            self.subsection_grade_max = self.course_grade_min = \
+            self.course_grade_max = None
         super(InterventionCSVProcessor, self).__init__(**kwargs)
         self._course_key = CourseKey.from_string(self.course_id)
-        self._subsections = self._get_graded_subsections(self._course_key)
+        self._subsection = UsageKey.from_string(self.subsection) if self.subsection else None
+        self._subsections = self._get_graded_subsections(
+            self._course_key,
+            filter_subsection=self._subsection,
+            filter_assignment_type=self.assignment_type
+        )
         self.columns.append('course grade letter')
         self.columns.append('course grade numeric')
 
-    def _get_graded_subsections(self, course_id):
+    def _get_graded_subsections(self, course_id, filter_subsection=None, filter_assignment_type=None):
         """
         Return list of graded subsections.
         """
         subsections = {}
         for subsection in grades_api.graded_subsections_for_course_id(course_id):
-            short_block_id = subsection.location.block_id[:8]
+            block_id = text_type(subsection.location.block_id)
+            if ((filter_subsection and block_id != filter_subsection.block_id)
+                    or filter_assignment_type and filter_assignment_type != text_type(subsection.format)):
+                continue
+            short_block_id = block_id[:8]
             if short_block_id not in subsections:
                 for key in ('name', 'grade'):
                     self.columns.append('{}-{}'.format(key, short_block_id))
@@ -397,8 +409,31 @@ class InterventionCSVProcessor(CSVProcessor):
         client = LearnerAPIClient()
         intervention_data = client.courses(self.course_id).intervention().get()
         for enrollment in enrollments:
-            cohort = get_cohort(enrollment['user'], self._course_key, assign=False)
+            grades = grades_api.get_subsection_grades(enrollment['user_id'], self._course_key)
+            if self._subsection and (self.subsection_grade_max or self.subsection_grade_min):
+                short_id = self._subsection.block_id[:8]
+                (filtered_subsection, _) = self._subsections[short_id]
+                subsection_grade = grades.get(filtered_subsection.location, None)
+                if not subsection_grade:
+                    continue
+                try:
+                    effective_grade = (subsection_grade.override.earned_graded_override
+                                       / subsection_grade.override.possible_graded_override) * 100
+                except AttributeError:
+                    effective_grade = (subsection_grade.earned_graded / subsection_grade.possible_graded) * 100
+                if (self.subsection_grade_min and effective_grade < self.subsection_grade_min) or (
+                        self.subsection_grade_max and effective_grade > self.subsection_grade_max):
+                    continue
+
             course_grade = grades_api.CourseGradeFactory().read(enrollment['user'], course_key=self._course_key)
+            if self.course_grade_min or self.course_grade_max:
+                course_grade_normalized = (course_grade.percent * 100)
+
+                if ((self.course_grade_min and course_grade_normalized < self.course_grade_min) or
+                        (self.course_grade_max and course_grade_normalized > self.course_grade_max)):
+                    continue
+
+            cohort = get_cohort(enrollment['user'], self._course_key, assign=False)
             int_user = intervention_data.get(enrollment['user'].username, {})
             row = {
                 'user_id': enrollment['user_id'],
@@ -423,7 +458,6 @@ class InterventionCSVProcessor(CSVProcessor):
                 'course grade letter': course_grade.letter_grade,
                 'course grade numeric': course_grade.percent
             }
-            grades = grades_api.get_subsection_grades(enrollment['user_id'], self._course_key)
             for block_id, (subsection, display_name) in iteritems(self._subsections):
                 row['name-{}'.format(block_id)] = display_name
                 grade = grades.get(subsection.location, None)
