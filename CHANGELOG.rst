@@ -16,6 +16,10 @@ Unreleased
 
 *
 
+[0.5.3] - 2019-08-16
+~~~~~~~~~~~~~~~~~~~~
+* Add support for filters to Interventions CSV report endpoint, mirroring bulk management filters
+
 [0.5.2] - 2019-08-15
 ~~~~~~~~~~~~~~~~~~~~
 * Bring datasource for grade information inline with what the rest of gradebook uses

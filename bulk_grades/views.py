@@ -182,9 +182,22 @@ class InterventionsExport(GradeOnlyExport):
         """
         Initialize InterventionCSVProcessor.
         """
+        assignment_grade_max = request.GET.get('assignmentGradeMax')
+        assignment_grade_min = request.GET.get('assignmentGradeMin')
+        course_grade_min = request.GET.get('courseGradeMin')
+        course_grade_max = request.GET.get('courseGradeMax')
+
         self.processor = api.InterventionCSVProcessor(
             course_id=course_id,
             _user=request.user,
             track=request.GET.get('track'),
-            cohort=request.GET.get('cohort')
+            cohort=request.GET.get('cohort'),
+            subsection=request.GET.get('assignment'),
+            assignment_type=request.GET.get('assignmentType'),
+            subsection_grade_min=(float(assignment_grade_min)
+                                  if assignment_grade_min else None),
+            subsection_grade_max=(float(assignment_grade_max)
+                                  if assignment_grade_max else None),
+            course_grade_min=(float(course_grade_min) if course_grade_min else None),
+            course_grade_max=(float(course_grade_max) if course_grade_max else None)
         )
