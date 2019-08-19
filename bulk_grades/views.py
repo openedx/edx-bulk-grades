@@ -44,8 +44,6 @@ class GradeOnlyExport(View):
         """
         Dispatch django request.
         """
-        if not (request.user.is_staff or request.user.has_perm('bulk_grades', course_id)):
-            return HttpResponseForbidden('Not Staff')
         self.initialize_processor(request, course_id)
         return super(GradeOnlyExport, self).dispatch(request, course_id, *args, **kwargs)
 
@@ -155,14 +153,6 @@ class GradeOperationHistoryView(View):
         )
         history = processor.get_committed_history()
         return HttpResponse(json.dumps(history), content_type='application/json')
-
-    def dispatch(self, request, course_id, *args, **kwargs):  # pylint: disable=arguments-differ
-        """
-        General set-up method for all handler messages in this view.
-        """
-        if not (request.user.is_staff or request.user.has_perm('bulk_grades', course_id)):
-            return HttpResponseForbidden('Not Staff')
-        return super(GradeOperationHistoryView, self).dispatch(request, course_id, *args, **kwargs)
 
 
 class InterventionsExport(GradeOnlyExport):
