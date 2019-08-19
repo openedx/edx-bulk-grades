@@ -23,7 +23,7 @@ configparser==3.8.1
 contextlib2==0.5.5
 coverage==4.5.4
 distlib==0.2.9.post0      # via caniusepython3
-django-celery==3.3.0
+django-celery==3.3.1
 django-crum==0.7.3
 django-model-utils==3.2.0
 django==1.11.23
@@ -54,7 +54,7 @@ pylint-celery==0.3        # via edx-lint
 pylint-django==0.7.2      # via edx-lint
 pylint-plugin-utils==0.5  # via pylint-celery, pylint-django
 pylint==1.7.6             # via edx-lint, pylint-celery, pylint-django, pylint-plugin-utils
-pymongo==3.8.0
+pymongo==3.9.0
 pyparsing==2.4.2
 pytest-cov==2.7.1
 pytest-django==3.5.1
@@ -69,7 +69,7 @@ six==1.12.0
 slumber==0.7.1
 snowballstemmer==1.9.0    # via pydocstyle
 stevedore==1.30.1
-super-csv==0.9
+super-csv==0.9.1
 text-unidecode==1.2
 urllib3==1.25.3
 wcwidth==0.1.7
@@ -77,4 +77,4 @@ wrapt==1.11.2             # via astroid
 zipp==0.5.2
 
 # The following packages are considered to be unsafe in a requirements file:
-# setuptools==41.0.1        # via caniusepython3
+# setuptools==41.1.0        # via caniusepython3

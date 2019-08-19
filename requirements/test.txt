@@ -17,7 +17,7 @@ code-annotations==0.3.2
 configparser==3.8.1       # via importlib-metadata
 contextlib2==0.5.5        # via importlib-metadata
 coverage==4.5.4           # via pytest-cov
-django-celery==3.3.0
+django-celery==3.3.1
 django-crum==0.7.3
 django-model-utils==3.2.0
 djangorestframework==3.9.4
@@ -35,7 +35,7 @@ pathlib2==2.3.4           # via importlib-metadata, pytest, pytest-django
 pbr==5.4.2
 pluggy==0.12.0            # via pytest
 py==1.8.0                 # via pytest
-pymongo==3.8.0
+pymongo==3.9.0
 pyparsing==2.4.2          # via packaging
 pytest-cov==2.7.1
 pytest-django==3.5.1
@@ -48,7 +48,7 @@ scandir==1.10.0           # via pathlib2
 six==1.12.0
 slumber==0.7.1
 stevedore==1.30.1
-super-csv==0.9
+super-csv==0.9.1
 text-unidecode==1.2       # via python-slugify
 urllib3==1.25.3
 wcwidth==0.1.7            # via pytest

@@ -20,7 +20,7 @@ code-annotations==0.3.2
 configparser==3.8.1
 contextlib2==0.5.5
 coverage==4.5.4
-django-celery==3.3.0
+django-celery==3.3.1
 django-crum==0.7.3
 django-model-utils==3.2.0
 django==1.11.23
@@ -44,7 +44,7 @@ pbr==5.4.2
 pluggy==0.12.0
 py==1.8.0
 pygments==2.4.2           # via readme-renderer, sphinx
-pymongo==3.8.0
+pymongo==3.9.0
 pyparsing==2.4.2
 pytest-cov==2.7.1
 pytest-django==3.5.1
@@ -62,7 +62,7 @@ snowballstemmer==1.9.0    # via sphinx
 sphinx==1.8.5
 sphinxcontrib-websupport==1.1.2  # via sphinx
 stevedore==1.30.1
-super-csv==0.9
+super-csv==0.9.1
 text-unidecode==1.2
 typing==3.7.4             # via sphinx
 urllib3==1.25.3
@@ -71,4 +71,4 @@ webencodings==0.5.1       # via bleach
 zipp==0.5.2
 
 # The following packages are considered to be unsafe in a requirements file:
-# setuptools==41.0.1        # via sphinx
+# setuptools==41.1.0        # via sphinx
