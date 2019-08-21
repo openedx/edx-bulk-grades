@@ -4,9 +4,13 @@ slumber client for REST service consumption.
 """
 from __future__ import absolute_import, unicode_literals
 
+import logging
+
 import requests
 from django.conf import settings
 from slumber import API, serialize
+
+log = logging.getLogger(__name__)
 
 
 class TokenAuth(requests.auth.AuthBase):
@@ -59,6 +63,7 @@ class LearnerAPIClient(API):
                 TextSerializer(),
             ]
         )
+        log.info('base url: %s', settings.ANALYTICS_API_CLIENT.get('url'))
         super(LearnerAPIClient, self).__init__(
             settings.ANALYTICS_API_CLIENT.get('url'),
             session=session,

@@ -407,7 +407,7 @@ class InterventionCSVProcessor(CSVProcessor):
         enrollments = list(_get_enrollments(self._course_key, track=self.track, cohort=self.cohort))
         grades_api.prefetch_course_and_subsection_grades(self._course_key, [enroll['user'] for enroll in enrollments])
         client = LearnerAPIClient()
-        intervention_data = client.courses(self.course_id).intervention().get()
+        intervention_data = client.courses(self.course_id).user_engagement().get()
         for enrollment in enrollments:
             grades = grades_api.get_subsection_grades(enrollment['user_id'], self._course_key)
             if self._subsection and (self.subsection_grade_max or self.subsection_grade_min):
