@@ -353,8 +353,10 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
 
 class InterventionCSVProcessor(CSVProcessor):
     """
-    CSV Processor for intervention report grades.
+    CSV Processor for intervention report grades for masters track only.
     """
+
+    MASTERS_TRACK = 'masters'
 
     def __init__(self, **kwargs):
         """
@@ -368,7 +370,7 @@ class InterventionCSVProcessor(CSVProcessor):
                         'number of forum posts overall', 'number of forum posts last week',
                         'date last active']
         self.course_id = None
-        self.track = self.cohort = self.subsection = \
+        self.cohort = self.subsection = \
             self.assignment_type = self.subsection_grade_min = \
             self.subsection_grade_max = self.course_grade_min = \
             self.course_grade_max = None
@@ -404,7 +406,7 @@ class InterventionCSVProcessor(CSVProcessor):
         """
         Return iterator of rows to export.
         """
-        enrollments = list(_get_enrollments(self._course_key, track=self.track, cohort=self.cohort))
+        enrollments = list(_get_enrollments(self._course_key, track=self.MASTERS_TRACK, cohort=self.cohort))
         grades_api.prefetch_course_and_subsection_grades(self._course_key, [enroll['user'] for enroll in enrollments])
         client = LearnerAPIClient()
         intervention_list = client.courses(self.course_id).user_engagement().get()
@@ -451,8 +453,8 @@ class InterventionCSVProcessor(CSVProcessor):
                 'number of problems last week': int_user.get('problems_last_week', 0),
                 'number of correct problems overall': int_user.get('correct_problems_overall', 0),
                 'number of correct problems last week': int_user.get('correct_problems_last_week', 0),
-                'number of problem attempts overall': int_user.get('problem_attempts_overall', 0),
-                'number of problem attempts last week': int_user.get('problem_attempts_last_week', 0),
+                'number of problem attempts overall': int_user.get('problems_attempts_overall', 0),
+                'number of problem attempts last week': int_user.get('problems_attempts_last_week', 0),
                 'number of forum posts overall': int_user.get('forum_posts_overall', 0),
                 'number of forum posts last week': int_user.get('forum_posts_last_week', 0),
                 'date last active': int_user.get('date_last_active', 0),

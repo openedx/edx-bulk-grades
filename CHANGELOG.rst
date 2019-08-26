@@ -6,7 +6,7 @@ Change Log
    in this file.  It adheres to the structure of http://keepachangelog.com/ ,
    but in reStructuredText instead of Markdown (for ease of incorporation into
    Sphinx documentation and the PyPI description).
-   
+
    This project adheres to Semantic Versioning (http://semver.org/).
 
 .. There should always be an "Unreleased" section for changes pending release.
@@ -15,6 +15,10 @@ Unreleased
 ~~~~~~~~~~
 
 *
+
+[0.5.8] - 2019-08-26
+~~~~~~~~~~~~~~~~~~~~
+* Make intervention masters track nly. Some clan up.
 
 [0.5.3] - 2019-08-16
 ~~~~~~~~~~~~~~~~~~~~
@@ -38,7 +42,7 @@ Added ability to filter by subsection & assignment grading type for bulk managem
 
 [0.1.4] - 2019-07-02
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Added an endpoint for this history of bulk management operations on grade overrides. 
+Added an endpoint for this history of bulk management operations on grade overrides.
 
 [0.1.0] - 2019-05-24
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

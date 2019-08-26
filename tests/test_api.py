@@ -177,15 +177,15 @@ class TestInterventionProcessor(BaseTests):
                 'audit@example.com': {'videos_overall': 2, 'videos_last_week': 0, 'problems_overall': 10,
                                       'problems_last_week': 5,
                                       'correct_problems_overall': 66, 'correct_problems_last_week': 44,
-                                      'problem_attempts_overall': 233, 'problem_attempts_last_week': 221,
-                                      'correct_problem_attempts_overall': 101, 'correct_problem_attempts_last_week': 99,
+                                      'problems_attempts_overall': 233, 'problems_attempts_last_week': 221,
+                                      'correct_problems_attempts_overall': 101, 'correct_problems_attempts_last_week': 99,
                                       'forum_posts_overall': 2, 'forum_posts_last_week': 0, 'date_last_active': 2},
                 'masters@example.com': {'videos_overall': 12, 'videos_last_week': 0, 'problems_overall': 10,
                                         'problems_last_week': 5,
                                         'correct_problems_overall': 66, 'correct_problems_last_week': 44,
-                                        'problem_attempts_overall': 233, 'problem_attempts_last_week': 221,
-                                        'correct_problem_attempts_overall': 101,
-                                        'correct_problem_attempts_last_week': 99,
+                                        'problems_attempts_overall': 233, 'problems_attempts_last_week': 221,
+                                        'correct_problems_attempts_overall': 101,
+                                        'correct_problems_attempts_last_week': 99,
                                         'forum_posts_overall': 2, 'forum_posts_last_week': 0, 'date_last_active': 2}
         }
         mocked_api.return_value.courses.return_value.intervention.return_value.get.return_value = \
@@ -194,4 +194,4 @@ class TestInterventionProcessor(BaseTests):
         mocked_course_grade_factory.return_value = course_grade_mock
         processor = api.InterventionCSVProcessor(course_id=self.course_id)
         rows = list(processor.get_iterator())
-        assert len(rows) == 4
+        assert len(rows) == 2

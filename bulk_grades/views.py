@@ -180,7 +180,6 @@ class InterventionsExport(GradeOnlyExport):
         self.processor = api.InterventionCSVProcessor(
             course_id=course_id,
             _user=request.user,
-            track=request.GET.get('track'),
             cohort=request.GET.get('cohort'),
             subsection=request.GET.get('assignment'),
             assignment_type=request.GET.get('assignmentType'),
