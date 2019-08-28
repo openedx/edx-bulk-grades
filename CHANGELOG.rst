@@ -16,6 +16,10 @@ Unreleased
 
 *
 
+[0.5.9] - 2019-08-28
+~~~~~~~~~~~~~~~~~~~~
+* Make intervention report display either grade override if exists or original grade.
+
 [0.5.8] - 2019-08-26
 ~~~~~~~~~~~~~~~~~~~~
 * Make intervention masters track nly. Some clan up.
