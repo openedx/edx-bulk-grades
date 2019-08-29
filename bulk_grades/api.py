@@ -465,7 +465,10 @@ class InterventionCSVProcessor(CSVProcessor):
                 row['name-{}'.format(block_id)] = display_name
                 grade = grades.get(subsection.location, None)
                 if grade:
-                    row['grade-{}'.format(block_id)] = grade.earned_graded
+                    if getattr(grade, 'override', None):
+                        row['grade-{}'.format(block_id)] = grade.override.earned_graded_override
+                    else:
+                        row['grade-{}'.format(block_id)] = grade.earned_graded
             yield row
 
 
