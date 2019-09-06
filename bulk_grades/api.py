@@ -281,6 +281,8 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
                         operation['new_grade'] = float(value)
                     except ValueError:
                         raise ValidationError(_('Grade must be a number'))
+                    if operation['new_grade'] < 0:
+                        raise ValidationError(_('Grade must be positive'))
         self._users_seen.add(row['user_id'])
         return operation
 
@@ -479,6 +481,8 @@ def set_score(usage_key, student_id, score, max_points, override_user_id=None, *
     if not isinstance(usage_key, UsageKey):
         usage_key = UsageKey.from_string(usage_key)
     defaults['module_type'] = 'problem'
+    if score < 0:
+        raise ValueError(_('score must be positive'))
     defaults['grade'] = score
     defaults['max_grade'] = max_points
     module = apps.get_model('courseware', 'StudentModule').objects.update_or_create(
