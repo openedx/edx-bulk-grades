@@ -16,6 +16,10 @@ Unreleased
 
 *
 
+[0.5.10] - 2019-09-06
+~~~~~~~~~~~~~~~~~~~~~
+* Prevent user from setting negative grades
+
 [0.5.9] - 2019-08-28
 ~~~~~~~~~~~~~~~~~~~~
 * Make intervention report display either grade override if exists or original grade.
