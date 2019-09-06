@@ -48,6 +48,10 @@ class TestApi(BaseTests):
         score = api.get_score(self.block_id, 11)
         assert score is None
 
+    def test_negative_score(self):
+        with self.assertRaisesMessage(ValueError, 'score must be positive'):
+            api.set_score(self.block_id, self.learner.id, -2, 22, override_user_id=self.staff.id)
+
 
 class TestScoreProcessor(BaseTests):
     """
@@ -162,6 +166,23 @@ class TestGradeProcessor(BaseTests):
         processor = api.GradeCSVProcessor(course_id=self.course_id, max_points=100, course_grade_min=10, course_grade_max=60)
         rows = list(processor.get_iterator())
         self.assertEqual(len(rows), self.NUM_USERS+1)
+
+    @patch('lms.djangoapps.grades.api.CourseGradeFactory.read')
+    def test_less_than_zero(self, course_grade_factory_mock):
+        self._make_enrollments()
+
+        course_grade_factory_mock.return_value = Mock(percent=0.50)
+        processor = api.GradeCSVProcessor(course_id=self.course_id)
+
+        row = {
+            'block_id': self.block_id,
+            'new_grade-block-v1': '-1',
+            'user_id': self.learner.id,
+            'csum': '07ec',
+            'Previous Points': '',
+        }
+        with self.assertRaisesMessage(ValidationError, 'Grade must be positive'):
+            processor.preprocess_row(row)
 
 
 class TestInterventionProcessor(BaseTests):
