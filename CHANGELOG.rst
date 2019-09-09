@@ -16,6 +16,10 @@ Unreleased
 
 *
 
+[0.6.0] - 2019-09-10
+~~~~~~~~~~~~~~~~~~~~~
+* Prevent Grade and Intervention CSV processors from producing duplicate columns.
+
 [0.5.10] - 2019-09-06
 ~~~~~~~~~~~~~~~~~~~~~
 * Prevent user from setting negative grades
