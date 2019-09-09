@@ -176,7 +176,7 @@ class TestGradeProcessor(BaseTests):
 
         row = {
             'block_id': self.block_id,
-            'new_grade-block-v1': '-1',
+            'new_override-block-v1': '-1',
             'user_id': self.learner.id,
             'csum': '07ec',
             'Previous Points': '',
