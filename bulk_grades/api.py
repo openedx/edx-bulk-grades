@@ -4,6 +4,8 @@ Bulk Grading API.
 from __future__ import absolute_import, division, unicode_literals
 
 import logging
+from collections import OrderedDict
+from itertools import product
 
 from django.apps import apps
 from django.core.exceptions import ObjectDoesNotExist
@@ -194,29 +196,91 @@ class ScoreCSVProcessor(DeferrableMixin, CSVProcessor):
             grades_api.task_compute_all_grades_for_course.apply_async(kwargs={'course_key': text_type(course_key)})
 
 
-class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
+class GradedSubsectionMixin(object):
+    """
+    Mixin to help generated lists of graded subsections
+    and appropriate column names for each.
+    """
+    def append_columns(self, new_column_names):
+        """
+        Appends items from ``new_column_names`` to ``self.columns``
+        if the item is not already contained therein.
+        """
+        current_columns = set(self.columns)
+        for new_column_name in new_column_names:
+            if new_column_name not in current_columns:
+                self.columns.append(new_column_name)
+
+    @staticmethod
+    def _get_graded_subsections(course_id, filter_subsection=None, filter_assignment_type=None):
+        """
+        Return list of graded subsections.
+
+        If filter_subsection (block usage id) is set, return only that subsection.
+        If filter_assignment_type (string) is set, return only subsections of the appropriate type.
+        """
+        subsections = OrderedDict()
+        for subsection in grades_api.graded_subsections_for_course_id(course_id):
+            block_id = text_type(subsection.location.block_id)
+            if (
+                    (filter_subsection and (block_id != filter_subsection.block_id))
+                    or
+                    (filter_assignment_type and (filter_assignment_type != text_type(subsection.format)))
+            ):
+                continue
+            short_block_id = block_id[:8]
+            if short_block_id not in subsections:
+                subsections[short_block_id] = (subsection, subsection.display_name)
+        return subsections
+
+    @staticmethod
+    def _subsection_column_names(short_subsection_ids, prefixes):
+        """
+        Given an iterable of ``short_subsection_ids`` (usually from ``_get_graded_subsections`` above),
+        and ``prefixes`` to append to each, returns a list of names
+        formed from the product of the subsection ids and prefixes.
+        """
+        return ['{}-{}'.format(prefix, short_id) for short_id, prefix in product(short_subsection_ids, prefixes)]
+
+
+class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
     """
     CSV Processor for subsection grades.
     """
 
     required_columns = ['user_id', 'course_id']
+    subsection_prefixes = ('name', 'original_grade', 'previous_override', 'new_override',)
 
     def __init__(self, **kwargs):
         """
         Create GradeCSVProcessor.
         """
+        # First, set some default values.
         self.columns = ['user_id', 'username', 'course_id', 'track', 'cohort']
         self.course_id = None
-        self.subsection_grade_max = self.subsection_grade_min = None
-        self.course_grade_min = self.course_grade_max = None
-        self.subsection = self.track = self.cohort = self._user = None
+        self.subsection_grade_max = None
+        self.subsection_grade_min = None
+        self.course_grade_min = None
+        self.course_grade_max = None
+        self.subsection = None
+        self.track = None
+        self.cohort = None
+        self._user = None
+
+        # The CSVProcessor.__init__ method will set attributes on self
+        # from items in kwargs, so this super().__init__() call will
+        # override any attribute values assigned above.
         super(GradeCSVProcessor, self).__init__(**kwargs)
+
         self._course_key = CourseKey.from_string(self.course_id)
         self._subsection = UsageKey.from_string(self.subsection) if self.subsection else None
         self._subsections = self._get_graded_subsections(
             self._course_key,
             filter_subsection=self._subsection,
             filter_assignment_type=kwargs.get('assignment_type', None),
+        )
+        self.append_columns(
+            self._subsection_column_names(self._subsections.keys(), self.subsection_prefixes)
         )
         self._users_seen = set()
 
@@ -225,26 +289,6 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
         Return a unique id for CSVOperations.
         """
         return self.course_id
-
-    def _get_graded_subsections(self, course_id, filter_subsection=None, filter_assignment_type=None):
-        """
-        Return list of graded subsections.
-
-        If filter_subsection (block usage id) is set, return only that subsection.
-        If filter_assignment_type (string) is set, return only subsections of the appropriate type.
-        """
-        subsections = {}
-        for subsection in grades_api.graded_subsections_for_course_id(course_id):
-            block_id = text_type(subsection.location.block_id)
-            if ((filter_subsection and block_id != filter_subsection.block_id)
-                    or filter_assignment_type and filter_assignment_type != text_type(subsection.format)):
-                continue
-            short_block_id = block_id[:8]
-            if short_block_id not in subsections:
-                for key in ('name', 'original_grade', 'previous_override', 'new_override'):
-                    self.columns.append('{}-{}'.format(key, short_block_id))
-                subsections[short_block_id] = (subsection, subsection.display_name)
-        return subsections
 
     def validate_row(self, row):
         """
@@ -330,8 +374,11 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
                                        / subsection_grade.override.possible_graded_override) * 100
                 except AttributeError:
                     effective_grade = (subsection_grade.earned_graded / subsection_grade.possible_graded) * 100
-                if (self.subsection_grade_min and effective_grade < self.subsection_grade_min) or (
-                        self.subsection_grade_max and effective_grade > self.subsection_grade_max):
+                if (
+                        (self.subsection_grade_min and (effective_grade < self.subsection_grade_min))
+                        or
+                        (self.subsection_grade_max and (effective_grade > self.subsection_grade_max))
+                ):
                     continue
 
             course_grade = grades_api.CourseGradeFactory().read(enrollment['user'], course_key=self._course_key)
@@ -353,56 +400,53 @@ class GradeCSVProcessor(DeferrableMixin, CSVProcessor):
             yield row
 
 
-class InterventionCSVProcessor(CSVProcessor):
+class InterventionCSVProcessor(GradedSubsectionMixin, CSVProcessor):
     """
     CSV Processor for intervention report grades for masters track only.
     """
 
     MASTERS_TRACK = 'masters'
+    subsection_prefixes = ('name', 'grade',)
 
     def __init__(self, **kwargs):
         """
         Create InterventionCSVProcessor.
         """
-        self.columns = ['user_id', 'username', 'email', 'student_key', 'full_name', 'course_id', 'track', 'cohort',
-                        'number of videos overall', 'number of videos last week', 'number of problems overall',
-                        'number of problems last week',
-                        'number of correct problems overall', 'number of correct problems last week',
-                        'number of problem attempts overall', 'number of problem attempts last week',
-                        'number of forum posts overall', 'number of forum posts last week',
-                        'date last active']
+        # Set some default values for the attributes below
+        self.columns = [
+            'user_id', 'username', 'email', 'student_key', 'full_name', 'course_id', 'track', 'cohort',
+            'number of videos overall', 'number of videos last week', 'number of problems overall',
+            'number of problems last week',
+            'number of correct problems overall', 'number of correct problems last week',
+            'number of problem attempts overall', 'number of problem attempts last week',
+            'number of forum posts overall', 'number of forum posts last week',
+            'date last active',
+        ]
         self.course_id = None
-        self.cohort = self.subsection = \
-            self.assignment_type = self.subsection_grade_min = \
-            self.subsection_grade_max = self.course_grade_min = \
-            self.course_grade_max = None
+        self.cohort = None
+        self.subsection = None
+        self.assignment_type = None
+        self.subsection_grade_min = None
+        self.subsection_grade_max = None
+        self.course_grade_min = None
+        self.course_grade_max = None
+
+        # The CSVProcessor.__init__ method will set attributes on self
+        # from items in kwargs, so this super().__init__() call will
+        # potentially override any attribute values assigned above.
         super(InterventionCSVProcessor, self).__init__(**kwargs)
+
         self._course_key = CourseKey.from_string(self.course_id)
         self._subsection = UsageKey.from_string(self.subsection) if self.subsection else None
         self._subsections = self._get_graded_subsections(
             self._course_key,
             filter_subsection=self._subsection,
-            filter_assignment_type=self.assignment_type
+            filter_assignment_type=self.assignment_type,
         )
-        self.columns.append('course grade letter')
-        self.columns.append('course grade numeric')
-
-    def _get_graded_subsections(self, course_id, filter_subsection=None, filter_assignment_type=None):
-        """
-        Return list of graded subsections.
-        """
-        subsections = {}
-        for subsection in grades_api.graded_subsections_for_course_id(course_id):
-            block_id = text_type(subsection.location.block_id)
-            if ((filter_subsection and block_id != filter_subsection.block_id)
-                    or filter_assignment_type and filter_assignment_type != text_type(subsection.format)):
-                continue
-            short_block_id = block_id[:8]
-            if short_block_id not in subsections:
-                for key in ('name', 'grade'):
-                    self.columns.append('{}-{}'.format(key, short_block_id))
-                subsections[short_block_id] = (subsection, subsection.display_name)
-        return subsections
+        self.append_columns(
+            self._subsection_column_names(self._subsections.keys(), self.subsection_prefixes)
+        )
+        self.append_columns(('course grade letter', 'course grade numeric'))
 
     def get_rows_to_export(self):
         """
@@ -426,16 +470,22 @@ class InterventionCSVProcessor(CSVProcessor):
                                        / subsection_grade.override.possible_graded_override) * 100
                 except AttributeError:
                     effective_grade = (subsection_grade.earned_graded / subsection_grade.possible_graded) * 100
-                if (self.subsection_grade_min and effective_grade < self.subsection_grade_min) or (
-                        self.subsection_grade_max and effective_grade > self.subsection_grade_max):
+                if (
+                        (self.subsection_grade_min and (effective_grade < self.subsection_grade_min))
+                        or
+                        (self.subsection_grade_max and (effective_grade > self.subsection_grade_max))
+                ):
                     continue
 
             course_grade = grades_api.CourseGradeFactory().read(enrollment['user'], course_key=self._course_key)
             if self.course_grade_min or self.course_grade_max:
                 course_grade_normalized = (course_grade.percent * 100)
 
-                if ((self.course_grade_min and course_grade_normalized < self.course_grade_min) or
-                        (self.course_grade_max and course_grade_normalized > self.course_grade_max)):
+                if (
+                        (self.course_grade_min and (course_grade_normalized < self.course_grade_min))
+                        or
+                        (self.course_grade_max and (course_grade_normalized > self.course_grade_max))
+                ):
                     continue
 
             cohort = get_cohort(enrollment['user'], self._course_key, assign=False)
