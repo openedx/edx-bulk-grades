@@ -282,7 +282,13 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         self.append_columns(
             self._subsection_column_names(self._subsections.keys(), self.subsection_prefixes)
         )
+
+        # Track the users we've already seen.  We'll only keep grade changes
+        # from the first row that a given user_id occurs in.
         self._users_seen = set()
+        # Track the subsection locations for which new overrides are being written.
+        # In the output file, we'll only give back data about those subsections.
+        self._overridden_subsections = set()
 
     def get_unique_path(self):
         """
@@ -303,6 +309,33 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         Preprocess the file, saving original data no matter whether there are errors.
         """
         super(GradeCSVProcessor, self).preprocess_file(reader)
+
+        import pdb; pdb.set_trace()
+        # remove from our list of columns any column pertaining to a subsection
+        # that we did not override any grades for during processing
+        short_subsection_ids_by_location = {
+            text_type(subsection.location): short_block_id
+            for short_block_id, (subsection, _) in iteritems(self._subsections)
+        }
+        unmodified_subsection_short_ids = {
+            short_block_id
+            for location_id, short_block_id in iteritems(short_subsection_ids_by_location)
+            if location_id not in self._overridden_subsections
+        }
+
+        def column_was_unmodified_subsection(column):
+            """
+            If this column ends with a short subsection that had no modifications, return True.
+            Return False otherwise.
+            """
+            for unmodified_short_id in unmodified_subsection_short_ids:
+                if column.endswith(unmodified_short_id):
+                    return True
+            return False
+
+        self.columns = [column for column in self.columns if not column_was_unmodified_subsection(column)]
+
+        import pdb; pdb.set_trace()
         self.save()
 
     def preprocess_row(self, row):
@@ -312,21 +345,27 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         operation = {}
         if row['user_id'] in self._users_seen:
             return operation
+
         for key in row:
             if key.startswith('new_override-'):
                 value = row[key].strip()
-                if value:
-                    short_id = key.split('-', 1)[1]
-                    subsection = self._subsections[short_id][0]
-                    operation['user_id'] = row['user_id']
-                    operation['course_id'] = self.course_id
-                    operation['block_id'] = text_type(subsection.location)
-                    try:
-                        operation['new_override'] = float(value)
-                    except ValueError:
-                        raise ValidationError(_('Grade must be a number'))
-                    if operation['new_override'] < 0:
-                        raise ValidationError(_('Grade must be positive'))
+                if not value:
+                    continue
+
+                short_id = key.split('-', 1)[1]
+                subsection = self._subsections[short_id][0]
+                operation['user_id'] = row['user_id']
+                operation['course_id'] = self.course_id
+                operation['block_id'] = text_type(subsection.location)
+
+                try:
+                    operation['new_override'] = float(value)
+                    self._overridden_subsections.add(operation['block_id'])
+                except ValueError:
+                    raise ValidationError(_('Grade must be a number'))
+                if operation['new_override'] < 0:
+                    raise ValidationError(_('Grade must be positive'))
+
         self._users_seen.add(row['user_id'])
         return operation
 
