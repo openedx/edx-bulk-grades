@@ -16,6 +16,10 @@ Unreleased
 
 *
 
+[0.6.1] - 2019-09-17
+~~~~~~~~~~~~~~~~~~~~~
+* Call grades api with `comment` when doing bulk upload
+
 [0.6.0] - 2019-09-10
 ~~~~~~~~~~~~~~~~~~~~~
 * Prevent Grade and Intervention CSV processors from producing duplicate columns.
