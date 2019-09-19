@@ -8,7 +8,9 @@ from collections import OrderedDict
 from itertools import product
 
 from django.apps import apps
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext as _
 from opaque_keys.edx.keys import CourseKey, UsageKey
 from six import iteritems, text_type
@@ -265,7 +267,7 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         self.subsection = None
         self.track = None
         self.cohort = None
-        self._user = None
+        self.user_id = None
 
         # The CSVProcessor.__init__ method will set attributes on self
         # from items in kwargs, so this super().__init__() call will
@@ -283,6 +285,11 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
             self._subsection_column_names(self._subsections.keys(), self.subsection_prefixes)
         )
         self._users_seen = set()
+
+    @cached_property
+    def _user(self):
+        if self.user_id:
+            return get_user_model().objects.get(id=self.user_id)
 
     def get_unique_path(self):
         """
@@ -340,7 +347,8 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
                 row['block_id'],
                 overrider=self._user,
                 earned_graded=row['new_override'],
-                feature='grade-import'
+                feature='grade-import',
+                comment='Bulk Grade Import',
         )
         return True, None
 
