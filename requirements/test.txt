@@ -48,7 +48,7 @@ scandir==1.10.0           # via pathlib2
 six==1.12.0
 slumber==0.7.1
 stevedore==1.31.0
-super-csv==0.9.2
+super-csv==0.9.3
 text-unidecode==1.2       # via python-slugify
 urllib3==1.25.3
 wcwidth==0.1.7            # via pytest
