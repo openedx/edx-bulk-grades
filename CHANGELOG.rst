@@ -15,6 +15,10 @@ Unreleased
 ~~~~~~~~~~
 *
 
+[0.6.3] - 2019-09-24
+~~~~~~~~~~~~~~~~~~~~~
+* Upgrade super-csv to 0.9.4, make sure to pass ``user_id`` to GradeCSVProcessor.__init__().
+
 [0.6.2] - 2019-09-23
 ~~~~~~~~~~~~~~~~~~~~~
 * Upgrade super-csv to 0.9.3

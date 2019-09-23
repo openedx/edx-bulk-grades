@@ -124,7 +124,7 @@ class GradeImportExport(GradeOnlyExport):
             course_grade_max = request.GET.get('courseGradeMax')
             self.processor = api.GradeCSVProcessor(
                 course_id=course_id,
-                _user=request.user,
+                user_id=request.user.id,
                 track=request.GET.get('track'),
                 cohort=request.GET.get('cohort'),
                 subsection=request.GET.get('assignment'),
