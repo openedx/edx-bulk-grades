@@ -270,7 +270,7 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         self.user_id = None
 
         # The CSVProcessor.__init__ method will set attributes on self
-        # from items in kwargs, so this super().__init__() call will
+        # from items in kwargs, so this super().__init__() call can
         # override any attribute values assigned above.
         super(GradeCSVProcessor, self).__init__(**kwargs)
 
@@ -290,6 +290,13 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
     def _user(self):
         if self.user_id:
             return get_user_model().objects.get(id=self.user_id)
+
+    def save(self, operation_name=None, operating_user=None):
+        """
+        Saves the operation state for this processor, including the user
+        who is performing the operation.
+        """
+        super(GradeCSVProcessor, self).save(operating_user=self._user)
 
     def get_unique_path(self):
         """
