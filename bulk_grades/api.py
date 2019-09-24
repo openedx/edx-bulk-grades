@@ -296,7 +296,7 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         Saves the operation state for this processor, including the user
         who is performing the operation.
         """
-        super(GradeCSVProcessor, self).save(operating_user=self._user)
+        return super(GradeCSVProcessor, self).save(operating_user=self._user)
 
     def get_unique_path(self):
         """
