@@ -4,10 +4,9 @@ CSV import/export API for grades.
 from __future__ import absolute_import, unicode_literals
 
 import datetime
-import json
 import logging
 
-from django.http import HttpResponse, HttpResponseForbidden, StreamingHttpResponse
+from django.http import HttpResponseForbidden, JsonResponse, StreamingHttpResponse
 from django.views.generic import View
 
 from . import api
@@ -28,7 +27,7 @@ class GradeOnlyExport(View):
         self.processor = None
         self.extra_filename = ''
 
-    def get_export_iterator(self, request):  # pylint: disable=unused-argument
+    def get_export_iterator(self, request):
         """
         Return an iterator appropriate for a streaming response.
         """
@@ -47,7 +46,7 @@ class GradeOnlyExport(View):
         self.initialize_processor(request, course_id)
         return super(GradeOnlyExport, self).dispatch(request, course_id, *args, **kwargs)
 
-    def get(self, request, course_id, *args, **kwargs):  # pylint: disable=unused-argument
+    def get(self, request, course_id, *args, **kwargs):
         """
         Export grades in CSV format.
 
@@ -75,7 +74,7 @@ class GradeImportExport(GradeOnlyExport):
     CSV Grade import/export view.
     """
 
-    def post(self, request, course_id, *args, **kwargs):  # pylint: disable=unused-argument
+    def post(self, request, course_id, *args, **kwargs):
         """
         Import grades from a CSV file.
         """
@@ -99,7 +98,7 @@ class GradeImportExport(GradeOnlyExport):
                      data.get('total', 0),
                      len(data.get('error_rows', [])),
                      data.get('waiting', False))
-        return HttpResponse(json.dumps(data), content_type='application/json')
+        return JsonResponse(data)
 
     def get_export_iterator(self, request):
         """
@@ -107,6 +106,7 @@ class GradeImportExport(GradeOnlyExport):
         """
         return self.processor.get_iterator(error_data=bool(request.GET.get('error_id', '')))
 
+    # pylint: disable=inconsistent-return-statements
     def initialize_processor(self, request, course_id):
         """
         Initialize GradeCSVProcessor.
@@ -152,7 +152,7 @@ class GradeOperationHistoryView(View):
             _user=request.user
         )
         history = processor.get_committed_history()
-        return HttpResponse(json.dumps(history), content_type='application/json')
+        return JsonResponse(history, safe=False)
 
 
 class InterventionsExport(GradeOnlyExport):

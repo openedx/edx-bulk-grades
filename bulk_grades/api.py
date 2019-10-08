@@ -68,11 +68,6 @@ def _get_enrollments(course_id, track=None, cohort=None):
         yield enrollment_dict
 
 
-def decode_utf8(input_iterator):
-    for l in input_iterator:
-        yield l.decode('utf-8')
-
-
 class ScoreCSVProcessor(DeferrableMixin, CSVProcessor):
     """
     CSV Processor for file format defined for Staff Graded Points.
@@ -123,6 +118,7 @@ class ScoreCSVProcessor(DeferrableMixin, CSVProcessor):
             elif points < 0:
                 raise ValidationError(_('Points must be greater than 0'))
 
+    # pylint: disable=inconsistent-return-statements
     def preprocess_row(self, row):
         """
         Preprocess CSV row.
@@ -251,6 +247,15 @@ class GradedSubsectionMixin(object):
         return ['{}-{}'.format(prefix, short_id) for short_id, prefix in product(short_subsection_ids, prefixes)]
 
 
+def decode_utf8(input_iterator):
+    """
+    Generator that decodes a utf-8 encoded
+    input line by line
+    """
+    for l in input_iterator:
+        yield l if isinstance(l, str) else l.decode('utf-8')
+
+
 class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
     """
     CSV Processor for subsection grades.
@@ -288,10 +293,14 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
             filter_assignment_type=kwargs.get('assignment_type', None),
         )
         self.append_columns(
-            self._subsection_column_names(self._subsections.keys(), self.subsection_prefixes)
+            self._subsection_column_names(
+                self._subsections.keys(),  # pylint: disable=dict-keys-not-iterating, useless-suppression
+                self.subsection_prefixes
+            )
         )
         self._users_seen = set()
 
+    # pylint: disable=inconsistent-return-statements
     @cached_property
     def _user(self):
         if self.user_id:
@@ -352,6 +361,7 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
 
     def read_file(self, thefile):
         """
+        Temporary method for tests to pass. DO NOT MERGE
         """
         try:
             self.filename = getattr(thefile, 'name', '') or ''
@@ -476,7 +486,10 @@ class InterventionCSVProcessor(GradedSubsectionMixin, CSVProcessor):
             filter_assignment_type=self.assignment_type,
         )
         self.append_columns(
-            self._subsection_column_names(self._subsections.keys(), self.subsection_prefixes)
+            self._subsection_column_names(
+                self._subsections.keys(),  # pylint: disable=dict-keys-not-iterating, useless-suppression
+                self.subsection_prefixes
+            )
         )
         self.append_columns(('course grade letter', 'course grade numeric'))
 
