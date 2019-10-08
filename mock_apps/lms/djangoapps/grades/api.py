@@ -1,3 +1,6 @@
+from opaque_keys.edx.keys import UsageKey
+
+
 class Location(object):
     def __hash__(self):
         return hash(self.block_id)
@@ -9,8 +12,7 @@ class Location(object):
 class Subsection(object):
     def __init__(self, block_id, display_name):
         self.display_name = display_name
-        self.location = Location()
-        self.location.block_id = block_id
+        self.location = UsageKey.from_string(block_id)
 
 
 class Grade(object):

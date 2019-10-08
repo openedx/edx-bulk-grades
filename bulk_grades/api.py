@@ -3,6 +3,7 @@ Bulk Grading API.
 """
 from __future__ import absolute_import, division, unicode_literals
 
+import csv
 import logging
 from collections import OrderedDict
 from itertools import product
@@ -65,6 +66,11 @@ def _get_enrollments(course_id, track=None, cohort=None):
         except ObjectDoesNotExist:
             enrollment_dict['student_uid'] = None
         yield enrollment_dict
+
+
+def decode_utf8(input_iterator):
+    for l in input_iterator:
+        yield l.decode('utf-8')
 
 
 class ScoreCSVProcessor(DeferrableMixin, CSVProcessor):
@@ -224,12 +230,12 @@ class GradedSubsectionMixin(object):
         subsections = OrderedDict()
         for subsection in grades_api.graded_subsections_for_course_id(course_id):
             block_id = text_type(subsection.location.block_id)
-            if (
+            if (  # pragma: no branch
                     (filter_subsection and (block_id != filter_subsection.block_id))
                     or
                     (filter_assignment_type and (filter_assignment_type != text_type(subsection.format)))
             ):
-                continue
+                continue  # pragma: no cover
             short_block_id = block_id[:8]
             if short_block_id not in subsections:
                 subsections[short_block_id] = (subsection, subsection.display_name)
@@ -344,6 +350,17 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         self._users_seen.add(row['user_id'])
         return operation
 
+    def read_file(self, thefile):
+        """
+        """
+        try:
+            self.filename = getattr(thefile, 'name', '') or ''
+            reader = csv.DictReader(decode_utf8(thefile))
+            self.validate_file(thefile, reader)
+            return reader
+        except ValidationError as exc:
+            self.add_error(text_type(exc))
+
     def process_row(self, row):
         """
         Save a row to the persistent subsection override table.
@@ -389,7 +406,7 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
                                        / subsection_grade.override.possible_graded_override) * 100
                 except AttributeError:
                     effective_grade = (subsection_grade.earned_graded / subsection_grade.possible_graded) * 100
-                if (
+                if (  # pragma: no brach
                         (self.subsection_grade_min and (effective_grade < self.subsection_grade_min))
                         or
                         (self.subsection_grade_max and (effective_grade > self.subsection_grade_max))
