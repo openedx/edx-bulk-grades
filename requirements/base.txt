@@ -14,7 +14,7 @@ django-celery==3.3.1      # via edx-celeryutils, super-csv
 django-crum==0.7.3        # via super-csv
 django-model-utils==3.0.0
 django==1.11.25
-djangorestframework==3.9.4  # via super-csv
+djangorestframework==3.10.3  # via super-csv
 edx-celeryutils==0.3.0    # via super-csv
 edx-opaque-keys==2.0.0
 future==0.17.1            # via edx-celeryutils
@@ -28,5 +28,5 @@ requests==2.22.0
 six==1.12.0               # via edx-opaque-keys, stevedore
 slumber==0.7.1
 stevedore==1.31.0         # via edx-opaque-keys
-super-csv==0.9.4
+super-csv==0.9.5
 urllib3==1.25.6           # via requests
