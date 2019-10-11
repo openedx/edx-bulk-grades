@@ -14,15 +14,18 @@ certifi==2019.9.11
 chardet==3.0.4
 click==7.0                # via code-annotations
 code-annotations==0.3.2
+configparser==4.0.2       # via importlib-metadata
+contextlib2==0.6.0.post1  # via importlib-metadata
 coverage==4.5.4           # via pytest-cov
 ddt==1.2.1
 django-celery==3.3.1
 django-crum==0.7.3
 django-model-utils==3.0.0
-djangorestframework==3.10.3
+djangorestframework==3.9.4
 edx-celeryutils==0.3.0
 edx-opaque-keys==2.0.0
-future==0.17.1
+funcsigs==1.0.2           # via mock, pytest
+future==0.18.0
 idna==2.8
 importlib-metadata==0.23  # via pluggy, pytest
 jinja2==2.10.3            # via code-annotations
@@ -32,6 +35,7 @@ markupsafe==1.1.1         # via jinja2
 mock==3.0.5
 more-itertools==5.0.0     # via pytest, zipp
 packaging==19.2           # via pytest
+pathlib2==2.3.5           # via importlib-metadata, pytest, pytest-django
 pbr==5.4.3
 pluggy==0.13.0            # via pytest
 py==1.8.0                 # via pytest
@@ -39,11 +43,12 @@ pymongo==3.9.0
 pyparsing==2.4.2          # via packaging
 pytest-cov==2.8.1
 pytest-django==3.5.1
-pytest==5.2.1             # via pytest-cov, pytest-django
-python-slugify==3.0.4     # via code-annotations
+pytest==4.6.5             # via pytest-cov, pytest-django
+python-slugify==3.0.6     # via code-annotations
 pytz==2019.3
 pyyaml==5.1.2             # via code-annotations
 requests==2.22.0
+scandir==1.10.0           # via pathlib2
 six==1.12.0
 slumber==0.7.1
 stevedore==1.31.0

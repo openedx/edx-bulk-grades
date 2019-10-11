@@ -432,7 +432,6 @@ class TestGradeProcessor(BaseTests):
         mock_csv += '\n'
         mock_csv += ','.join('' if v is None else str(v) for v in mock_csv_data.values())
         buf = ContentFile(mock_csv.encode('utf-8'))
-
         processor.process_file(buf)
 
 
@@ -489,7 +488,6 @@ class TestInterventionProcessor(BaseTests):
         processor = api.InterventionCSVProcessor(course_id=self.course_id)
         rows = list(processor.get_iterator())
         assert len(rows) == 3
-
 
     @ddt.data(
         (10, 99, 3),
@@ -562,7 +560,6 @@ class TestInterventionProcessor(BaseTests):
         with patch('lms.djangoapps.grades.api.get_subsection_grades') as mock_subsection_grades:
             mock_subsection_grades.side_effect = mock_subsection_grade(grades)
             rows = list(processor.get_iterator())
-
 
         grade_column_index = rows[0].split(',').index('grade-123402db')
 

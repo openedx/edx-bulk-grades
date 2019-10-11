@@ -359,18 +359,6 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         self._users_seen.add(row['user_id'])
         return operation
 
-    def read_file(self, thefile):
-        """
-        Temporary method for tests to pass. DO NOT MERGE
-        """
-        try:
-            self.filename = getattr(thefile, 'name', '') or ''
-            reader = csv.DictReader(decode_utf8(thefile))
-            self.validate_file(thefile, reader)
-            return reader
-        except ValidationError as exc:
-            self.add_error(text_type(exc))
-
     def process_row(self, row):
         """
         Save a row to the persistent subsection override table.
