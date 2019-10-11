@@ -117,6 +117,7 @@ class ScoreCSVProcessor(DeferrableMixin, CSVProcessor):
             elif points < 0:
                 raise ValidationError(_('Points must be greater than 0'))
 
+    # pylint: disable=inconsistent-return-statements
     def preprocess_row(self, row):
         """
         Preprocess CSV row.
@@ -224,12 +225,12 @@ class GradedSubsectionMixin(object):
         subsections = OrderedDict()
         for subsection in grades_api.graded_subsections_for_course_id(course_id):
             block_id = text_type(subsection.location.block_id)
-            if (
+            if (  # pragma: no branch
                     (filter_subsection and (block_id != filter_subsection.block_id))
                     or
                     (filter_assignment_type and (filter_assignment_type != text_type(subsection.format)))
             ):
-                continue
+                continue  # pragma: no cover
             short_block_id = block_id[:8]
             if short_block_id not in subsections:
                 subsections[short_block_id] = (subsection, subsection.display_name)
@@ -243,6 +244,15 @@ class GradedSubsectionMixin(object):
         formed from the product of the subsection ids and prefixes.
         """
         return ['{}-{}'.format(prefix, short_id) for short_id, prefix in product(short_subsection_ids, prefixes)]
+
+
+def decode_utf8(input_iterator):
+    """
+    Generator that decodes a utf-8 encoded
+    input line by line
+    """
+    for l in input_iterator:
+        yield l if isinstance(l, str) else l.decode('utf-8')
 
 
 class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
@@ -282,10 +292,14 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
             filter_assignment_type=kwargs.get('assignment_type', None),
         )
         self.append_columns(
-            self._subsection_column_names(self._subsections.keys(), self.subsection_prefixes)
+            self._subsection_column_names(
+                self._subsections.keys(),  # pylint: disable=dict-keys-not-iterating, useless-suppression
+                self.subsection_prefixes
+            )
         )
         self._users_seen = set()
 
+    # pylint: disable=inconsistent-return-statements
     @cached_property
     def _user(self):
         if self.user_id:
@@ -389,7 +403,7 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
                                        / subsection_grade.override.possible_graded_override) * 100
                 except AttributeError:
                     effective_grade = (subsection_grade.earned_graded / subsection_grade.possible_graded) * 100
-                if (
+                if (  # pragma: no brach
                         (self.subsection_grade_min and (effective_grade < self.subsection_grade_min))
                         or
                         (self.subsection_grade_max and (effective_grade > self.subsection_grade_max))
@@ -459,7 +473,10 @@ class InterventionCSVProcessor(GradedSubsectionMixin, CSVProcessor):
             filter_assignment_type=self.assignment_type,
         )
         self.append_columns(
-            self._subsection_column_names(self._subsections.keys(), self.subsection_prefixes)
+            self._subsection_column_names(
+                self._subsections.keys(),  # pylint: disable=dict-keys-not-iterating, useless-suppression
+                self.subsection_prefixes
+            )
         )
         self.append_columns(('course grade letter', 'course grade numeric'))
 

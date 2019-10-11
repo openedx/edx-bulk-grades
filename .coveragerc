@@ -1,10 +1,12 @@
 [run]
 branch = True
 data_file = .coverage
-source=bulk_grades
+source =
+    bulk_grades
+    tests
 omit =
-    test_settings
     *migrations*
     *admin.py
     *static*
     *templates*
+    bulk_grades/settings*

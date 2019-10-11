@@ -9,6 +9,8 @@ from __future__ import absolute_import, unicode_literals
 
 from os.path import abspath, dirname, join
 
+import djcelery
+
 
 def root(*args):
     """
@@ -38,6 +40,7 @@ INSTALLED_APPS = (
     'super_csv',
     'courseware.apps.CoursewareConfig',
     'student',
+    'djcelery',
 )
 
 LOCALE_PATHS = [
@@ -55,3 +58,16 @@ ANALYTICS_API_BASE_URL = {
 ANALYTICS_TOKEN = {
         'DEFAULT': 'edx'
     }
+
+MIDDLEWARE = (
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+)
+CELERY_ALWAYS_EAGER = True
+CELERY_RESULT_BACKEND = 'djcelery.backends.cache:CacheBackend'
+CELERY_EAGER_PROPAGATES_EXCEPTIONS = False
+CELERY_BROKER_URL = BROKER_URL = 'memory://'
+CELERY_BROKER_TRANSPORT = 'memory://'
+CELERY_BROKER_HOSTNAME = 'localhost'
+
+djcelery.setup_loader()
