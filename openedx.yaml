@@ -1,7 +1,7 @@
 # openedx.yaml
 
 ---
-owner: davestgermain
+owner: mattcarter
 nick: edx-bulk-grades
 tags:
     - tools
@@ -13,5 +13,10 @@ oeps:
     oep-5:
         state: False
         reason: TODO - Implement for this application if appropriate
+    oep-7: False
+    oep-18: True
     oep-30:
         state: True
+supporting_teams:
+  - masters-devs
+  
