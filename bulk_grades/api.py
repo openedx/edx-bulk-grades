@@ -26,6 +26,8 @@ __all__ = ('GradeCSVProcessor', 'ScoreCSVProcessor', 'get_score', 'get_scores', 
 
 log = logging.getLogger(__name__)
 
+UNKNOWN_LAST_SCORE_OVERRIDER = 'unknown'
+
 
 def _get_enrollments(course_id, track=None, cohort=None):
     """
@@ -613,7 +615,7 @@ def get_scores(usage_key, user_ids=None):
         try:
             last_override = row.scoreoverrider_set.select_related('user').latest('created')
         except ObjectDoesNotExist:
-            pass
+            scores[row.student_id]['who_last_graded'] = UNKNOWN_LAST_SCORE_OVERRIDER
         else:
             scores[row.student_id]['who_last_graded'] = last_override.user.username
     return scores

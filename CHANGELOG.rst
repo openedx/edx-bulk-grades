@@ -15,6 +15,10 @@ Unreleased
 ~~~~~~~~~~
 *
 
+[0.6.5] - 2019-12-05
+~~~~~~~~~~~~~~~~~~~~~
+* In ``get_scores()``, account for case where no ``ScoreOverrider`` exists.
+
 [0.6.4] - 2019-09-24
 ~~~~~~~~~~~~~~~~~~~~~
 * ``GradeCSVProcessor.save()`` should return something.
