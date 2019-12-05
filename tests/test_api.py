@@ -85,6 +85,7 @@ class TestApi(BaseTests):
             api.set_score(self.usage_key, self.learner.id, -2, 22, override_user_id=self.staff.id)
 
 
+@ddt.ddt
 class TestScoreProcessor(BaseTests):
     """
     Tests exercising the processing performed by ScoreCSVProcessor
@@ -120,19 +121,31 @@ class TestScoreProcessor(BaseTests):
             prev_points = row.split(',')[prev_points_index]
             assert prev_points == ''
 
-    @patch('bulk_grades.api.get_scores')
-    def test_export_prev_scores(self, mocked_get_scores):
-        mocked_get_scores.return_value = {
-            learner.id: dict(score='100', modified=datetime.datetime.now(), who_last_graded='somebody')
-            for learner in self.learners
-        }
-        processor = api.ScoreCSVProcessor(block_id=self.usage_key)
-        rows = list(processor.get_iterator())
+    @ddt.data('somebody', api.UNKNOWN_LAST_SCORE_OVERRIDER)
+    def test_export_prev_scores(self, expected_who_last_graded_value):
+        with patch('bulk_grades.api.get_scores') as mocked_get_scores:
+            mock_score_data = {
+                'score': '100',
+                'modified': datetime.datetime.now(),
+                'who_last_graded': expected_who_last_graded_value,
+            }
+            mocked_get_scores.return_value = {
+                learner.id: mock_score_data
+                for learner in self.learners
+            }
+
+            processor = api.ScoreCSVProcessor(block_id=self.usage_key)
+            rows = list(processor.get_iterator())
+
         assert len(rows) == 4
-        prev_points_index = rows[0].split(',').index('Previous Points')
+        column_names = rows[0].split(',')
+        prev_points_index = column_names.index('Previous Points')
+        who_last_graded_index = column_names.index('who_last_graded')
+
         for row in rows[1:]:
-            prev_points = row.split(',')[prev_points_index]
-            assert prev_points == '100.0'
+            row_data = row.split(',')
+            assert row_data[prev_points_index] == '100.0'
+            assert row_data[who_last_graded_index] == expected_who_last_graded_value
 
     def test_validate(self):
         processor = api.ScoreCSVProcessor(block_id=self.usage_key, max_points=100)
