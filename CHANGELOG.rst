@@ -15,6 +15,10 @@ Unreleased
 ~~~~~~~~~~
 *
 
+[0.6.6] - 2019-12-13
+~~~~~~~~~~~~~~~~~~~~~
+* Added Support for Django22.
+
 [0.6.5] - 2019-12-05
 ~~~~~~~~~~~~~~~~~~~~~
 * In ``get_scores()``, account for case where no ``ScoreOverrider`` exists.

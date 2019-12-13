@@ -48,7 +48,7 @@ class ProgramEnrollment(object):
 
 
 class ProgramCourseEnrollment(models.Model):
-    course_enrollment = models.OneToOneField(CourseEnrollment)
+    course_enrollment = models.OneToOneField(CourseEnrollment, on_delete=models.CASCADE)
 
     @property
     def program_enrollment(self):
@@ -58,5 +58,5 @@ class ProgramCourseEnrollment(models.Model):
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(get_user_model())
+    user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
