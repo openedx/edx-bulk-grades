@@ -26,7 +26,8 @@ matrix:
 cache:
   - pip
 before_install:
-  - pip install --upgrade pip
+  # Pinned to version 19.3.1 due to error while running tests (tox) on Travis
+  - pip install --upgrade pip==19.3.1
 install:
   - pip install -r requirements/travis.txt
 script:
