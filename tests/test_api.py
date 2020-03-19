@@ -272,6 +272,15 @@ class TestGradeProcessor(BaseTests):
     def test_export(self, course_grade_factory_mock):  # pylint: disable=unused-argument
         processor = api.GradeCSVProcessor(course_id=self.course_id)
         rows = list(processor.get_iterator())
+        # tests that there a 'student_key' column present
+        assert any('student_key' in row for row in rows)
+        # tests that a masters student has student_key populated
+        masters_row = [row for row in rows if 'masters' in row]
+        assert 'masters@example.com,ext:5,' in masters_row[0]
+        # tests that a non-masters (verified) student does NOT have a student key populated
+        verified_row = [row for row in rows if 'verified' in row]
+        # note the null between the two commas, in place where student_key is supposed to be
+        assert 'verified@example.com,,' in verified_row[0]
         assert len(rows) == self.NUM_USERS + 1
 
     @patch('lms.djangoapps.grades.api.graded_subsections_for_course_id')
@@ -291,6 +300,7 @@ class TestGradeProcessor(BaseTests):
         expected_columns = [
             'user_id',
             'username',
+            'student_key',
             'course_id',
             'track',
             'cohort',
