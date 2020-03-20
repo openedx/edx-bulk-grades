@@ -48,7 +48,7 @@ class ProgramEnrollment(object):
 
 
 class ProgramCourseEnrollment(models.Model):
-    course_enrollment = models.OneToOneField(CourseEnrollment, on_delete=models.CASCADE)
+    course_enrollment = models.ForeignKey(CourseEnrollment, on_delete=models.CASCADE)
 
     @property
     def program_enrollment(self):

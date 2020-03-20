@@ -43,9 +43,8 @@ def _get_enrollments(course_id, track=None, cohort=None):
         'student_uid': institution user id from program enrollment
     }
     """
-    enrollments = apps.get_model('student', 'CourseEnrollment').objects.filter(
-        course_id=course_id).select_related('user', 'programcourseenrollment')
-
+    enrollments = apps.get_model('student', 'CourseEnrollment').objects.filter(course_id=course_id).select_related(
+        'user').prefetch_related('programcourseenrollment_set')
     if track:
         enrollments = enrollments.filter(mode=track)
     if cohort:
@@ -61,10 +60,11 @@ def _get_enrollments(course_id, track=None, cohort=None):
             'enrolled': enrollment.is_active,
             'track': enrollment.mode,
         }
-        try:
-            pce = enrollment.programcourseenrollment.program_enrollment
-            enrollment_dict['student_uid'] = pce.external_user_key
-        except ObjectDoesNotExist:
+        program_course_enrollment = enrollment.programcourseenrollment_set.all()
+        if program_course_enrollment.exists():
+            program_course_enrollment = program_course_enrollment.first().program_enrollment
+            enrollment_dict['student_uid'] = program_course_enrollment.external_user_key
+        else:
             enrollment_dict['student_uid'] = None
         yield enrollment_dict
 
@@ -206,6 +206,7 @@ class GradedSubsectionMixin(object):
     Mixin to help generated lists of graded subsections
     and appropriate column names for each.
     """
+
     def append_columns(self, new_column_names):
         """
         Appends items from ``new_column_names`` to ``self.columns``
@@ -365,13 +366,13 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         Save a row to the persistent subsection override table.
         """
         grades_api.override_subsection_grade(
-                row['user_id'],
-                row['course_id'],
-                row['block_id'],
-                overrider=self._user,
-                earned_graded=row['new_override'],
-                feature='grade-import',
-                comment='Bulk Grade Import',
+            row['user_id'],
+            row['course_id'],
+            row['block_id'],
+            overrider=self._user,
+            earned_graded=row['new_override'],
+            feature='grade-import',
+            comment='Bulk Grade Import',
         )
         return True, None
 
