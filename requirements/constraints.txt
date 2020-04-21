@@ -8,11 +8,6 @@
 # pin when possible.  Writing an issue against the offending project and
 # linking to it here is good.
 
-# This packages is a backport which can only be installed on Python 2.7
-futures ; python_version == "2.7"
-
-# A dependency of pytest.  Pytest doesn't constrain it and 6.0.0 onward
-# only works with python 3
-more-itertools<6.0.0
-#Django 1.11 support was dropped in version 4.0.0
-django-model-utils<4.0.0 ; python_version == "2.7"
+# pip-tools==5.0.0 requires pip version 20.x but we are using pip=19.x right now.
+# can be removed once, we update pip to 20.x
+# pip-tools<5.0.0
