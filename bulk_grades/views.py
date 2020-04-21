@@ -37,7 +37,6 @@ class GradeOnlyExport(View):
         """
         Abstract method to initialize processor particular to the class.
         """
-        pass
 
     def dispatch(self, request, course_id, *args, **kwargs):  # pylint: disable=arguments-differ
         """

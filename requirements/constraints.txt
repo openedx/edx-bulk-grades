@@ -8,11 +8,18 @@
 # pin when possible.  Writing an issue against the offending project and
 # linking to it here is good.
 
-# This packages is a backport which can only be installed on Python 2.7
-futures ; python_version == "2.7"
+# Stay on an LTS release
+django<2.3
 
-# A dependency of pytest.  Pytest doesn't constrain it and 6.0.0 onward
-# only works with python 3
-more-itertools<6.0.0
-#Django 1.11 support was dropped in version 4.0.0
-django-model-utils<4.0.0 ; python_version == "2.7"
+# zipp>=2.0.0 dropped support for python3.5
+zipp<2.0.0
+
+# jsonfield2>3.0.3 removed support for python3.5
+jsonfield2<=3.0.3
+
+
+# mock version 4.0.0 drops support for python 3.5
+mock<4.0.0
+
+# greater versions drops support for python 3.5
+twine<2.0

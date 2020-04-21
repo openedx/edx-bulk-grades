@@ -46,7 +46,7 @@ class TextSerializer(serialize.BaseSerializer):
     dumps = loads = unchanged
 
 
-# pylint: disable=missing-docstring
+# pylint: disable=missing-class-docstring
 class LearnerAPIClient(API):
 
     def __init__(self, timeout=5, serializer_type='json'):
