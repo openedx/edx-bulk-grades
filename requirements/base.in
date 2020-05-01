@@ -1,9 +1,11 @@
 # Core requirements for using this application
 -c constraints.txt
 
-Django>=1.11              # Web application framework
+Django              # Web application framework
+django-celery
 django-model-utils        # Provides TimeStampedModel abstract base class
 edx-opaque-keys
 super-csv
 requests
 slumber
+six

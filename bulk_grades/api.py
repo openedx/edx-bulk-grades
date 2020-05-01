@@ -116,7 +116,7 @@ class ScoreCSVProcessor(DeferrableMixin, CSVProcessor):
                 raise ValidationError(_('Points must be numbers.'))
             if points > self.max_points:
                 raise ValidationError(_('Points must not be greater than {}.').format(self.max_points))
-            elif points < 0:
+            if points < 0:
                 raise ValidationError(_('Points must be greater than 0'))
 
     # pylint: disable=inconsistent-return-statements
@@ -201,7 +201,7 @@ class ScoreCSVProcessor(DeferrableMixin, CSVProcessor):
             grades_api.task_compute_all_grades_for_course.apply_async(kwargs={'course_key': text_type(course_key)})
 
 
-class GradedSubsectionMixin(object):
+class GradedSubsectionMixin:
     """
     Mixin to help generated lists of graded subsections
     and appropriate column names for each.
@@ -413,7 +413,7 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
                         (self.subsection_grade_max and (effective_grade > self.subsection_grade_max))
                 ):
                     continue
-
+            # pylint: disable=E1111
             course_grade = grades_api.CourseGradeFactory().read(enrollment['user'], course_key=self._course_key)
             course_grade_normalized = course_grade.percent * 100
 
@@ -512,7 +512,7 @@ class InterventionCSVProcessor(GradedSubsectionMixin, CSVProcessor):
                         (self.subsection_grade_max and (effective_grade > self.subsection_grade_max))
                 ):
                     continue
-
+            # pylint: disable=E1111
             course_grade = grades_api.CourseGradeFactory().read(enrollment['user'], course_key=self._course_key)
             if self.course_grade_min or self.course_grade_max:
                 course_grade_normalized = (course_grade.percent * 100)
