@@ -7,11 +7,9 @@ from __future__ import absolute_import, unicode_literals
 
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.utils.encoding import python_2_unicode_compatible
 from model_utils.models import TimeStampedModel
 
 
-@python_2_unicode_compatible
 class ScoreOverrider(TimeStampedModel):
     """
     Records who overrode a score, for bulk score assignments.
