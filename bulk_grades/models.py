@@ -3,8 +3,6 @@
 Database models for bulk_grades.
 """
 
-from __future__ import absolute_import, unicode_literals
-
 from django.contrib.auth import get_user_model
 from django.db import models
 from model_utils.models import TimeStampedModel

@@ -4,8 +4,6 @@
 Tests for the `edx-bulk-grades` models module.
 """
 
-from __future__ import absolute_import, unicode_literals
-
 from django.contrib.auth.models import User
 from django.test import TestCase
 
