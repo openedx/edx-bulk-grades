@@ -1,7 +1,6 @@
 """
 Common Pluggable Django App settings
 """
-from __future__ import absolute_import, unicode_literals
 
 
 def plugin_settings(settings):

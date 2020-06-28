@@ -3,7 +3,6 @@
 """
 Package metadata for bulk_grades.
 """
-from __future__ import absolute_import, print_function, unicode_literals
 
 import os
 import re

@@ -3,7 +3,7 @@
 """
 Tests for the `edx-bulk-grades` api module.
 """
-from __future__ import absolute_import, unicode_literals
+
 
 import datetime
 from copy import deepcopy
