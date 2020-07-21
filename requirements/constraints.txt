@@ -23,3 +23,6 @@ mock<4.0.0
 
 # greater versions drops support for python 3.5
 twine<2.0
+
+# greater versions drops support for python 3.5
+stevedore<2.0
