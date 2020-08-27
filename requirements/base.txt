@@ -11,10 +11,10 @@ celery==3.1.26.post2      # via django-celery, edx-celeryutils
 certifi==2020.6.20        # via requests
 chardet==3.0.4            # via requests
 django-celery==3.3.1      # via -r requirements/base.in
-django-crum==0.7.6        # via super-csv
+django-crum==0.7.7        # via super-csv
 django-model-utils==4.0.0  # via -r requirements/base.in, edx-celeryutils, super-csv
-django==2.2.14            # via -c requirements/constraints.txt, -r requirements/base.in, django-celery, django-crum, django-model-utils, djangorestframework, edx-celeryutils, jsonfield2, super-csv
-djangorestframework==3.11.0  # via super-csv
+django==2.2.15            # via -c requirements/constraints.txt, -r requirements/base.in, django-celery, django-crum, django-model-utils, djangorestframework, edx-celeryutils, jsonfield2, super-csv
+djangorestframework==3.11.1  # via super-csv
 edx-celeryutils==0.5.1    # via super-csv
 edx-opaque-keys==2.1.1    # via -r requirements/base.in
 future==0.18.2            # via edx-celeryutils
@@ -22,7 +22,7 @@ idna==2.10                # via requests
 jsonfield2==3.0.3         # via -c requirements/constraints.txt, edx-celeryutils
 kombu==3.0.37             # via celery
 pbr==5.4.5                # via stevedore
-pymongo==3.10.1           # via edx-opaque-keys
+pymongo==3.11.0           # via edx-opaque-keys
 pytz==2020.1              # via celery, django
 requests==2.24.0          # via -r requirements/base.in, slumber
 simplejson==3.17.2        # via super-csv
@@ -31,4 +31,4 @@ slumber==0.7.1            # via -r requirements/base.in
 sqlparse==0.3.1           # via django
 stevedore==1.32.0         # via -c requirements/constraints.txt, edx-opaque-keys
 super-csv==0.9.9          # via -r requirements/base.in
-urllib3==1.25.9           # via requests
+urllib3==1.25.10          # via requests
