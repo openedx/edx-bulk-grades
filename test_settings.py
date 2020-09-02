@@ -59,4 +59,6 @@ MIDDLEWARE = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 
+CELERY_ALWAYS_EAGER = True
+
 
