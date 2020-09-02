@@ -2,7 +2,6 @@
 -c constraints.txt
 
 Django              # Web application framework
-django-celery
 django-model-utils        # Provides TimeStampedModel abstract base class
 edx-opaque-keys
 super-csv

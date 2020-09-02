@@ -4,10 +4,16 @@ These settings are here to use during tests, because django requires them.
 In a real-world use case, apps in this project are installed into other
 Django applications, so these settings will not be used.
 """
-
+import tempfile
 from os.path import abspath, dirname, join
 
-import djcelery
+from celery import Celery
+
+results_dir = tempfile.TemporaryDirectory()
+
+app = Celery('bulk_grades')
+app.conf.task_protocol = 1
+app.config_from_object('django.conf:settings')
 
 
 def root(*args):
@@ -38,7 +44,6 @@ INSTALLED_APPS = (
     'super_csv',
     'courseware.apps.CoursewareConfig',
     'student',
-    'djcelery',
 )
 
 LOCALE_PATHS = [
@@ -62,10 +67,8 @@ MIDDLEWARE = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 CELERY_ALWAYS_EAGER = True
-CELERY_RESULT_BACKEND = 'djcelery.backends.cache:CacheBackend'
+CELERY_RESULT_BACKEND = 'file://{}'.format(results_dir.name)
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = False
 CELERY_BROKER_URL = BROKER_URL = 'memory://'
 CELERY_BROKER_TRANSPORT = 'memory://'
 CELERY_BROKER_HOSTNAME = 'localhost'
-
-djcelery.setup_loader()
