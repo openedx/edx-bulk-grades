@@ -7,8 +7,6 @@ Django applications, so these settings will not be used.
 
 from os.path import abspath, dirname, join
 
-import djcelery
-
 
 def root(*args):
     """
@@ -38,7 +36,6 @@ INSTALLED_APPS = (
     'super_csv',
     'courseware.apps.CoursewareConfig',
     'student',
-    'djcelery',
 )
 
 LOCALE_PATHS = [
@@ -61,11 +58,5 @@ MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
-CELERY_ALWAYS_EAGER = True
-CELERY_RESULT_BACKEND = 'djcelery.backends.cache:CacheBackend'
-CELERY_EAGER_PROPAGATES_EXCEPTIONS = False
-CELERY_BROKER_URL = BROKER_URL = 'memory://'
-CELERY_BROKER_TRANSPORT = 'memory://'
-CELERY_BROKER_HOSTNAME = 'localhost'
 
-djcelery.setup_loader()
+
