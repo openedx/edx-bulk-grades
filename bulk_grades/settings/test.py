@@ -9,3 +9,10 @@ def plugin_settings(settings):
         'url': 'mock',
         'token': 'edx'
     }
+
+
+# CELERY
+CELERY_ALWAYS_EAGER = True
+
+results_dir = tempfile.TemporaryDirectory()
+CELERY_RESULT_BACKEND = 'file://{}'.format(results_dir.name)
