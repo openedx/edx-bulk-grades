@@ -15,6 +15,11 @@ Unreleased
 ~~~~~~~~~~
 *
 
+[0.8.0] - 2020-09-03
+~~~~~~~~~~~~~~~~~~~~~
+* Upgraded to celery 4.2.2
+* Removed django-celery
+
 [0.6.6] - 2019-12-13
 ~~~~~~~~~~~~~~~~~~~~~
 * Added Support for Django22.
