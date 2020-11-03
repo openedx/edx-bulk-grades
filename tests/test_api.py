@@ -262,6 +262,7 @@ def mock_subsection_grade(grade_iter):
     return f
 
 
+@ddt.ddt
 class TestGradeProcessor(BaseTests):
     """
     Tests exercising the processing performed by GradeCSVProcessor
@@ -282,6 +283,35 @@ class TestGradeProcessor(BaseTests):
         # note the null between the two commas, in place where student_key is supposed to be
         assert 'verified@example.com,,' in verified_row[0]
         assert len(rows) == self.NUM_USERS + 1
+
+    @ddt.data(True, False)
+    @patch('lms.djangoapps.grades.api.CourseGradeFactory.read', return_value=Mock(percent=0.50))
+    def test_export__inactive_learner(self, active_only, course_grade_factory_mock):  # pylint: disable=unused-argument
+        # Create a learner, then get her PCE and deactivate it, which will deactivate the CourseEnrollment as well
+        inactive_learner = User.objects.create(username='inactive_learner')
+        Profile.objects.create(user=inactive_learner, name="Ina Ctive-Learner")
+        course_enrollment = CourseEnrollment.objects.create(
+            course_id=self.course_id,
+            user=inactive_learner,
+            mode='masters'
+        )
+        ProgramCourseEnrollment.objects.create(course_enrollment=course_enrollment)
+        
+        course_enrollment.is_active = False
+        course_enrollment.save()
+
+        # Get csv file and grab row 
+        processor = api.GradeCSVProcessor(course_id=self.course_id, active_only=active_only)
+        rows = list(processor.get_iterator())
+        inactive_row = [row for row in rows if 'inactive_learner' in row]
+
+        if active_only:
+            # Assert that inactive learner is not present is CSV
+            assert len(inactive_row) == 0
+        else:
+            # Assert that inactive learner is still present in the CSV export
+            assert len(inactive_row) == 1
+            assert 'inactive_learner,ext:6' in inactive_row[0]
 
     @patch('lms.djangoapps.grades.api.graded_subsections_for_course_id')
     def test_columns_not_duplicated_during_init(self, mock_graded_subsections):

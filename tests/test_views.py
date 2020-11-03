@@ -42,11 +42,20 @@ class GradeImportExportViewTests(ViewTestsMixin, TestCase):
 
     @patch('lms.djangoapps.grades.api.CourseGradeFactory.read', return_value=Mock(percent=0.50))
     def test_get(self, mock_grade_factory):
+        # Create a user who has an inactive enrollment in the course
+        inactive_learner = self._make_enrollment('inactive_learner', 'masters')
+        course_enrollment = CourseEnrollment.objects.get(course_id=self.course_id, user=inactive_learner)
+        course_enrollment.is_active = False
+        course_enrollment.save()
+
         self.client.login(username=self.staff.username, password=self.password)
         response = self.client.get(reverse('bulk_grades', args=[self.course_id]))
         self.assertEqual(response.status_code, 200)
         data = [row for row in response.streaming_content]
         self.assertEqual(len(data), 4)
+        # The inactive user should not be included in the grade CSV export
+        for row in data:
+            self.assertNotIn(inactive_learner.username, str(row))
 
     def test_post(self):
         csv_content = 'user_id,username,course_id,track,cohort'

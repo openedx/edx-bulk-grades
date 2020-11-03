@@ -15,6 +15,11 @@ Unreleased
 ~~~~~~~~~~
 *
 
+[0.8.2] - 2020-11-02
+~~~~~~~~~~~~~~~~~~~~~
+* Added ``active_only`` field to ``GradeCSVProcessor``
+* For Grade CSV bulk download, only include active enrollments
+
 [0.8.0] - 2020-09-03
 ~~~~~~~~~~~~~~~~~~~~~
 * Upgraded to celery 4.2.2
