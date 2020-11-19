@@ -15,6 +15,10 @@ Unreleased
 ~~~~~~~~~~
 *
 
+[0.8.3] - 2020-11-19
+~~~~~~~~~~~~~~~~~~~~~
+* Updated the build status badge in README.rst to point to travis-ci.com instead of travis-ci.org
+
 [0.8.2] - 2020-11-02
 ~~~~~~~~~~~~~~~~~~~~~
 * Added ``active_only`` field to ``GradeCSVProcessor``
