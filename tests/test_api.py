@@ -10,16 +10,16 @@ from copy import deepcopy
 from itertools import chain, cycle, repeat
 
 import ddt
+import lms.djangoapps.grades.api as grades_api
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.test import TestCase
 from mock import MagicMock, Mock, patch
 from opaque_keys.edx.keys import UsageKey
+from student.models import CourseEnrollment, Profile, ProgramCourseEnrollment
 from super_csv.csv_processor import ValidationError
 
-import lms.djangoapps.grades.api as grades_api
 from bulk_grades import api
-from student.models import CourseEnrollment, Profile, ProgramCourseEnrollment
 
 
 class BaseTests(TestCase):
@@ -28,7 +28,7 @@ class BaseTests(TestCase):
     """
     @classmethod
     def setUpTestData(cls):
-        super(BaseTests, cls).setUpTestData()
+        super().setUpTestData()
         cls.learner = User.objects.create(username='student@example.com')
         cls.staff = User.objects.create(username='staff@example.com')
         cls.usage_key = 'block-v1:testX+sg101+2019+type@sequential+block@homework_questions'
@@ -195,7 +195,7 @@ class TestGradedSubsectionMixin(BaseTests):
     Tests the shared methods defined in ``GradeSubsectionMixin``.
     """
     def setUp(self):
-        super(TestGradedSubsectionMixin, self).setUp()
+        super().setUp()
         self.instance = MySubsectionClass()
 
     @patch('lms.djangoapps.grades.api.graded_subsections_for_course_id')
@@ -496,7 +496,7 @@ class TestInterventionProcessor(BaseTests):
 
     @classmethod
     def setUpClass(cls):
-        super(TestInterventionProcessor, cls).setUpClass()
+        super().setUpClass()
         cls.grade_factory_patcher = patch('lms.djangoapps.grades.api.CourseGradeFactory.read')
         cls.learner_api_client_patcher = patch('bulk_grades.api.LearnerAPIClient')
         cls.mocked_learner_api_client = cls.learner_api_client_patcher.start()
@@ -524,17 +524,17 @@ class TestInterventionProcessor(BaseTests):
 
     @classmethod
     def tearDownClass(cls):
-        super(TestInterventionProcessor, cls).tearDownClass()
+        super().tearDownClass()
         cls.learner_api_client_patcher.stop()
 
     def setUp(self):
-        super(TestInterventionProcessor, self).setUp()
+        super().setUp()
         self.mocked_course_grade_factory = self.grade_factory_patcher.start()
         course_grade_mock = Mock(percent=0.5, letter_grade='A')
         self.mocked_course_grade_factory.return_value = course_grade_mock
 
     def tearDown(self):
-        super(TestInterventionProcessor, self).tearDown()
+        super().tearDown()
         self.grade_factory_patcher.stop()
 
     def test_export(self):

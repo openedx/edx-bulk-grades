@@ -12,13 +12,13 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext as _
+from lms.djangoapps.grades import api as grades_api
 from opaque_keys.edx.keys import CourseKey, UsageKey
+from openedx.core.djangoapps.course_groups.cohorts import get_cohort
 from six import iteritems, text_type
 from super_csv.csv_processor import CSVProcessor, DeferrableMixin, ValidationError
 
 from bulk_grades.clients import LearnerAPIClient
-from lms.djangoapps.grades import api as grades_api
-from openedx.core.djangoapps.course_groups.cohorts import get_cohort
 
 from .models import ScoreOverrider
 
@@ -95,7 +95,7 @@ class ScoreCSVProcessor(DeferrableMixin, CSVProcessor):
         self.track = None
         self.cohort = None
         self.display_name = ''
-        super(ScoreCSVProcessor, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self._users_seen = set()
 
     def get_unique_path(self):
@@ -108,14 +108,14 @@ class ScoreCSVProcessor(DeferrableMixin, CSVProcessor):
         """
         Validate CSV row.
         """
-        super(ScoreCSVProcessor, self).validate_row(row)
+        super().validate_row(row)
         if row['block_id'] != self.block_id:
             raise ValidationError(_('The CSV does not match this problem. Check that you uploaded the right CSV.'))
         if row['New Points']:
             try:
                 points = float(row['New Points'])
-            except ValueError:
-                raise ValidationError(_('Points must be numbers.'))
+            except ValueError as error:
+                raise ValidationError(_('Points must be numbers.')) from error
             if points > self.max_points:
                 raise ValidationError(_('Points must not be greater than {}.').format(self.max_points))
             if points < 0:
@@ -195,7 +195,7 @@ class ScoreCSVProcessor(DeferrableMixin, CSVProcessor):
         """
         Commit the data and trigger course grade recalculation.
         """
-        super(ScoreCSVProcessor, self).commit(running_task=running_task)
+        super().commit(running_task=running_task)
         if running_task or not self.status()['waiting']:
             # after commit, trigger grade recomputation for the course.
             # not sure if this is necessary
@@ -288,7 +288,7 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         # The CSVProcessor.__init__ method will set attributes on self
         # from items in kwargs, so this super().__init__() call can
         # override any attribute values assigned above.
-        super(GradeCSVProcessor, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         self._course_key = CourseKey.from_string(self.course_id)
         self._subsection = UsageKey.from_string(self.subsection) if self.subsection else None
@@ -316,7 +316,7 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         Saves the operation state for this processor, including the user
         who is performing the operation.
         """
-        return super(GradeCSVProcessor, self).save(operating_user=self._user)
+        return super().save(operating_user=self._user)
 
     def get_unique_path(self):
         """
@@ -328,7 +328,7 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         """
         Validate row.
         """
-        super(GradeCSVProcessor, self).validate_row(row)
+        super().validate_row(row)
         if row['course_id'] != self.course_id:
             raise ValidationError(_('Wrong course id {} != {}').format(row['course_id'], self.course_id))
 
@@ -336,7 +336,7 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         """
         Preprocess the file, saving original data no matter whether there are errors.
         """
-        super(GradeCSVProcessor, self).preprocess_file(reader)
+        super().preprocess_file(reader)
         self.save()
 
     def preprocess_row(self, row):
@@ -357,8 +357,8 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
                     operation['block_id'] = text_type(subsection.location)
                     try:
                         operation['new_override'] = float(value)
-                    except ValueError:
-                        raise ValidationError(_('Grade must be a number'))
+                    except ValueError as error:
+                        raise ValidationError(_('Grade must be a number')) from error
                     if operation['new_override'] < 0:
                         raise ValidationError(_('Grade must be positive'))
         self._users_seen.add(row['user_id'])
@@ -470,7 +470,7 @@ class InterventionCSVProcessor(GradedSubsectionMixin, CSVProcessor):
         # The CSVProcessor.__init__ method will set attributes on self
         # from items in kwargs, so this super().__init__() call will
         # potentially override any attribute values assigned above.
-        super(InterventionCSVProcessor, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         self._course_key = CourseKey.from_string(self.course_id)
         self._subsection = UsageKey.from_string(self.subsection) if self.subsection else None

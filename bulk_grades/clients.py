@@ -64,7 +64,7 @@ class LearnerAPIClient(API):
             ]
         )
         log.info('base url: %s', settings.ANALYTICS_API_CLIENT.get('url'))
-        super(LearnerAPIClient, self).__init__(
+        super().__init__(
             settings.ANALYTICS_API_CLIENT.get('url'),
             session=session,
             auth=TokenAuth(settings.ANALYTICS_API_CLIENT.get('token')),

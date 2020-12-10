@@ -22,7 +22,7 @@ class GradeOnlyExport(View):
         """
         Configure initial state.
         """
-        super(GradeOnlyExport, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.processor = None
         self.extra_filename = ''
 
@@ -42,8 +42,9 @@ class GradeOnlyExport(View):
         Dispatch django request.
         """
         self.initialize_processor(request, course_id)
-        return super(GradeOnlyExport, self).dispatch(request, course_id, *args, **kwargs)
+        return super().dispatch(request, course_id, *args, **kwargs)
 
+    # pylint: disable=unused-argument
     def get(self, request, course_id, *args, **kwargs):
         """
         Export grades in CSV format.
@@ -72,6 +73,7 @@ class GradeImportExport(GradeOnlyExport):
     CSV Grade import/export view.
     """
 
+    # pylint: disable=unused-argument
     def post(self, request, course_id, *args, **kwargs):
         """
         Import grades from a CSV file.

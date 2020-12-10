@@ -15,6 +15,10 @@ Unreleased
 ~~~~~~~~~~
 *
 
+[0.8.4] - 2020-12-24
+~~~~~~~~~~~~~~~~~~~~~
+* Adding celery5.0 testing using tox.
+
 [0.8.3] - 2020-11-19
 ~~~~~~~~~~~~~~~~~~~~~
 * Updated the build status badge in README.rst to point to travis-ci.com instead of travis-ci.org
