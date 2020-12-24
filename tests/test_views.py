@@ -1,13 +1,13 @@
 """ Tests for bulk grade views """
+import lms.djangoapps.grades.api as grades_api
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
 from mock import Mock, patch
-
-import lms.djangoapps.grades.api as grades_api
-from bulk_grades.api import GradeCSVProcessor
 from student.models import CourseEnrollment, Profile, ProgramCourseEnrollment
+
+from bulk_grades.api import GradeCSVProcessor
 
 
 class ViewTestsMixin(object):
@@ -15,7 +15,7 @@ class ViewTestsMixin(object):
 
     @classmethod
     def setUpTestData(cls):
-        super(ViewTestsMixin, cls).setUpTestData()
+        super().setUpTestData()
         cls.password = 'password'
         cls.staff = User.objects.create(username='staff@example.com', password=cls.password)
         cls.course_id = 'course-v1:testX+sg101+2019'
@@ -107,7 +107,7 @@ class InterventionsExportViewTests(ViewTestsMixin, TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        super(InterventionsExportViewTests, cls).setUpTestData()
+        super().setUpTestData()
         cls.masters_learner_2 = cls._make_enrollment('masters2', 'masters')
         cls.learner_api_client_patcher = patch('bulk_grades.api.LearnerAPIClient')
         cls.mocked_learner_api_client = cls.learner_api_client_patcher.start()
