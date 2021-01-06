@@ -44,7 +44,7 @@ upgrade: ## update the requirements/*.txt files with the latest packages satisfy
 	# Let tox control the Django,celery versions for tests
 	sed '/^[dD]jango==/d' requirements/test.txt > requirements/test.tmp
 	mv requirements/test.tmp requirements/test.txt
-	grep -e "^amqp==\|^anyjson==\|^billiard==\|^celery==\|^kombu==\|^click-didyoumean==\|^click-repl==\|^click==\|^prompt-toolkit==\|^vine==" requirements/base.txt > requirements/celery44.txt
+	grep -e "^amqp==\|^anyjson==\|^billiard==\|^celery==\|^kombu==\|^click-didyoumean==\|^click-repl==\|^click==\|^prompt-toolkit==\|^vine==" requirements/base.txt > requirements/celery50.txt
 	sed -i.tmp '/^amqp==/d' requirements/test.txt
 	sed -i.tmp '/^anyjson==/d' requirements/test.txt
 	sed -i.tmp '/^billiard==/d' requirements/test.txt
