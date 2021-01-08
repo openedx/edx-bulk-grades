@@ -27,5 +27,5 @@ twine<2.0
 # greater versions drops support for python 3.5
 stevedore<2.0
 
-# Keeping celery 4.4.7 in the production currently
-celery<5.0
+# pinning celery to latest release
+celery<6.0

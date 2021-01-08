@@ -15,6 +15,11 @@ Unreleased
 ~~~~~~~~~~
 *
 
+[0.8.5] - 2020-12-24
+~~~~~~~~~~~~~~~~~~~~~
+* Upgrading celery to 5.0
+* Removed python 3.5 classifier as its support is dropped earlier
+
 [0.8.4] - 2020-12-24
 ~~~~~~~~~~~~~~~~~~~~~
 * Adding celery5.0 testing using tox.
