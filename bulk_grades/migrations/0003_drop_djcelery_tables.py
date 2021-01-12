@@ -10,12 +10,12 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunSQL("DROP TABLE IF EXISTS djcelery_crontabschedule;"),
-        migrations.RunSQL("DROP TABLE IF EXISTS djcelery_intervalschedule;"),
-        migrations.RunSQL("DROP TABLE IF EXISTS djcelery_periodictask;"),
-        migrations.RunSQL("DROP TABLE IF EXISTS djcelery_periodictasks;"),
-        migrations.RunSQL("DROP TABLE IF EXISTS djcelery_taskmeta;"),
-        migrations.RunSQL("DROP TABLE IF EXISTS djcelery_tasksetmeta;"),
         migrations.RunSQL("DROP TABLE IF EXISTS djcelery_taskstate;"),
         migrations.RunSQL("DROP TABLE IF EXISTS djcelery_workerstate;"),
+        migrations.RunSQL("DROP TABLE IF EXISTS celery_tasksetmeta;"),
+        migrations.RunSQL("DROP TABLE IF EXISTS celery_taskmeta;"),
+        migrations.RunSQL("DROP TABLE IF EXISTS djcelery_periodictasks;"),
+        migrations.RunSQL("DROP TABLE IF EXISTS djcelery_periodictask;"),
+        migrations.RunSQL("DROP TABLE IF EXISTS djcelery_intervalschedule;"),
+        migrations.RunSQL("DROP TABLE IF EXISTS djcelery_crontabschedule;"),
     ]
