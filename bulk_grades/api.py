@@ -200,7 +200,7 @@ class ScoreCSVProcessor(DeferrableMixin, CSVProcessor):
             # after commit, trigger grade recomputation for the course.
             # not sure if this is necessary
             course_key = UsageKey.from_string(self.block_id).course_key
-            grades_api.task_compute_all_grades_for_course.apply_async(kwargs={'course_key': text_type(course_key)})
+            grades_api.task_compute_all_grades_for_course.apply_async(kwargs={'course_key': str(course_key)})
 
 
 class GradedSubsectionMixin:
@@ -229,11 +229,11 @@ class GradedSubsectionMixin:
         """
         subsections = OrderedDict()
         for subsection in grades_api.graded_subsections_for_course_id(course_id):
-            block_id = text_type(subsection.location.block_id)
+            block_id = str(subsection.location.block_id)
             if (  # pragma: no branch
                     (filter_subsection and (block_id != filter_subsection.block_id))
                     or
-                    (filter_assignment_type and (filter_assignment_type != text_type(subsection.format)))
+                    (filter_assignment_type and (filter_assignment_type != str(subsection.format)))
             ):
                 continue  # pragma: no cover
             short_block_id = block_id[:8]
@@ -248,7 +248,7 @@ class GradedSubsectionMixin:
         and ``prefixes`` to append to each, returns a list of names
         formed from the product of the subsection ids and prefixes.
         """
-        return ['{}-{}'.format(prefix, short_id) for short_id, prefix in product(short_subsection_ids, prefixes)]
+        return [f'{prefix}-{short_id}' for short_id, prefix in product(short_subsection_ids, prefixes)]
 
 
 def decode_utf8(input_iterator):
@@ -354,7 +354,7 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
                     subsection = self._subsections[short_id][0]
                     operation['user_id'] = row['user_id']
                     operation['course_id'] = self.course_id
-                    operation['block_id'] = text_type(subsection.location)
+                    operation['block_id'] = str(subsection.location)
                     try:
                         operation['new_override'] = float(value)
                     except ValueError as error:
@@ -424,15 +424,15 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
                     (self.course_grade_max and course_grade_normalized > self.course_grade_max)):
                 continue
 
-            for block_id, (subsection, display_name) in iteritems(self._subsections):
-                row['name-{}'.format(block_id)] = display_name
+            for block_id, (subsection, display_name) in self._subsections.items():
+                row[f'name-{block_id}'] = display_name
                 grade = grades.get(subsection.location, None)
                 if grade:
-                    row['original_grade-{}'.format(block_id)] = grade.earned_graded
+                    row[f'original_grade-{block_id}'] = grade.earned_graded
                     try:
-                        row['previous_override-{}'.format(block_id)] = grade.override.earned_graded_override
+                        row[f'previous_override-{block_id}'] = grade.override.earned_graded_override
                     except AttributeError:
-                        row['previous_override-{}'.format(block_id)] = None
+                        row[f'previous_override-{block_id}'] = None
             yield row
 
 
@@ -552,14 +552,14 @@ class InterventionCSVProcessor(GradedSubsectionMixin, CSVProcessor):
                 'course grade letter': course_grade.letter_grade,
                 'course grade numeric': course_grade.percent
             }
-            for block_id, (subsection, display_name) in iteritems(self._subsections):
-                row['name-{}'.format(block_id)] = display_name
+            for block_id, (subsection, display_name) in self._subsections.items():
+                row[f'name-{block_id}'] = display_name
                 grade = grades.get(subsection.location, None)
                 if grade:
                     if getattr(grade, 'override', None):
-                        row['grade-{}'.format(block_id)] = grade.override.earned_graded_override
+                        row[f'grade-{block_id}'] = grade.override.earned_graded_override
                     else:
-                        row['grade-{}'.format(block_id)] = grade.earned_graded
+                        row[f'grade-{block_id}'] = grade.earned_graded
             yield row
 
 

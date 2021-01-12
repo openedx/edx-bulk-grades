@@ -11,21 +11,5 @@
 # Stay on an LTS release
 django<2.3
 
-# zipp>=2.0.0 dropped support for python3.5
-zipp<2.0.0
-
-# jsonfield2>3.0.3 removed support for python3.5
-jsonfield2<=3.0.3
-
-
-# mock version 4.0.0 drops support for python 3.5
-mock<4.0.0
-
-# greater versions drops support for python 3.5
-twine<2.0
-
-# greater versions drops support for python 3.5
-stevedore<2.0
-
 # pinning celery to latest release
 celery<6.0

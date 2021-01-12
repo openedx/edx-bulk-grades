@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 bulk_grades Django application initialization.
 """

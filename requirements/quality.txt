@@ -4,7 +4,7 @@
 #
 #    make upgrade
 #
-amqp==2.6.1
+amqp==5.0.2
     # via
     #   -r requirements/test.txt
     #   kombu
@@ -20,7 +20,7 @@ billiard==3.6.3.0
     # via
     #   -r requirements/test.txt
     #   celery
-celery==4.4.7
+celery==5.0.5
     # via
     #   -c requirements/constraints.txt
     #   -r requirements/test.txt
@@ -33,12 +33,28 @@ chardet==4.0.0
     # via
     #   -r requirements/test.txt
     #   requests
+click-didyoumean==0.0.3
+    # via
+    #   -r requirements/test.txt
+    #   celery
 click-log==0.3.2
     # via edx-lint
+click-plugins==1.1.1
+    # via
+    #   -r requirements/test.txt
+    #   celery
+click-repl==0.1.6
+    # via
+    #   -r requirements/test.txt
+    #   celery
 click==7.1.2
     # via
     #   -r requirements/test.txt
+    #   celery
+    #   click-didyoumean
     #   click-log
+    #   click-plugins
+    #   click-repl
     #   code-annotations
     #   edx-lint
 code-annotations==0.10.2
@@ -99,17 +115,11 @@ idna==2.10
     # via
     #   -r requirements/test.txt
     #   requests
-importlib-metadata==2.1.1
-    # via
-    #   -r requirements/test.txt
-    #   kombu
-    #   pluggy
-    #   pytest
 iniconfig==1.1.1
     # via
     #   -r requirements/test.txt
     #   pytest
-isort==4.3.21
+isort==5.7.0
     # via
     #   -r requirements/quality.in
     #   pylint
@@ -117,12 +127,11 @@ jinja2==2.11.2
     # via
     #   -r requirements/test.txt
     #   code-annotations
-jsonfield2==3.0.3
+jsonfield2==4.0.0.post0
     # via
-    #   -c requirements/constraints.txt
     #   -r requirements/test.txt
     #   edx-celeryutils
-kombu==4.6.11
+kombu==5.0.2
     # via
     #   -r requirements/test.txt
     #   celery
@@ -134,19 +143,13 @@ markupsafe==1.1.1
     #   jinja2
 mccabe==0.6.1
     # via pylint
-mock==3.0.5
-    # via
-    #   -c requirements/constraints.txt
-    #   -r requirements/test.txt
+mock==4.0.3
+    # via -r requirements/test.txt
 newrelic==5.24.0.153
     # via
     #   -r requirements/test.txt
     #   edx-django-utils
 packaging==20.8
-    # via
-    #   -r requirements/test.txt
-    #   pytest
-pathlib2==2.3.5
     # via
     #   -r requirements/test.txt
     #   pytest
@@ -158,6 +161,10 @@ pluggy==0.13.1
     # via
     #   -r requirements/test.txt
     #   pytest
+prompt-toolkit==3.0.10
+    # via
+    #   -r requirements/test.txt
+    #   click-repl
 psutil==5.8.0
     # via
     #   -r requirements/test.txt
@@ -196,7 +203,7 @@ pytest-cov==2.10.1
     # via -r requirements/test.txt
 pytest-django==4.1.0
     # via -r requirements/test.txt
-pytest==6.1.2
+pytest==6.2.1
     # via
     #   -r requirements/test.txt
     #   pytest-cov
@@ -226,11 +233,9 @@ six==1.15.0
     # via
     #   -r requirements/test.txt
     #   astroid
+    #   click-repl
     #   edx-lint
     #   edx-opaque-keys
-    #   mock
-    #   pathlib2
-    #   stevedore
 slumber==0.7.1
     # via -r requirements/test.txt
 snowballstemmer==2.0.0
@@ -239,9 +244,8 @@ sqlparse==0.4.1
     # via
     #   -r requirements/test.txt
     #   django
-stevedore==1.32.0
+stevedore==3.3.0
     # via
-    #   -c requirements/constraints.txt
     #   -r requirements/test.txt
     #   code-annotations
     #   edx-django-utils
@@ -257,21 +261,18 @@ toml==0.10.2
     #   -r requirements/test.txt
     #   pylint
     #   pytest
-typed-ast==1.4.2
-    # via astroid
 urllib3==1.26.2
     # via
     #   -r requirements/test.txt
     #   requests
-vine==1.3.0
+vine==5.0.0
     # via
     #   -r requirements/test.txt
     #   amqp
     #   celery
+wcwidth==0.2.5
+    # via
+    #   -r requirements/test.txt
+    #   prompt-toolkit
 wrapt==1.12.1
     # via astroid
-zipp==1.2.0
-    # via
-    #   -c requirements/constraints.txt
-    #   -r requirements/test.txt
-    #   importlib-metadata

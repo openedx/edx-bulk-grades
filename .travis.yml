@@ -1,13 +1,14 @@
 language: python
 dist: xenial
 python:
-  - 3.8
+  - '3.8'
 env:
-  - TOXENV=django22-celery44
-  - TOXENV=django22-celery50
   - TOXENV=quality
   - TOXENV=docs
   - TOXENV=pii_check
+  - TOXENV=django22-celery44
+  - TOXENV=django30-celery44
+  - TOXENV=django31-celery44
 cache:
   - pip
 before_install:
@@ -26,6 +27,6 @@ deploy:
   on:
     tags: true
     python: 3.8
-    condition: "$TOXENV = quality"
+    condition: $TOXENV = quality
   password:
     secure: fqghurmaw5AV4v5e8udqjAhAppWax9cIof2nkKjVREIxURLuaAESFHg40fvA7q6eHsvZoXf34HIoFw2s7HBMe3dtYo4i+wY4JsMYyBPUGV3koSJe3ODwlx8A1IRv2i/WCDtfoFS8jZdeu02OQ6LHbf2P+Kmv3cX5qVCUez+E9bTBniPIqMd9MdA7bN5ft6BYcQttbxvK7sPRJ7Gkv+zKQdXjMpH/v9jjK5f4rAAtqHICymDrwurU7l01964TLTyyHKnB5kZNaTVc/nLMlU1gHSnO5wS7i3BJuzpI/2rjiIIaZJgQJA3U1wj5hHm0R9X7Bo4RSDv5i9Lrf6TPhArqORf6Nk5iLbMPRCCdUV99HkbV6rGJU8DjKFxdnbyBgQlAlQ0rSl0kx2pjtgcMk4JPez/E8JTpruj/J001MvmoK8KoceCIelDDNQRrUYwPldyUv8eB5GSttmtWWXiedHZwk/iyhLknEKCK8jt2s2H4OGlxaXppBSVMRJBJ8ylUpYfFcxwIiHp7A0tYgxUBSmWxGcx0iowrVwQ2AQxzAykd07au7Yt3ge2YI3tEtm6dvHXj/fYi3iuukCv+Nj853JbGN2sfBssmpfOmJEG0ezwQgVKcc19+6RB+CH1YfBnMqR1xPB5D8+EMUHPbPI0akgfXSM1133EJ1KUoG5pSDe8h804=

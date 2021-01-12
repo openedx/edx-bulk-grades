@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Tests for the `edx-bulk-grades` api module.
 """
@@ -13,7 +12,7 @@ import ddt
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.test import TestCase
-from mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, Mock, patch
 from opaque_keys.edx.keys import UsageKey
 from super_csv.csv_processor import ValidationError
 

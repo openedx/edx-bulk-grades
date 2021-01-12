@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Database models for bulk_grades.
 """
@@ -36,12 +35,12 @@ class CourseEnrollment(models.Model):
     # list of possible values.
     mode = models.CharField(default='audit', max_length=100)
 
-    class Meta(object):
+    class Meta:
         unique_together = (('user', 'course_id'),)
         ordering = ('user', 'course_id')
 
 
-class ProgramEnrollment(object):
+class ProgramEnrollment:
     pass
 
 

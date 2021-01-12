@@ -24,8 +24,26 @@ chardet==4.0.0
     # via
     #   -r requirements/base.txt
     #   requests
+click-didyoumean==0.0.3
+    # via
+    #   -r requirements/base.txt
+    #   celery
+click-plugins==1.1.1
+    # via
+    #   -r requirements/base.txt
+    #   celery
+click-repl==0.1.6
+    # via
+    #   -r requirements/base.txt
+    #   celery
 click==7.1.2
-    # via code-annotations
+    # via
+    #   -r requirements/base.txt
+    #   celery
+    #   click-didyoumean
+    #   click-plugins
+    #   click-repl
+    #   code-annotations
 code-annotations==0.10.2
     # via -r requirements/test.in
 coverage==5.3.1
@@ -79,19 +97,12 @@ idna==2.10
     # via
     #   -r requirements/base.txt
     #   requests
-importlib-metadata==2.1.1
-    # via
-    #   -r requirements/base.txt
-    #   kombu
-    #   pluggy
-    #   pytest
 iniconfig==1.1.1
     # via pytest
 jinja2==2.11.2
     # via code-annotations
-jsonfield2==3.0.3
+jsonfield2==4.0.0.post0
     # via
-    #   -c requirements/constraints.txt
     #   -r requirements/base.txt
     #   edx-celeryutils
     # via
@@ -99,17 +110,13 @@ jsonfield2==3.0.3
     #   celery
 markupsafe==1.1.1
     # via jinja2
-mock==3.0.5
-    # via
-    #   -c requirements/constraints.txt
-    #   -r requirements/test.in
+mock==4.0.3
+    # via -r requirements/test.in
 newrelic==5.24.0.153
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
 packaging==20.8
-    # via pytest
-pathlib2==2.3.5
     # via pytest
 pbr==5.5.1
     # via
@@ -117,6 +124,10 @@ pbr==5.5.1
     #   stevedore
 pluggy==0.13.1
     # via pytest
+prompt-toolkit==3.0.10
+    # via
+    #   -r requirements/base.txt
+    #   click-repl
 psutil==5.8.0
     # via
     #   -r requirements/base.txt
@@ -133,7 +144,7 @@ pytest-cov==2.10.1
     # via -r requirements/test.in
 pytest-django==4.1.0
     # via -r requirements/test.in
-pytest==6.1.2
+pytest==6.2.1
     # via
     #   pytest-cov
     #   pytest-django
@@ -157,19 +168,16 @@ simplejson==3.17.2
 six==1.15.0
     # via
     #   -r requirements/base.txt
+    #   click-repl
     #   edx-opaque-keys
-    #   mock
-    #   pathlib2
-    #   stevedore
 slumber==0.7.1
     # via -r requirements/base.txt
 sqlparse==0.4.1
     # via
     #   -r requirements/base.txt
     #   django
-stevedore==1.32.0
+stevedore==3.3.0
     # via
-    #   -c requirements/constraints.txt
     #   -r requirements/base.txt
     #   code-annotations
     #   edx-django-utils
@@ -188,8 +196,7 @@ urllib3==1.26.2
     #   -r requirements/base.txt
     #   amqp
     #   celery
-zipp==1.2.0
+wcwidth==0.2.5
     # via
-    #   -c requirements/constraints.txt
     #   -r requirements/base.txt
-    #   importlib-metadata
+    #   prompt-toolkit

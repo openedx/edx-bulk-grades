@@ -1,16 +1,18 @@
 """ Tests for bulk grade views """
+from unittest.mock import Mock, patch
+
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
-from mock import Mock, patch
+from student.models import CourseEnrollment, Profile, ProgramCourseEnrollment
 
 import lms.djangoapps.grades.api as grades_api
 from bulk_grades.api import GradeCSVProcessor
 from student.models import CourseEnrollment, Profile, ProgramCourseEnrollment
 
 
-class ViewTestsMixin(object):
+class ViewTestsMixin:
     """ Mixin for common test setup """
 
     @classmethod
@@ -78,16 +80,16 @@ class GradeImportExportViewTests(ViewTestsMixin, TestCase):
         self.assertDictEqual(
             response.json(),
             {
-                u'saved': 3,
-                u'error_messages': [],
-                u'can_commit': False,
-                u'error_rows': [],
-                u'waiting': False,
-                u'processed': 3,
-                u'saved_error_id': None,
-                u'percentage': u'100.0%',
-                u'total': 3,
-                u'result_id': None
+                'saved': 3,
+                'error_messages': [],
+                'can_commit': False,
+                'error_rows': [],
+                'waiting': False,
+                'processed': 3,
+                'saved_error_id': None,
+                'percentage': '100.0%',
+                'total': 3,
+                'result_id': None
             }
         )
 
