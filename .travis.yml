@@ -7,13 +7,13 @@ env:
   - TOXENV=docs
   - TOXENV=pii_check
   - TOXENV=django22-celery44
-  - TOXENV=django30-celery44
-  - TOXENV=django31-celery44
+  - TOXENV=django22-celery50
+  - TOXENV=django30-celery50
+  - TOXENV=django31-celery50
 cache:
   - pip
 before_install:
-  # Pinned to version 19.3.1 due to error while running tests (tox) on Travis
-  - pip install --upgrade pip==19.3.1
+  - pip install --upgrade pip
 install:
   - pip install -r requirements/travis.txt
 script:

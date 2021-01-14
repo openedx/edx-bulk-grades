@@ -12,13 +12,12 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext as _
+from lms.djangoapps.grades import api as grades_api
 from opaque_keys.edx.keys import CourseKey, UsageKey
-from six import iteritems, text_type
+from openedx.core.djangoapps.course_groups.cohorts import get_cohort
 from super_csv.csv_processor import CSVProcessor, DeferrableMixin, ValidationError
 
 from bulk_grades.clients import LearnerAPIClient
-from lms.djangoapps.grades import api as grades_api
-from openedx.core.djangoapps.course_groups.cohorts import get_cohort
 
 from .models import ScoreOverrider
 
