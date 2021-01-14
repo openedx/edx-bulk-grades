@@ -1,13 +1,13 @@
 """ Tests for bulk grade views """
-import lms.djangoapps.grades.api as grades_api
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
 from mock import Mock, patch
-from student.models import CourseEnrollment, Profile, ProgramCourseEnrollment
 
+import lms.djangoapps.grades.api as grades_api
 from bulk_grades.api import GradeCSVProcessor
+from student.models import CourseEnrollment, Profile, ProgramCourseEnrollment
 
 
 class ViewTestsMixin(object):
