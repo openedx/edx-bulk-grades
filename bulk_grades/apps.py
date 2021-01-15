@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 bulk_grades Django application initialization.
 """
@@ -15,15 +14,15 @@ class BulkGradesConfig(AppConfig):
     plugin_app = {
         'url_config': {
             'lms.djangoapp': {
-                'namespace': u'bulk_grades',
-                'regex': u'^api/',
-                'relative_path': u'urls',
+                'namespace': 'bulk_grades',
+                'regex': '^api/',
+                'relative_path': 'urls',
             },
         },
-        u'settings_config': {
-            u'lms.djangoapp': {
-                u'common': {'relative_path': u'settings.common'},
-                u'production': {'relative_path': u'settings.production'},
+        'settings_config': {
+            'lms.djangoapp': {
+                'common': {'relative_path': 'settings.common'},
+                'production': {'relative_path': 'settings.production'},
             },
         },
     }

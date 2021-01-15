@@ -67,7 +67,7 @@ MIDDLEWARE = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 CELERY_ALWAYS_EAGER = True
-CELERY_RESULT_BACKEND = 'file://{}'.format(results_dir.name)
+CELERY_RESULT_BACKEND = f'file://{results_dir.name}'
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = False
 CELERY_BROKER_URL = BROKER_URL = 'memory://'
 CELERY_BROKER_TRANSPORT = 'memory://'

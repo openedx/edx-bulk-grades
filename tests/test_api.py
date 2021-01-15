@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Tests for the `edx-bulk-grades` api module.
 """
@@ -8,18 +7,18 @@ Tests for the `edx-bulk-grades` api module.
 import datetime
 from copy import deepcopy
 from itertools import chain, cycle, repeat
+from unittest.mock import MagicMock, Mock, patch
 
 import ddt
+import lms.djangoapps.grades.api as grades_api
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.test import TestCase
-from mock import MagicMock, Mock, patch
 from opaque_keys.edx.keys import UsageKey
+from student.models import CourseEnrollment, Profile, ProgramCourseEnrollment
 from super_csv.csv_processor import ValidationError
 
-import lms.djangoapps.grades.api as grades_api
 from bulk_grades import api
-from student.models import CourseEnrollment, Profile, ProgramCourseEnrollment
 
 
 class BaseTests(TestCase):

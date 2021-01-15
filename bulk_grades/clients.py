@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 slumber client for REST service consumption.
 """
@@ -25,7 +24,7 @@ class TokenAuth(requests.auth.AuthBase):
         """
         Configure headers.
         """
-        r.headers['Authorization'] = 'Token {}'.format(self.token)
+        r.headers['Authorization'] = f'Token {self.token}'
         return r
 
 

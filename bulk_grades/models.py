@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Database models for bulk_grades.
 """
@@ -26,4 +25,4 @@ class ScoreOverrider(TimeStampedModel):
 
     def __str__(self):
         """Return string representation."""
-        return 'ScoreOverrider({}, {})'.format(self.module.module_state_key, self.user)
+        return f'ScoreOverrider({self.module.module_state_key}, {self.user})'

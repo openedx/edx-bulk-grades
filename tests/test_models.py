@@ -1,14 +1,13 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Tests for the `edx-bulk-grades` models module.
 """
 
+from courseware.models import StudentModule
 from django.contrib.auth.models import User
 from django.test import TestCase
 
 from bulk_grades.models import ScoreOverrider
-from courseware.models import StudentModule
 
 
 class TestScoreOverrider(TestCase):

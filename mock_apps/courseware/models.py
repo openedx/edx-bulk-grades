@@ -1,7 +1,6 @@
-from opaque_keys.edx.django.models import CourseKeyField, UsageKeyField
-
 from django.contrib.auth import get_user_model
 from django.db import models
+from opaque_keys.edx.django.models import CourseKeyField, UsageKeyField
 
 
 class StudentModule(models.Model):
@@ -18,7 +17,7 @@ class StudentModule(models.Model):
 
     course_id = CourseKeyField(max_length=255, db_index=True)
 
-    class Meta(object):
+    class Meta:
         app_label = "courseware"
         unique_together = (('student', 'module_state_key', 'course_id'),)
 
