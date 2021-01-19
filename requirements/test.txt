@@ -65,6 +65,7 @@ django-waffle==2.0.0
     #   -r requirements/base.txt
     #   edx-django-utils
     # via
+    #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -c requirements/constraints.txt
     #   -r requirements/base.txt
     #   code-annotations
