@@ -102,3 +102,10 @@ dummy_translations: ## generate dummy translation (.po) files
 build_dummy_translations: extract_translations dummy_translations compile_translations ## generate and compile dummy translation files
 
 validate_translations: build_dummy_translations detect_changed_source_translations ## validate translations
+
+##################
+#Devstack commands
+##################
+
+install-local-bulk-grades: ## installs your local bulk-grades code into the LMS virtualenv
+	docker exec -t edx.devstack.lms bash -c '. /edx/app/edxapp/venvs/edxapp/bin/activate && cd /edx/app/edxapp/edx-platform && pip uninstall -y edx-bulk-grades && pip install -e /edx/src/edx-bulk-grades && pip freeze | grep edx-bulk-grades'
