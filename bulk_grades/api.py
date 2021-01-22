@@ -265,7 +265,7 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
     """
 
     required_columns = ['user_id', 'course_id']
-    subsection_prefixes = ('name', 'original_grade', 'previous_override', 'new_override',)
+    subsection_prefixes = ('name', 'grade', 'original_grade', 'previous_override', 'new_override',)
 
     def __init__(self, **kwargs):
         """
@@ -427,11 +427,14 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
                 row[f'name-{block_id}'] = display_name
                 grade = grades.get(subsection.location, None)
                 if grade:
+                    effective_grade = grade.earned_graded
                     row[f'original_grade-{block_id}'] = grade.earned_graded
                     try:
+                        effective_grade = grade.override.earned_graded_override
                         row[f'previous_override-{block_id}'] = grade.override.earned_graded_override
                     except AttributeError:
                         row[f'previous_override-{block_id}'] = None
+                    row[f'grade-{block_id}'] = effective_grade
             yield row
 
 

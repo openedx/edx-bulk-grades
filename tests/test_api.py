@@ -219,17 +219,20 @@ class TestGradedSubsectionMixin(BaseTests):
 
     def test_subsection_column_names(self):
         short_subsection_ids = ['subsection-1', 'subsection-2', 'subsection-3']
-        prefixes = ['original_grade', 'previous_override', 'new_override']
+        prefixes = ['grade', 'original_grade', 'previous_override', 'new_override']
 
         # pylint: disable=protected-access
         actual_column_names = self.instance._subsection_column_names(short_subsection_ids, prefixes)
         expected_column_names = [
+            'grade-subsection-1',
             'original_grade-subsection-1',
             'previous_override-subsection-1',
             'new_override-subsection-1',
+            'grade-subsection-2',
             'original_grade-subsection-2',
             'previous_override-subsection-2',
             'new_override-subsection-2',
+            'grade-subsection-3',
             'original_grade-subsection-3',
             'previous_override-subsection-3',
             'new_override-subsection-3',
@@ -334,10 +337,12 @@ class TestGradeProcessor(BaseTests):
             'track',
             'cohort',
             'name-homework',
+            'grade-homework',
             'original_grade-homework',
             'previous_override-homework',
             'new_override-homework',
             'name-lab_ques',
+            'grade-lab_ques',
             'original_grade-lab_ques',
             'previous_override-lab_ques',
             'new_override-lab_ques'
@@ -485,6 +490,45 @@ class TestGradeProcessor(BaseTests):
         mock_csv += ','.join('' if v is None else str(v) for v in mock_csv_data.values())
         buf = ContentFile(mock_csv.encode('utf-8'))
         processor.process_file(buf)
+
+    @patch('lms.djangoapps.grades.api.CourseGradeFactory.read')
+    @patch('lms.djangoapps.grades.api.get_subsection_grades')
+    @patch('lms.djangoapps.grades.api.graded_subsections_for_course_id')
+    def test_assignment_grade(self, mocked_graded_subsections, mocked_get_subsection_grades, mocked_course_grade):
+        # Two mock graded subsections
+        mock_graded_subsections = self._mock_graded_subsections()
+        mocked_graded_subsections.return_value = mock_graded_subsections
+
+        # For each user, we want a subsection with:
+        #  - an original_grade, but no override
+        #  - an original_grade and an override
+        mocked_get_subsection_grades.side_effect = mock_subsection_grade(
+            cycle([
+                make_mock_grade(earned_graded=3, possible_graded=5),
+                make_mock_grade(earned_graded=3, possible_graded=5, override=Mock(earned_graded_override=5))
+            ])
+        )
+
+        # We need to mock the course grade or everything will explode
+        mocked_course_grade.return_value = Mock(percent=1)
+
+        processor = api.GradeCSVProcessor(course_id=self.course_id)
+        rows = list(processor.get_iterator())
+        headers = rows[0].strip().split(',')
+        # Massage data into a list of dicts, keyed on column header
+        table = [
+            {header: user_row_val for header, user_row_val in zip(headers, user_row.strip().split(','))}
+            for user_row in rows[1:]
+        ]
+
+        # If there's an overrride, use that, if not, use the original grade
+        for learner_data_row in table:
+            assert learner_data_row['grade-homework'] == '3'
+            assert learner_data_row['original_grade-homework'] == '3'
+            assert learner_data_row['previous_override-homework'] == ''
+            assert learner_data_row['grade-lab_ques'] == '5'
+            assert learner_data_row['original_grade-lab_ques'] == '3'
+            assert learner_data_row['previous_override-lab_ques'] == '5'
 
 
 @ddt.ddt

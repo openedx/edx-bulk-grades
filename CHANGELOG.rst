@@ -13,7 +13,12 @@ Change Log
 
 Unreleased
 ~~~~~~~~~~
-*
+
+[0.8.6] - 2021-01-22
+~~~~~~~~~~~~~~~~~~~~~
+* Added a management command ``install-local`` that will install your local code into devstack LMS
+* GradeCSVProcessor export now includes an additional column per subsection, ``grade-{subsection_id}``. 
+  This column is equal to the ``original_grade`` column for that subsection if there is no override, or equal to ``previous_override`` if there is an override.
 
 [0.8.5] - 2020-12-24
 ~~~~~~~~~~~~~~~~~~~~~
