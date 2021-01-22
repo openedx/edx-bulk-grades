@@ -29,6 +29,10 @@ and are on a command prompt inside the LMS container.
 
     pip uninstall edx-bulk-grades -y; pip install -e /edx/src/edx-bulk-grades
 
+   Or, you can run the following make command::
+
+    make install-local
+
 3. Now, get your bulk-grades development environment set up::
 
     cd /edx/src/edx-bulk-grades
