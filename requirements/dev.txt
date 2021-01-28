@@ -4,7 +4,7 @@
 #
 #    make upgrade
 #
-amqp==5.0.2
+amqp==5.0.5
     # via
     #   -r requirements/quality.txt
     #   kombu
@@ -39,6 +39,7 @@ chardet==4.0.0
     # via
     #   -r requirements/quality.txt
     #   -r requirements/travis.txt
+    #   diff-cover
     #   requests
 click-didyoumean==0.0.3
     # via
@@ -68,11 +69,13 @@ click==7.1.2
     #   code-annotations
     #   edx-lint
     #   pip-tools
-code-annotations==0.10.2
-    # via -r requirements/quality.txt
+code-annotations==1.0.2
+    # via
+    #   -r requirements/quality.txt
+    #   edx-lint
 codecov==2.1.11
     # via -r requirements/travis.txt
-coverage==5.3.1
+coverage==5.4
     # via
     #   -r requirements/quality.txt
     #   -r requirements/travis.txt
@@ -80,7 +83,7 @@ coverage==5.3.1
     #   pytest-cov
 ddt==1.4.1
     # via -r requirements/quality.txt
-diff-cover==4.1.1
+diff-cover==4.2.0
     # via -r requirements/dev.in
 distlib==0.3.1
     # via
@@ -96,7 +99,7 @@ django-model-utils==4.1.1
     #   -r requirements/quality.txt
     #   edx-celeryutils
     #   super-csv
-django-waffle==2.0.0
+django-waffle==2.1.0
     # via
     #   -r requirements/quality.txt
     #   edx-django-utils
@@ -112,13 +115,14 @@ django==2.2.17
     #   edx-celeryutils
     #   edx-django-utils
     #   edx-i18n-tools
+    #   edx-lint
     #   jsonfield2
     #   super-csv
 djangorestframework==3.12.2
     # via
     #   -r requirements/quality.txt
     #   super-csv
-edx-celeryutils==0.5.7
+edx-celeryutils==1.0.0
     # via
     #   -r requirements/quality.txt
     #   super-csv
@@ -128,7 +132,7 @@ edx-django-utils==3.13.0
     #   super-csv
 edx-i18n-tools==0.5.3
     # via -r requirements/dev.in
-edx-lint==1.6
+edx-lint==3.0.2
     # via -r requirements/quality.txt
 edx-opaque-keys==2.1.1
     # via -r requirements/quality.txt
@@ -186,7 +190,7 @@ mccabe==0.6.1
     #   pylint
 mock==4.0.3
     # via -r requirements/quality.txt
-newrelic==5.24.0.153
+newrelic==6.0.1.155
     # via
     #   -r requirements/quality.txt
     #   edx-django-utils
@@ -215,7 +219,7 @@ pluggy==0.13.1
     #   tox
 polib==1.1.0
     # via edx-i18n-tools
-prompt-toolkit==3.0.10
+prompt-toolkit==3.0.14
     # via
     #   -r requirements/quality.txt
     #   click-repl
@@ -239,7 +243,7 @@ pylint-celery==0.3
     # via
     #   -r requirements/quality.txt
     #   edx-lint
-pylint-django==2.3.0
+pylint-django==2.4.2
     # via
     #   -r requirements/quality.txt
     #   edx-lint
@@ -264,11 +268,11 @@ pyparsing==2.4.7
     #   -r requirements/quality.txt
     #   -r requirements/travis.txt
     #   packaging
-pytest-cov==2.11.0
+pytest-cov==2.11.1
     # via -r requirements/quality.txt
 pytest-django==4.1.0
     # via -r requirements/quality.txt
-pytest==6.2.1
+pytest==6.2.2
     # via
     #   -r requirements/quality.txt
     #   pytest-cov
@@ -282,7 +286,7 @@ pytz==2020.5
     #   -r requirements/quality.txt
     #   celery
     #   django
-pyyaml==5.3.1
+pyyaml==5.4.1
     # via
     #   -r requirements/quality.txt
     #   code-annotations
@@ -310,7 +314,7 @@ six==1.15.0
     #   virtualenv
 slumber==0.7.1
     # via -r requirements/quality.txt
-snowballstemmer==2.0.0
+snowballstemmer==2.1.0
     # via
     #   -r requirements/quality.txt
     #   pydocstyle
@@ -339,11 +343,11 @@ toml==0.10.2
     #   tox
 tox-battery==0.6.1
     # via -r requirements/travis.txt
-tox==3.21.2
+tox==3.21.3
     # via
     #   -r requirements/travis.txt
     #   tox-battery
-urllib3==1.26.2
+urllib3==1.26.3
     # via
     #   -r requirements/quality.txt
     #   -r requirements/travis.txt

@@ -44,9 +44,9 @@ click==7.1.2
     #   click-plugins
     #   click-repl
     #   code-annotations
-code-annotations==0.10.2
+code-annotations==1.0.2
     # via -r requirements/test.in
-coverage==5.3.1
+coverage==5.4
     # via pytest-cov
 ddt==1.4.1
     # via -r requirements/test.in
@@ -60,7 +60,7 @@ django-model-utils==4.1.1
     #   -r requirements/base.txt
     #   edx-celeryutils
     #   super-csv
-django-waffle==2.0.0
+django-waffle==2.1.0
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
@@ -80,7 +80,7 @@ djangorestframework==3.12.2
     # via
     #   -r requirements/base.txt
     #   super-csv
-edx-celeryutils==0.5.7
+edx-celeryutils==1.0.0
     # via
     #   -r requirements/base.txt
     #   super-csv
@@ -113,7 +113,7 @@ markupsafe==1.1.1
     # via jinja2
 mock==4.0.3
     # via -r requirements/test.in
-newrelic==5.24.0.153
+newrelic==6.0.1.155
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
@@ -125,7 +125,7 @@ pbr==5.5.1
     #   stevedore
 pluggy==0.13.1
     # via pytest
-prompt-toolkit==3.0.10
+prompt-toolkit==3.0.14
     # via
     #   -r requirements/base.txt
     #   click-repl
@@ -141,11 +141,11 @@ pymongo==3.11.2
     #   edx-opaque-keys
 pyparsing==2.4.7
     # via packaging
-pytest-cov==2.11.0
+pytest-cov==2.11.1
     # via -r requirements/test.in
 pytest-django==4.1.0
     # via -r requirements/test.in
-pytest==6.2.1
+pytest==6.2.2
     # via
     #   pytest-cov
     #   pytest-django
@@ -156,7 +156,7 @@ pytz==2020.5
     #   -r requirements/base.txt
     #   celery
     #   django
-pyyaml==5.3.1
+pyyaml==5.4.1
     # via code-annotations
 requests==2.25.1
     # via
@@ -189,7 +189,7 @@ text-unidecode==1.3
     # via python-slugify
 toml==0.10.2
     # via pytest
-urllib3==1.26.2
+urllib3==1.26.3
     # via
     #   -r requirements/base.txt
     #   requests
