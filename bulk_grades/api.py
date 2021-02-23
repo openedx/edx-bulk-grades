@@ -461,6 +461,36 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
             self.preprocess_export_row(row)
             yield writer.writerow(row)
 
+    def filter_unmodified_subsection_columns(self):
+        """
+        To trim down grade exports, only show subsections which were modified in a bulk update.
+        Returns: a filtered list of columns to export, preserving modified and non-subsection columns
+        """
+        unmodified_subsections = set()
+        for subsection in self._subsections.keys():
+            unmodified_subsections.add(subsection)
+
+        for row in self.result_data:
+            # Ignore rows which didn't introduce changes
+            if row['status'] == 'No Action':
+                continue
+
+            modified_by_row = set()
+
+            # Get changes this row introduced for an as-yet-unmodified subsection
+            for subsection in unmodified_subsections:
+                if row[f'new_override-{subsection}'] != '':
+                    modified_by_row.add(subsection)
+
+            # Remove modified subsections from the unmodified list
+            unmodified_subsections.difference_update(modified_by_row)
+
+        # Find and remove all column names referring to unmodified subsections, preserving others
+        columns = self.columns.copy()
+        for unmodified_column in self._subsection_column_names(unmodified_subsections, self.subsection_prefixes):
+            columns.remove(unmodified_column)
+
+        return columns
 
 class InterventionCSVProcessor(GradedSubsectionMixin, CSVProcessor):
     """

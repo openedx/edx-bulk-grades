@@ -104,7 +104,11 @@ class GradeImportExport(GradeOnlyExport):
         """
         Create an iterator for exporting grade data.
         """
-        return self.processor.get_iterator(error_data=bool(request.GET.get('error_id', '')))
+        columns = self.processor.columns
+        # Adding the 'modified_only' query param shows only modified subsections
+        if bool(request.GET.get('modified_only', '')):
+            columns = self.processor.filter_unmodified_subsection_columns()
+        return self.processor.get_iterator(error_data=bool(request.GET.get('error_id', '')), columns=columns)
 
     # pylint: disable=inconsistent-return-statements
     def initialize_processor(self, request, course_id):
