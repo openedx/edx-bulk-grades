@@ -444,14 +444,13 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         Largely copied from the super-csv implementation at
         https://github.com/edx/super-csv/blob/b8192a81811dfda48017068f4f9589570cd8bb61/super_csv/csv_processor.py#L153
         """
-        columns = columns or self.columns
-
+        # The request for the history report is deliniated by the "error_data" flag
         if error_data:
-            # return an iterator of the original data with an added error column
             rows = self.result_data
-            columns += ['status', 'error']
+            columns = self.filter_unmodified_subsection_columns() + ['status', 'error']
         else:
             rows = rows or self.get_rows_to_export()
+            columns = columns or self.columns
 
         # This is where we override the CSV DictWriter "extrasaction" setting
         writer = csv.DictWriter(Echo(), columns, extrasaction='ignore')
