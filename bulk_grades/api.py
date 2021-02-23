@@ -4,6 +4,7 @@ Bulk Grading API.
 
 
 import logging
+import csv
 from collections import OrderedDict
 from itertools import product
 
@@ -15,7 +16,7 @@ from django.utils.translation import ugettext as _
 from lms.djangoapps.grades import api as grades_api
 from opaque_keys.edx.keys import CourseKey, UsageKey
 from openedx.core.djangoapps.course_groups.cohorts import get_cohort
-from super_csv.csv_processor import CSVProcessor, DeferrableMixin, ValidationError
+from super_csv.csv_processor import CSVProcessor, DeferrableMixin, ValidationError, Echo
 
 from bulk_grades.clients import LearnerAPIClient
 
@@ -436,6 +437,29 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
                         row[f'previous_override-{block_id}'] = None
                     row[f'grade-{block_id}'] = effective_grade
             yield row
+
+    def get_iterator(self, rows=None, columns=None, error_data=False):
+        """
+        Overrride the default CSV export functionality to allow column filtering.
+        Largely copied from the super-csv implementation at
+        https://github.com/edx/super-csv/blob/b8192a81811dfda48017068f4f9589570cd8bb61/super_csv/csv_processor.py#L153
+        """
+        columns = columns or self.columns
+
+        if error_data:
+            # return an iterator of the original data with an added error column
+            rows = self.result_data
+            columns += ['status', 'error']
+        else:
+            rows = rows or self.get_rows_to_export()
+
+        # This is where we override the CSV DictWriter "extrasaction" setting
+        writer = csv.DictWriter(Echo(), columns, extrasaction='ignore')
+        header = writer.writerow(dict(zip(writer.fieldnames, writer.fieldnames)))
+        yield header
+        for row in rows:
+            self.preprocess_export_row(row)
+            yield writer.writerow(row)
 
 
 class InterventionCSVProcessor(GradedSubsectionMixin, CSVProcessor):
