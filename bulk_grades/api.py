@@ -482,7 +482,8 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
                     modified_by_row.add(subsection)
 
             # Remove modified subsections from the unmodified list
-            unmodified_subsections.difference_update(modified_by_row)
+            if modified_by_row:
+                unmodified_subsections.difference_update(modified_by_row)
 
         # Find and remove all column names referring to unmodified subsections, preserving others
         columns = self.columns.copy()
