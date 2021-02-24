@@ -491,6 +491,7 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
 
         return columns
 
+
 class InterventionCSVProcessor(GradedSubsectionMixin, CSVProcessor):
     """
     CSV Processor for intervention report grades for masters track only.
