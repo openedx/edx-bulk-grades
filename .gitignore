@@ -78,6 +78,7 @@ tests/__init__.py
 
 # Development task artifacts
 default.db
+csv/
 
 # virtualenvs
 bulk-grades-env/
