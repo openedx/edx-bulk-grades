@@ -63,6 +63,18 @@ class BaseTests(TestCase):
             return_value.append(subsection)
         return return_value
 
+    def _create_mock_override_history(self):
+        """
+        Return some row data that mocks what would be loaded from an override history CSV
+        For 3 students, audit & masters received updates to the "homework" subsection
+        The "lab_ques" subsection is unmodified
+        """
+        return [
+            {'user_id': '1', 'username': 'audit@example.com', 'student_key': '', 'course_id': self.course_id, 'track': 'audit', 'cohort': '', 'name-homework': 'subsection-1', 'original_grade-homework': '', 'previous_override_homework': '', 'new_override-homework': '1', 'name-lab_ques': 'subsection-2', 'original_grade-lab_ques': '', 'previous_override-lab_ques': '', 'new_override-lab_ques': '', 'error': '', 'status': 'Success'},
+            {'user_id': '2', 'username': 'verified@example.com', 'student_key': '', 'course_id': self.course_id, 'track': 'audit', 'cohort': '', 'name-homework': 'subsection-1', 'original_grade-homework': '', 'previous_override_homework': '', 'new_override-homework': '', 'name-lab_ques': 'subsection-2', 'original_grade-lab_ques': '', 'previous_override-lab_ques': '', 'new_override-lab_ques': '', 'error': '', 'status': 'No Action'},
+            {'user_id': '3', 'username': 'masters@example.com', 'student_key': '', 'course_id': self.course_id, 'track': 'masters', 'cohort': '', 'name-homework': 'subsection-1', 'original_grade-homework': '', 'previous_override_homework': '', 'new_override-homework': '2', 'name-lab_ques': 'subsection-2', 'original_grade-lab_ques': '', 'previous_override-lab_ques': '', 'new_override-lab_ques': '', 'error': '', 'status': 'Success'},
+        ]
+
 
 class TestApi(BaseTests):
     """
@@ -400,7 +412,6 @@ class TestGradeProcessor(BaseTests):
             row = rows[i].split(',')
             assert row[grade_column_index] == '1'
 
-
     @patch('lms.djangoapps.grades.api.CourseGradeFactory.read')
     def test_course_grade_filters(self, course_grade_factory_mock):
         course_grade_factory_mock.side_effect = cycle((Mock(percent=0.50), Mock(percent=0.70), Mock(percent=0.90)))
@@ -529,6 +540,36 @@ class TestGradeProcessor(BaseTests):
             assert learner_data_row['grade-lab_ques'] == '5'
             assert learner_data_row['original_grade-lab_ques'] == '3'
             assert learner_data_row['previous_override-lab_ques'] == '5'
+
+    @patch('lms.djangoapps.grades.api.graded_subsections_for_course_id')
+    def test_filter_override_history_columns(self, mocked_graded_subsections):
+        # Given 2 graded subsections ...
+        mocked_graded_subsections.return_value = self._mock_graded_subsections()
+        processor = api.GradeCSVProcessor(course_id=self.course_id)
+        # One of which, "homework", was overridden
+        processor.result_data = self._create_mock_override_history()
+
+        # When I request a copy of the override report (error_data=<id> is set)
+        rows = list(processor.get_iterator(error_data='1'))
+
+        # Then my headers include the modified subsection headers, and exclude the unmodified section
+        headers = rows[0].strip().split(',')
+        expected_headers = [
+            'user_id',
+            'username',
+            'student_key',
+            'course_id',
+            'track',
+            'cohort',
+            'name-homework',
+            'grade-homework',
+            'original_grade-homework',
+            'previous_override-homework',
+            'new_override-homework',
+            'status',
+            'error']
+
+        assert headers == expected_headers
 
 
 @ddt.ddt
