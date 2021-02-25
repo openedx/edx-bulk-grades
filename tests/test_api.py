@@ -6,7 +6,7 @@ Tests for the `edx-bulk-grades` api module.
 
 import datetime
 from copy import deepcopy
-from itertools import chain, cycle, repeat
+from itertools import chain, cycle, product, repeat
 from unittest.mock import MagicMock, Mock, patch
 
 import ddt
@@ -69,11 +69,31 @@ class BaseTests(TestCase):
         For 3 students, audit & masters received updates to the "homework" subsection
         The "lab_ques" subsection is unmodified
         """
-        return [
-            {'user_id': '1', 'username': 'audit@example.com', 'student_key': '', 'course_id': self.course_id, 'track': 'audit', 'cohort': '', 'name-homework': 'subsection-1', 'original_grade-homework': '', 'previous_override_homework': '', 'new_override-homework': '1', 'name-lab_ques': 'subsection-2', 'original_grade-lab_ques': '', 'previous_override-lab_ques': '', 'new_override-lab_ques': '', 'error': '', 'status': 'Success'},
-            {'user_id': '2', 'username': 'verified@example.com', 'student_key': '', 'course_id': self.course_id, 'track': 'audit', 'cohort': '', 'name-homework': 'subsection-1', 'original_grade-homework': '', 'previous_override_homework': '', 'new_override-homework': '', 'name-lab_ques': 'subsection-2', 'original_grade-lab_ques': '', 'previous_override-lab_ques': '', 'new_override-lab_ques': '', 'error': '', 'status': 'No Action'},
-            {'user_id': '3', 'username': 'masters@example.com', 'student_key': '', 'course_id': self.course_id, 'track': 'masters', 'cohort': '', 'name-homework': 'subsection-1', 'original_grade-homework': '', 'previous_override_homework': '', 'new_override-homework': '2', 'name-lab_ques': 'subsection-2', 'original_grade-lab_ques': '', 'previous_override-lab_ques': '', 'new_override-lab_ques': '', 'error': '', 'status': 'Success'},
-        ]
+        result_data = []
+        prefixes = ['name', 'original_grade', 'previous_override', 'new_override']
+        subsections = ['homework', 'lab_ques']
+
+        for learner in self.learners:
+            row = {
+                'user_id': learner.id,
+                'username': learner.username,
+                'student_key': '',
+                'course_id': self.course_id,
+                'track': 'masters' if learner.username == 'masters@example.com' else 'audit',
+                'cohort': '',
+                'error': '',
+                'status': 'No Action'
+            }
+            # Add subsection data
+            for short_id, prefix in product(subsections, prefixes):
+                row[f'{prefix}-{short_id}'] = ''
+            result_data.append(row)
+
+        # Override homework for 2 students
+        result_data[0].update({'new_override-homework': '1', 'status': 'Success'})
+        result_data[2].update({'new_override-homework': '2', 'status': 'Success'})
+
+        return result_data
 
 
 class TestApi(BaseTests):
@@ -570,6 +590,7 @@ class TestGradeProcessor(BaseTests):
             'error']
 
         assert headers == expected_headers
+        assert len(rows) == self.NUM_USERS + 1
 
 
 @ddt.ddt
