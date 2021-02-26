@@ -58,6 +58,17 @@ class GradeImportExportViewTests(ViewTestsMixin, TestCase):
         for row in data:
             self.assertNotIn(inactive_learner.username, str(row))
 
+    @patch.object(GradeCSVProcessor, 'load')
+    @patch.object(GradeCSVProcessor, 'filtered_column_headers')
+    def test_get_history_filters_columns(self, csv_load, filter_columns):
+        # When I request the bulk grade history (error_id set in query)
+        self.client.login(username=self.staff.username, password=self.password)
+        response = self.client.get(f'{reverse("bulk_grades", args=[self.course_id])}?error_id=1')
+
+        # Assert that column filtering is called for the history report...
+        self.assertEqual(response.status_code, 200)
+        filter_columns.assert_called()
+
     def test_post(self):
         csv_content = 'user_id,username,course_id,track,cohort'
         csv_content += ',new_override-' + self.subsection_short_ids[0]

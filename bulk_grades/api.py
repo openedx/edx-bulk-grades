@@ -438,29 +438,7 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
                     row[f'grade-{block_id}'] = effective_grade
             yield row
 
-    def get_iterator(self, rows=None, columns=None, error_data=False):
-        """
-        Overrride the default CSV export functionality to allow column filtering.
-        Largely copied from the super-csv implementation at
-        https://github.com/edx/super-csv/blob/b8192a81811dfda48017068f4f9589570cd8bb61/super_csv/csv_processor.py#L153
-        """
-        # The request for the history report is deliniated by the "error_data" flag
-        if error_data:
-            rows = self.result_data
-            columns = self.filter_unmodified_subsection_columns() + ['status', 'error']
-        else:
-            rows = rows or self.get_rows_to_export()
-            columns = columns or self.columns
-
-        # This is where we override the CSV DictWriter "extrasaction" setting
-        writer = csv.DictWriter(Echo(), columns, extrasaction='ignore')
-        header = writer.writerow(dict(zip(writer.fieldnames, writer.fieldnames)))
-        yield header
-        for row in rows:
-            self.preprocess_export_row(row)
-            yield writer.writerow(row)
-
-    def filter_unmodified_subsection_columns(self):
+    def filtered_column_headers(self):
         """
         To trim down grade exports, only show subsections which were modified in a bulk update.
         Returns: a filtered list of columns to export, preserving modified and non-subsection columns

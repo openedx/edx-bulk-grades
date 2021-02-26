@@ -569,7 +569,8 @@ class TestGradeProcessor(BaseTests):
         # One of which, "homework", was overridden
         processor.result_data = self._create_mock_override_history()
 
-        # When I request a copy of the override report (error_data=<id> is set)
+        # When columns are filtered and I request a copy of the report
+        processor.columns = processor.filtered_column_headers()
         rows = list(processor.get_iterator(error_data='1'))
 
         # Then my headers include the modified subsection headers, and exclude the unmodified section
