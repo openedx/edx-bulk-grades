@@ -3,7 +3,6 @@ Bulk Grading API.
 """
 
 
-import csv
 import logging
 from collections import OrderedDict
 from itertools import product
@@ -16,7 +15,7 @@ from django.utils.translation import ugettext as _
 from lms.djangoapps.grades import api as grades_api
 from opaque_keys.edx.keys import CourseKey, UsageKey
 from openedx.core.djangoapps.course_groups.cohorts import get_cohort
-from super_csv.csv_processor import CSVProcessor, DeferrableMixin, Echo, ValidationError
+from super_csv.csv_processor import CSVProcessor, DeferrableMixin, ValidationError
 
 from bulk_grades.clients import LearnerAPIClient
 
