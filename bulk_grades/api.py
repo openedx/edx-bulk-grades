@@ -453,7 +453,7 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
 
             # Get changes this row introduced for an as-yet-unmodified subsection
             for subsection in unmodified_subsections:
-                if row[f'new_override-{subsection}'] != '':
+                if row[f'new_override-{subsection}'].strip() != '':
                     subsections_modified_by_row.add(subsection)
 
             # Remove modified subsections from the unmodified list
