@@ -442,9 +442,7 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         To trim down grade exports, only show subsections which were modified in a bulk update.
         Returns: a filtered list of columns to export, preserving modified and non-subsection columns
         """
-        unmodified_subsections = set()
-        for subsection in self._subsections.keys():
-            unmodified_subsections.add(subsection)
+        unmodified_subsections = set(self._subsections.keys())
 
         for row in self.result_data:
             # Ignore rows which didn't introduce changes
