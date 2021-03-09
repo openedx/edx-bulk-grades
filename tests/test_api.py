@@ -63,11 +63,9 @@ class BaseTests(TestCase):
             return_value.append(subsection)
         return return_value
 
-    def _create_mock_override_history(self):
+    def _mock_result_data(self, override=True):
         """
         Return some row data that mocks what would be loaded from an override history CSV
-        For 3 students, audit & masters received updates to the "homework" subsection
-        The "lab_ques" subsection is unmodified
         """
         result_data = []
         prefixes = ['name', 'original_grade', 'previous_override', 'new_override']
@@ -88,10 +86,6 @@ class BaseTests(TestCase):
             for short_id, prefix in product(subsections, prefixes):
                 row[f'{prefix}-{short_id}'] = ''
             result_data.append(row)
-
-        # Override homework for 2 students
-        result_data[0].update({'new_override-homework': '1', 'status': 'Success'})
-        result_data[2].update({'new_override-homework': '2', 'status': 'Success'})
 
         return result_data
 
@@ -566,8 +560,11 @@ class TestGradeProcessor(BaseTests):
         # Given 2 graded subsections ...
         mocked_graded_subsections.return_value = self._mock_graded_subsections()
         processor = api.GradeCSVProcessor(course_id=self.course_id)
-        # One of which, "homework", was overridden
-        processor.result_data = self._create_mock_override_history()
+        processor.result_data = self._mock_result_data()
+
+        # One of which, "homework", was overridden for 2 students
+        processor.result_data[0].update({'new_override-homework': '1', 'status': 'Success'})
+        processor.result_data[2].update({'new_override-homework': '2', 'status': 'Success'})
 
         # When columns are filtered and I request a copy of the report
         processor.columns = processor.filtered_column_headers()
@@ -587,6 +584,32 @@ class TestGradeProcessor(BaseTests):
             'original_grade-homework',
             'previous_override-homework',
             'new_override-homework',
+            'status',
+            'error']
+
+        assert headers == expected_headers
+        assert len(rows) == self.NUM_USERS + 1
+
+    @patch('lms.djangoapps.grades.api.graded_subsections_for_course_id')
+    def test_filter_override_history_noop(self, mocked_graded_subsections):
+        # Given no overrides for a given report
+        mocked_graded_subsections.return_value = self._mock_graded_subsections()
+        processor = api.GradeCSVProcessor(course_id=self.course_id)
+        processor.result_data = self._mock_result_data()
+
+        # When columns are filtered and I request a copy of the report
+        processor.columns = processor.filtered_column_headers()
+        rows = list(processor.get_iterator(error_data='1'))
+
+        # Then my headers don't include any subsections
+        headers = rows[0].strip().split(',')
+        expected_headers = [
+            'user_id',
+            'username',
+            'student_key',
+            'course_id',
+            'track',
+            'cohort',
             'status',
             'error']
 
