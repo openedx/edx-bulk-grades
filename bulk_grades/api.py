@@ -449,16 +449,16 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
             if row['status'] == 'No Action':
                 continue
 
-            modified_by_row = set()
+            subsections_modified_by_row = set()
 
             # Get changes this row introduced for an as-yet-unmodified subsection
             for subsection in unmodified_subsections:
                 if row[f'new_override-{subsection}'] != '':
-                    modified_by_row.add(subsection)
+                    subsections_modified_by_row.add(subsection)
 
             # Remove modified subsections from the unmodified list
-            if modified_by_row:
-                unmodified_subsections.difference_update(modified_by_row)
+            if subsections_modified_by_row:
+                unmodified_subsections.difference_update(subsections_modified_by_row)
 
         # Find and remove all column names referring to unmodified subsections, preserving others
         columns = self.columns.copy()
