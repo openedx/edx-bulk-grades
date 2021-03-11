@@ -6,7 +6,7 @@
 #
 alabaster==0.7.12
     # via sphinx
-amqp==5.0.2
+amqp==5.0.5
     # via
     #   -r requirements/test.txt
     #   kombu
@@ -20,7 +20,7 @@ billiard==3.6.3.0
     # via
     #   -r requirements/test.txt
     #   celery
-bleach==3.2.1
+bleach==3.2.3
     # via readme-renderer
 celery==5.0.5
     # via
@@ -31,6 +31,8 @@ certifi==2020.12.5
     # via
     #   -r requirements/test.txt
     #   requests
+cffi==1.14.4
+    # via cryptography
 chardet==4.0.0
     # via
     #   -r requirements/test.txt
@@ -56,14 +58,16 @@ click==7.1.2
     #   click-plugins
     #   click-repl
     #   code-annotations
-code-annotations==0.10.2
+code-annotations==1.0.2
     # via -r requirements/test.txt
 colorama==0.4.4
     # via twine
-coverage==5.3.1
+coverage==5.4
     # via
     #   -r requirements/test.txt
     #   pytest-cov
+cryptography==3.3.1
+    # via secretstorage
 ddt==1.4.1
     # via -r requirements/test.txt
 django-crum==0.7.9
@@ -76,7 +80,7 @@ django-model-utils==4.1.1
     #   -r requirements/test.txt
     #   edx-celeryutils
     #   super-csv
-django-waffle==2.0.0
+django-waffle==2.1.0
     # via
     #   -r requirements/test.txt
     #   edx-django-utils
@@ -105,7 +109,7 @@ docutils==0.16
     #   readme-renderer
     #   restructuredtext-lint
     #   sphinx
-edx-celeryutils==0.5.7
+edx-celeryutils==1.0.0
     # via
     #   -r requirements/test.txt
     #   super-csv
@@ -115,7 +119,7 @@ edx-django-utils==3.13.0
     #   super-csv
 edx-opaque-keys==2.1.1
     # via -r requirements/test.txt
-edx-sphinx-theme==1.6.0
+edx-sphinx-theme==1.6.1
     # via -r requirements/doc.in
 future==0.18.2
     # via
@@ -131,6 +135,10 @@ iniconfig==1.1.1
     # via
     #   -r requirements/test.txt
     #   pytest
+jeepney==0.6.0
+    # via
+    #   keyring
+    #   secretstorage
 jinja2==2.11.2
     # via
     #   -r requirements/test.txt
@@ -140,7 +148,7 @@ jsonfield2==4.0.0.post0
     # via
     #   -r requirements/test.txt
     #   edx-celeryutils
-keyring==21.8.0
+keyring==22.0.1
     # via twine
 kombu==5.0.2
     # via
@@ -152,7 +160,7 @@ markupsafe==1.1.1
     #   jinja2
 mock==4.0.3
     # via -r requirements/test.txt
-newrelic==5.24.0.153
+newrelic==6.0.1.155
     # via
     #   -r requirements/test.txt
     #   edx-django-utils
@@ -172,7 +180,7 @@ pluggy==0.13.1
     # via
     #   -r requirements/test.txt
     #   pytest
-prompt-toolkit==3.0.10
+prompt-toolkit==3.0.14
     # via
     #   -r requirements/test.txt
     #   click-repl
@@ -184,6 +192,8 @@ py==1.10.0
     # via
     #   -r requirements/test.txt
     #   pytest
+pycparser==2.20
+    # via cffi
 pygments==2.7.4
     # via
     #   doc8
@@ -197,11 +207,11 @@ pyparsing==2.4.7
     # via
     #   -r requirements/test.txt
     #   packaging
-pytest-cov==2.11.0
+pytest-cov==2.11.1
     # via -r requirements/test.txt
 pytest-django==4.1.0
     # via -r requirements/test.txt
-pytest==6.2.1
+pytest==6.2.2
     # via
     #   -r requirements/test.txt
     #   pytest-cov
@@ -216,7 +226,7 @@ pytz==2020.5
     #   babel
     #   celery
     #   django
-pyyaml==5.3.1
+pyyaml==5.4.1
     # via
     #   -r requirements/test.txt
     #   code-annotations
@@ -237,6 +247,8 @@ restructuredtext-lint==1.3.2
     # via doc8
 rfc3986==1.4.0
     # via twine
+secretstorage==3.3.0
+    # via keyring
 simplejson==3.17.2
     # via
     #   -r requirements/test.txt
@@ -246,13 +258,14 @@ six==1.15.0
     #   -r requirements/test.txt
     #   bleach
     #   click-repl
+    #   cryptography
     #   doc8
     #   edx-opaque-keys
     #   edx-sphinx-theme
     #   readme-renderer
 slumber==0.7.1
     # via -r requirements/test.txt
-snowballstemmer==2.0.0
+snowballstemmer==2.1.0
     # via sphinx
 sphinx==3.4.3
     # via
@@ -295,7 +308,7 @@ tqdm==4.56.0
     # via twine
 twine==3.3.0
     # via -r requirements/doc.in
-urllib3==1.26.2
+urllib3==1.26.3
     # via
     #   -r requirements/test.txt
     #   requests
