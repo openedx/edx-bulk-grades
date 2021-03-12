@@ -254,7 +254,7 @@ stevedore==3.3.0
     #   code-annotations
     #   edx-django-utils
     #   edx-opaque-keys
-super-csv==2.0.0
+super-csv==2.0.1
     # via -r requirements/test.txt
 text-unidecode==1.3
     # via
