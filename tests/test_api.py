@@ -6,7 +6,7 @@ Tests for the `edx-bulk-grades` api module.
 
 import datetime
 from copy import deepcopy
-from itertools import chain, cycle, repeat
+from itertools import chain, cycle, product, repeat
 from unittest.mock import MagicMock, Mock, patch
 
 import ddt
@@ -62,6 +62,32 @@ class BaseTests(TestCase):
             subsection.location.block_id = block_id
             return_value.append(subsection)
         return return_value
+
+    def _mock_result_data(self, override=True):
+        """
+        Return some row data that mocks what would be loaded from an override history CSV
+        """
+        result_data = []
+        prefixes = ['name', 'original_grade', 'previous_override', 'new_override']
+        subsections = ['homework', 'lab_ques']
+
+        for learner in self.learners:
+            row = {
+                'user_id': learner.id,
+                'username': learner.username,
+                'student_key': '',
+                'course_id': self.course_id,
+                'track': 'masters' if learner.username == 'masters@example.com' else 'audit',
+                'cohort': '',
+                'error': '',
+                'status': 'No Action'
+            }
+            # Add subsection data
+            for short_id, prefix in product(subsections, prefixes):
+                row[f'{prefix}-{short_id}'] = ''
+            result_data.append(row)
+
+        return result_data
 
 
 class TestApi(BaseTests):
@@ -400,7 +426,6 @@ class TestGradeProcessor(BaseTests):
             row = rows[i].split(',')
             assert row[grade_column_index] == '1'
 
-
     @patch('lms.djangoapps.grades.api.CourseGradeFactory.read')
     def test_course_grade_filters(self, course_grade_factory_mock):
         course_grade_factory_mock.side_effect = cycle((Mock(percent=0.50), Mock(percent=0.70), Mock(percent=0.90)))
@@ -529,6 +554,67 @@ class TestGradeProcessor(BaseTests):
             assert learner_data_row['grade-lab_ques'] == '5'
             assert learner_data_row['original_grade-lab_ques'] == '3'
             assert learner_data_row['previous_override-lab_ques'] == '5'
+
+    @patch('lms.djangoapps.grades.api.graded_subsections_for_course_id')
+    def test_filter_override_history_columns(self, mocked_graded_subsections):
+        # Given 2 graded subsections ...
+        mocked_graded_subsections.return_value = self._mock_graded_subsections()
+        processor = api.GradeCSVProcessor(course_id=self.course_id)
+        processor.result_data = self._mock_result_data()
+
+        # One of which, "homework", was overridden for 2 students
+        processor.result_data[0].update({'new_override-homework': '1', 'status': 'Success'})
+        processor.result_data[2].update({'new_override-homework': '2', 'status': 'Success'})
+
+        # When columns are filtered and I request a copy of the report
+        processor.columns = processor.filtered_column_headers()
+        rows = list(processor.get_iterator(error_data='1'))
+
+        # Then my headers include the modified subsection headers, and exclude the unmodified section
+        headers = rows[0].strip().split(',')
+        expected_headers = [
+            'user_id',
+            'username',
+            'student_key',
+            'course_id',
+            'track',
+            'cohort',
+            'name-homework',
+            'grade-homework',
+            'original_grade-homework',
+            'previous_override-homework',
+            'new_override-homework',
+            'status',
+            'error']
+
+        assert headers == expected_headers
+        assert len(rows) == self.NUM_USERS + 1
+
+    @patch('lms.djangoapps.grades.api.graded_subsections_for_course_id')
+    def test_filter_override_history_noop(self, mocked_graded_subsections):
+        # Given no overrides for a given report
+        mocked_graded_subsections.return_value = self._mock_graded_subsections()
+        processor = api.GradeCSVProcessor(course_id=self.course_id)
+        processor.result_data = self._mock_result_data()
+
+        # When columns are filtered and I request a copy of the report
+        processor.columns = processor.filtered_column_headers()
+        rows = list(processor.get_iterator(error_data='1'))
+
+        # Then my headers don't include any subsections
+        headers = rows[0].strip().split(',')
+        expected_headers = [
+            'user_id',
+            'username',
+            'student_key',
+            'course_id',
+            'track',
+            'cohort',
+            'status',
+            'error']
+
+        assert headers == expected_headers
+        assert len(rows) == self.NUM_USERS + 1
 
 
 @ddt.ddt

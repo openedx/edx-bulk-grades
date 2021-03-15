@@ -14,6 +14,11 @@ Change Log
 Unreleased
 ~~~~~~~~~~
 
+[0.8.7] - 2021-03-15
+~~~~~~~~~~~~~~~~~~~~~
+* Upgrade super-csv to 2.0.1
+* Only show modified subsections in the Bulk Grade Override Report.
+
 [0.8.6] - 2021-01-22
 ~~~~~~~~~~~~~~~~~~~~~
 * Added a management command ``install-local`` that will install your local code into devstack LMS

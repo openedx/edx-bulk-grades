@@ -114,6 +114,7 @@ class GradeImportExport(GradeOnlyExport):
         operation_id = request.GET.get('error_id', '')
         if operation_id:
             self.processor = api.GradeCSVProcessor.load(operation_id)
+            self.processor.columns = self.processor.filtered_column_headers()
             if self.processor.course_id != course_id:
                 return HttpResponseForbidden()
             self.extra_filename = 'graded-results'

@@ -100,7 +100,7 @@ stevedore==3.3.0
     # via
     #   edx-django-utils
     #   edx-opaque-keys
-super-csv==2.0.0
+super-csv==2.0.1
     # via -r requirements/base.in
 urllib3==1.26.3
     # via requests
