@@ -28,7 +28,7 @@ log = logging.getLogger(__name__)
 UNKNOWN_LAST_SCORE_OVERRIDER = 'unknown'
 
 
-def _get_enrollments(course_id, track=None, cohort=None, active_only=False):
+def _get_enrollments(course_id, track=None, cohort=None, active_only=False, excluded_course_roles=None):
     """
     Return iterator of enrollment dictionaries.
 
@@ -52,6 +52,15 @@ def _get_enrollments(course_id, track=None, cohort=None, active_only=False):
             user__cohortmembership__course_user_group__name=cohort)
     if active_only:
         enrollments = enrollments.filter(is_active=True)
+    if excluded_course_roles:
+        if 'all' in excluded_course_roles:
+            enrollments = enrollments.exclude(user__courseaccessrole__course_id=course_id)
+        else:
+            enrollments = enrollments.exclude(
+                user__courseaccessrole__course_id=course_id,
+                user__courseaccessrole__role__in=excluded_course_roles
+            )
+
     for enrollment in enrollments:
         enrollment_dict = {
             'user': enrollment.user,
@@ -283,6 +292,7 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         self.cohort = None
         self.user_id = None
         self.active_only = False
+        self.excluded_course_roles = None
 
         # The CSVProcessor.__init__ method will set attributes on self
         # from items in kwargs, so this super().__init__() call can
@@ -382,7 +392,13 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         """
         Return iterator of rows to export.
         """
-        enrollments = list(_get_enrollments(self._course_key, track=self.track, cohort=self.cohort, active_only=self.active_only))
+        enrollments = list(_get_enrollments(
+            self._course_key,
+            track=self.track,
+            cohort=self.cohort,
+            active_only=self.active_only,
+            excluded_course_roles=self.excluded_course_roles,
+        ))
         enrolled_users = [enroll['user'] for enroll in enrollments]
 
         grades_api.prefetch_course_and_subsection_grades(self._course_key, enrolled_users)

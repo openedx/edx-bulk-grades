@@ -15,7 +15,7 @@ from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.test import TestCase
 from opaque_keys.edx.keys import UsageKey
-from student.models import CourseEnrollment, Profile, ProgramCourseEnrollment
+from student.models import CourseEnrollment, Profile, ProgramCourseEnrollment, CourseAccessRole
 from super_csv.csv_processor import ValidationError
 
 from bulk_grades import api
@@ -615,6 +615,64 @@ class TestGradeProcessor(BaseTests):
 
         assert headers == expected_headers
         assert len(rows) == self.NUM_USERS + 1
+        
+    def _process_iterator(self, iterator):
+        """ 
+        Given the csv processor iterator, return a list of dicts.
+        Each dict corresponds to a data row in the returned data with each column keyed by it's header
+
+        raises ValueError if there is a length mismatch
+        """  
+        headers = next(iterator).strip().split(',')
+        result = []
+        for row in iterator:
+            row = row.strip().split(',')
+            if len(row) != len(headers):
+                raise ValueError("Mismatched csv column lengths")
+            row_dict = {}
+            for i, cell in enumerate(row):
+                row_dict[headers[i]] = cell
+            result.append(row_dict)
+        return result
+
+
+    @ddt.unpack
+    @ddt.data(
+        ([], True, True),
+        (['all'], False, False),
+        (['role_a'], False, True),
+        (['role_b'], True, False),
+        (['role_a', 'role_b'], False, False),
+        (['nonexistent-role'], True, True),
+    )
+    def test_filter_course_roles(
+        self,
+        excluded_course_roles,
+        expect_role_a,
+        expect_role_b,
+    ):
+        processor = api.GradeCSVProcessor(course_id=self.course_id, excluded_course_roles=excluded_course_roles)
+
+        # Give audit_learner the role role_a and verified_learner the role role_b
+        CourseAccessRole.objects.create(
+            user=self.audit_learner,
+            course_id=self.course_id,
+            role="role_a",
+        )
+        CourseAccessRole.objects.create(
+            user=self.verified_learner,
+            course_id=self.course_id,
+            role="role_b",
+        )
+        with patch('lms.djangoapps.grades.api.graded_subsections_for_course_id') as mock_subsections:
+            with patch('lms.djangoapps.grades.api.CourseGradeFactory.read') as mock_course_grade:
+                mock_subsections.return_value = self._mock_graded_subsections()
+                mock_course_grade.return_value = Mock(percent=0.50)
+                data = self._process_iterator(processor.get_iterator())
+        
+        usernames = {row['username'] for row in data}
+        self.assertEqual(self.audit_learner.username in usernames, expect_role_a)
+        self.assertEqual(self.verified_learner.username in usernames, expect_role_b)
 
 
 @ddt.ddt

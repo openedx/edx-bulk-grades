@@ -136,6 +136,7 @@ class GradeImportExport(GradeOnlyExport):
                                       if assignment_grade_min else None),
                 course_grade_min=(float(course_grade_min) if course_grade_min else None),
                 course_grade_max=(float(course_grade_max) if course_grade_max else None),
+                excluded_course_roles=request.GET.getlist('excludedCourseRoles'),
                 active_only=True,
             )
 
