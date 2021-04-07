@@ -15,7 +15,7 @@ from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.test import TestCase
 from opaque_keys.edx.keys import UsageKey
-from student.models import CourseEnrollment, Profile, ProgramCourseEnrollment, CourseAccessRole
+from student.models import CourseAccessRole, CourseEnrollment, Profile, ProgramCourseEnrollment
 from super_csv.csv_processor import ValidationError
 
 from bulk_grades import api

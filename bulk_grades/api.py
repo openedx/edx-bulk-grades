@@ -8,9 +8,9 @@ from collections import OrderedDict
 from itertools import product
 
 from django.apps import apps
-from django.db.models import Exists, OuterRef
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Exists, OuterRef
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext as _
 from lms.djangoapps.grades import api as grades_api
