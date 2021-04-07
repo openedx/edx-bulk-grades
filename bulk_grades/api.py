@@ -8,6 +8,7 @@ from collections import OrderedDict
 from itertools import product
 
 from django.apps import apps
+from django.db.models import Exists, OuterRef
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.functional import cached_property
@@ -53,13 +54,16 @@ def _get_enrollments(course_id, track=None, cohort=None, active_only=False, excl
     if active_only:
         enrollments = enrollments.filter(is_active=True)
     if excluded_course_roles:
-        if 'all' in excluded_course_roles:
-            enrollments = enrollments.exclude(user__courseaccessrole__course_id=course_id)
-        else:
-            enrollments = enrollments.exclude(
-                user__courseaccessrole__course_id=course_id,
-                user__courseaccessrole__role__in=excluded_course_roles
-            )
+        course_access_role_filters = dict(
+            user=OuterRef('user'),
+            course_id=course_id
+        )
+        if 'all' not in excluded_course_roles:
+            course_access_role_filters['role__in'] = excluded_course_roles
+        enrollments = enrollments.annotate(has_excluded_course_role=Exists(
+            apps.get_model('student', 'CourseAccessRole').objects.filter(**course_access_role_filters)
+        ))
+        enrollments = enrollments.exclude(has_excluded_course_role=True)
 
     for enrollment in enrollments:
         enrollment_dict = {

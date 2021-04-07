@@ -674,6 +674,41 @@ class TestGradeProcessor(BaseTests):
         self.assertEqual(self.audit_learner.username in usernames, expect_role_a)
         self.assertEqual(self.verified_learner.username in usernames, expect_role_b)
 
+    def test_filter_course_roles__role_in_another_course(self):
+        role_to_filter = 'role-to-filter'
+        another_course = "course-v1:testX+sg201+2021"
+        # Give audit_learner the role `role_to_filter` and verified_learner the role `some_other_role`
+        CourseAccessRole.objects.create(
+            user=self.audit_learner,
+            course_id=self.course_id,
+            role=role_to_filter,
+        )
+        CourseAccessRole.objects.create(
+            user=self.verified_learner,
+            course_id=self.course_id,
+            role="some_other_role",
+        ) 
+
+        # Enroll verified_learner in `another_course` and assign them `role_to_filter` in that course
+        CourseEnrollment.objects.create(course_id=another_course, user=self.verified_learner, mode='audit')
+        CourseAccessRole.objects.create(
+            user=self.verified_learner,
+            course_id=another_course,
+            role=role_to_filter,
+        )
+
+        with patch('lms.djangoapps.grades.api.graded_subsections_for_course_id') as mock_subsections:
+            with patch('lms.djangoapps.grades.api.CourseGradeFactory.read') as mock_course_grade:
+                mock_subsections.return_value = self._mock_graded_subsections()
+                mock_course_grade.return_value = Mock(percent=0.50)
+                processor = api.GradeCSVProcessor(course_id=self.course_id, excluded_course_roles=[role_to_filter])
+                data = self._process_iterator(processor.get_iterator())
+
+        # Verified learner should still be present, because their excluded role is for a different course
+        usernames = {row['username'] for row in data}
+        self.assertFalse(self.audit_learner.username in usernames)
+        self.assertTrue(self.verified_learner.username in usernames)
+
 
 @ddt.ddt
 class TestInterventionProcessor(BaseTests):
