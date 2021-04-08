@@ -5,6 +5,8 @@ Database models for bulk_grades.
 from django.contrib.auth import get_user_model
 from django.db import models
 
+from opaque_keys.edx.django.models import CourseKeyField
+
 
 class CourseEnrollment(models.Model):
     """
@@ -57,3 +59,11 @@ class ProgramCourseEnrollment(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
+
+class CourseAccessRole(models.Model):
+    """
+    .. no_pii:
+    """
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    course_id = CourseKeyField(max_length=255, db_index=True, blank=True)
+    role = models.CharField(max_length=64, db_index=True)

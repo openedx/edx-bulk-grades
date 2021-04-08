@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
-from student.models import CourseEnrollment, Profile, ProgramCourseEnrollment
+from student.models import CourseAccessRole, CourseEnrollment, Profile, ProgramCourseEnrollment
 
 from bulk_grades.api import GradeCSVProcessor
 
@@ -57,6 +57,25 @@ class GradeImportExportViewTests(ViewTestsMixin, TestCase):
         # The inactive user should not be included in the grade CSV export
         for row in data:
             self.assertNotIn(inactive_learner.username, str(row))
+
+    @patch('lms.djangoapps.grades.api.CourseGradeFactory.read', return_value=Mock(percent=0.50))
+    def test_get_filter_role(self, mock_grade_factory):
+        role_to_exclude = 'ROLE_TO_EXCLUDE'
+        CourseAccessRole.objects.create(
+            user=self.audit_learner,
+            course_id=self.course_id,
+            role=role_to_exclude
+        )
+        self.client.login(username=self.staff.username, password=self.password)
+        response = self.client.get(
+            reverse('bulk_grades', args=[self.course_id]),
+            {'excludedCourseRoles': [role_to_exclude]},
+        )
+        self.assertEqual(response.status_code, 200)
+        data = [row for row in response.streaming_content]
+        # audit_learner should not be included in the grade CSV export
+        for row in data:
+            self.assertNotIn(self.audit_learner.username, str(row))
 
     @patch.object(GradeCSVProcessor, 'load')
     @patch.object(GradeCSVProcessor, 'filtered_column_headers')
