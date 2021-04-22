@@ -44,7 +44,7 @@ click==7.1.2
     #   click-plugins
     #   click-repl
     #   code-annotations
-code-annotations==1.1.0
+code-annotations==1.1.1
     # via -r requirements/test.in
 coverage==5.5
     # via pytest-cov
@@ -76,7 +76,7 @@ django-waffle==2.1.0
     #   edx-django-utils
     #   jsonfield2
     #   super-csv
-djangorestframework==3.12.2
+djangorestframework==3.12.4
     # via
     #   -r requirements/base.txt
     #   super-csv
@@ -84,7 +84,7 @@ edx-celeryutils==1.0.0
     # via
     #   -r requirements/base.txt
     #   super-csv
-edx-django-utils==3.15.0
+edx-django-utils==3.16.0
     # via
     #   -r requirements/base.txt
     #   super-csv
@@ -143,9 +143,9 @@ pyparsing==2.4.7
     # via packaging
 pytest-cov==2.11.1
     # via -r requirements/test.in
-pytest-django==4.1.0
+pytest-django==4.2.0
     # via -r requirements/test.in
-pytest==6.2.2
+pytest==6.2.3
     # via
     #   pytest-cov
     #   pytest-django

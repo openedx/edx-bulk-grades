@@ -4,11 +4,11 @@
 #
 #    make upgrade
 #
-amqp==5.0.5
+amqp==5.0.6
     # via
     #   -r requirements/base.txt
     #   kombu
-billiard==3.6.3.0
+billiard==3.6.4.0
     # via
     #   -r requirements/base.txt
     #   celery
@@ -45,7 +45,7 @@ click==7.1.2
     #   click-plugins
     #   click-repl
     #   code-annotations
-code-annotations==1.1.0
+code-annotations==1.1.1
     # via -r requirements/pii_check.in
 django-crum==0.7.9
     # via
@@ -61,7 +61,7 @@ django-waffle==2.1.0
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
-django==2.2.19
+django==2.2.20
     # via
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -c requirements/constraints.txt
@@ -74,7 +74,7 @@ django==2.2.19
     #   edx-django-utils
     #   jsonfield2
     #   super-csv
-djangorestframework==3.12.2
+djangorestframework==3.12.4
     # via
     #   -r requirements/base.txt
     #   super-csv
@@ -82,7 +82,7 @@ edx-celeryutils==1.0.0
     # via
     #   -r requirements/base.txt
     #   super-csv
-edx-django-utils==3.15.0
+edx-django-utils==3.16.0
     # via
     #   -r requirements/base.txt
     #   super-csv
