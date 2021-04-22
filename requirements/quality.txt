@@ -4,11 +4,11 @@
 #
 #    make upgrade
 #
-amqp==5.0.5
+amqp==5.0.6
     # via
     #   -r requirements/test.txt
     #   kombu
-astroid==2.5.1
+astroid==2.5.3
     # via
     #   pylint
     #   pylint-celery
@@ -16,7 +16,7 @@ attrs==20.3.0
     # via
     #   -r requirements/test.txt
     #   pytest
-billiard==3.6.3.0
+billiard==3.6.4.0
     # via
     #   -r requirements/test.txt
     #   celery
@@ -57,7 +57,7 @@ click==7.1.2
     #   click-repl
     #   code-annotations
     #   edx-lint
-code-annotations==1.1.0
+code-annotations==1.1.1
     # via
     #   -r requirements/test.txt
     #   edx-lint
@@ -81,7 +81,7 @@ django-waffle==2.1.0
     # via
     #   -r requirements/test.txt
     #   edx-django-utils
-django==2.2.19
+django==2.2.20
     # via
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -c requirements/constraints.txt
@@ -95,7 +95,7 @@ django==2.2.19
     #   edx-lint
     #   jsonfield2
     #   super-csv
-djangorestframework==3.12.2
+djangorestframework==3.12.4
     # via
     #   -r requirements/test.txt
     #   super-csv
@@ -103,7 +103,7 @@ edx-celeryutils==1.0.0
     # via
     #   -r requirements/test.txt
     #   super-csv
-edx-django-utils==3.15.0
+edx-django-utils==3.16.0
     # via
     #   -r requirements/test.txt
     #   super-csv
@@ -183,13 +183,13 @@ pydocstyle==6.0.0
     # via -r requirements/quality.in
 pylint-celery==0.3
     # via edx-lint
-pylint-django==2.4.2
+pylint-django==2.4.3
     # via edx-lint
 pylint-plugin-utils==0.6
     # via
     #   pylint-celery
     #   pylint-django
-pylint==2.7.2
+pylint==2.7.4
     # via
     #   edx-lint
     #   pylint-celery
@@ -205,9 +205,9 @@ pyparsing==2.4.7
     #   packaging
 pytest-cov==2.11.1
     # via -r requirements/test.txt
-pytest-django==4.1.0
+pytest-django==4.2.0
     # via -r requirements/test.txt
-pytest==6.2.2
+pytest==6.2.3
     # via
     #   -r requirements/test.txt
     #   pytest-cov
