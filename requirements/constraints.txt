@@ -16,3 +16,8 @@ django<2.3
 
 # pinning celery to latest release
 celery<6.0
+
+# Pinning jinja2
+jinja2<3.0
+MarkupSafe<2.0
+click<8.0

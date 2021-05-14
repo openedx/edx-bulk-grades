@@ -39,6 +39,7 @@ click-repl==0.1.6
     #   celery
 click==7.1.2
     # via
+    #   -c requirements/constraints.txt
     #   -r requirements/base.txt
     #   celery
     #   click-didyoumean
@@ -61,7 +62,7 @@ django-waffle==2.1.0
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
-django==2.2.20
+django==2.2.23
     # via
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -c requirements/constraints.txt
@@ -82,7 +83,7 @@ edx-celeryutils==1.0.0
     # via
     #   -r requirements/base.txt
     #   super-csv
-edx-django-utils==3.16.0
+edx-django-utils==4.0.0
     # via
     #   -r requirements/base.txt
     #   super-csv
@@ -97,7 +98,9 @@ idna==2.10
     #   -r requirements/base.txt
     #   requests
 jinja2==2.11.3
-    # via code-annotations
+    # via
+    #   -c requirements/constraints.txt
+    #   code-annotations
 jsonfield2==4.0.0.post0
     # via
     #   -r requirements/base.txt
@@ -107,12 +110,14 @@ kombu==5.0.2
     #   -r requirements/base.txt
     #   celery
 markupsafe==1.1.1
-    # via jinja2
+    # via
+    #   -c requirements/constraints.txt
+    #   jinja2
 newrelic==6.2.0.156
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
-pbr==5.5.1
+pbr==5.6.0
     # via
     #   -r requirements/base.txt
     #   stevedore
@@ -124,11 +129,11 @@ psutil==5.8.0
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
-pymongo==3.11.3
+pymongo==3.11.4
     # via
     #   -r requirements/base.txt
     #   edx-opaque-keys
-python-slugify==4.0.1
+python-slugify==5.0.2
     # via code-annotations
 pytz==2021.1
     # via
@@ -145,7 +150,7 @@ simplejson==3.17.2
     # via
     #   -r requirements/base.txt
     #   super-csv
-six==1.15.0
+six==1.16.0
     # via
     #   -r requirements/base.txt
     #   click-repl

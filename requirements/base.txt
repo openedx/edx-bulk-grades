@@ -24,6 +24,7 @@ click-repl==0.1.6
     # via celery
 click==7.1.2
     # via
+    #   -c requirements/constraints.txt
     #   celery
     #   click-didyoumean
     #   click-plugins
@@ -39,7 +40,7 @@ django-model-utils==4.1.1
     #   super-csv
 django-waffle==2.1.0
     # via edx-django-utils
-django==2.2.20
+django==2.2.23
     # via
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -c requirements/constraints.txt
@@ -55,7 +56,7 @@ djangorestframework==3.12.4
     # via super-csv
 edx-celeryutils==1.0.0
     # via super-csv
-edx-django-utils==3.16.0
+edx-django-utils==4.0.0
     # via super-csv
 edx-opaque-keys==2.2.0
     # via -r requirements/base.in
@@ -69,13 +70,13 @@ kombu==5.0.2
     # via celery
 newrelic==6.2.0.156
     # via edx-django-utils
-pbr==5.5.1
+pbr==5.6.0
     # via stevedore
 prompt-toolkit==3.0.18
     # via click-repl
 psutil==5.8.0
     # via edx-django-utils
-pymongo==3.11.3
+pymongo==3.11.4
     # via edx-opaque-keys
 pytz==2021.1
     # via
@@ -87,7 +88,7 @@ requests==2.25.1
     #   slumber
 simplejson==3.17.2
     # via super-csv
-six==1.15.0
+six==1.16.0
     # via
     #   -r requirements/base.in
     #   click-repl
