@@ -20,7 +20,7 @@ billiard==3.6.4.0
     # via
     #   -r requirements/test.txt
     #   celery
-celery==5.0.5
+celery==5.1.0
     # via
     #   -c requirements/constraints.txt
     #   -r requirements/test.txt
@@ -58,7 +58,7 @@ click==7.1.2
     #   click-repl
     #   code-annotations
     #   edx-lint
-code-annotations==1.1.1
+code-annotations==1.1.2
     # via
     #   -r requirements/test.txt
     #   edx-lint
@@ -78,7 +78,7 @@ django-model-utils==4.1.1
     #   -r requirements/test.txt
     #   edx-celeryutils
     #   super-csv
-django-waffle==2.1.0
+django-waffle==2.2.0
     # via
     #   -r requirements/test.txt
     #   edx-django-utils
@@ -87,7 +87,6 @@ django==2.2.23
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -c requirements/constraints.txt
     #   -r requirements/test.txt
-    #   code-annotations
     #   django-crum
     #   django-model-utils
     #   djangorestframework
@@ -110,7 +109,7 @@ edx-django-utils==4.0.0
     #   super-csv
 edx-lint==5.0.0
     # via -r requirements/quality.in
-edx-opaque-keys==2.2.0
+edx-opaque-keys==2.2.1
     # via -r requirements/test.txt
 future==0.18.2
     # via
@@ -137,7 +136,7 @@ jsonfield2==4.0.0.post0
     # via
     #   -r requirements/test.txt
     #   edx-celeryutils
-kombu==5.0.2
+kombu==5.1.0
     # via
     #   -r requirements/test.txt
     #   celery
@@ -152,7 +151,7 @@ mccabe==0.6.1
     # via pylint
 mock==4.0.3
     # via -r requirements/test.txt
-newrelic==6.2.0.156
+newrelic==6.4.0.157
     # via
     #   -r requirements/test.txt
     #   edx-django-utils
@@ -182,7 +181,7 @@ py==1.10.0
     #   pytest
 pycodestyle==2.7.0
     # via -r requirements/quality.in
-pydocstyle==6.0.0
+pydocstyle==6.1.1
     # via -r requirements/quality.in
 pylint-celery==0.3
     # via edx-lint
@@ -208,7 +207,7 @@ pyparsing==2.4.7
     #   packaging
 pytest-cov==2.12.0
     # via -r requirements/test.txt
-pytest-django==4.2.0
+pytest-django==4.3.0
     # via -r requirements/test.txt
 pytest==6.2.4
     # via
@@ -267,7 +266,7 @@ toml==0.10.2
     #   coverage
     #   pylint
     #   pytest
-urllib3==1.26.4
+urllib3==1.26.5
     # via
     #   -r requirements/test.txt
     #   requests
@@ -276,9 +275,13 @@ vine==5.0.0
     #   -r requirements/test.txt
     #   amqp
     #   celery
+    #   kombu
 wcwidth==0.2.5
     # via
     #   -r requirements/test.txt
     #   prompt-toolkit
 wrapt==1.12.1
     # via astroid
+
+# The following packages are considered to be unsafe in a requirements file:
+# setuptools
