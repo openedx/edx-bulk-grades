@@ -45,7 +45,7 @@ click==7.1.2
     #   click-plugins
     #   click-repl
     #   code-annotations
-code-annotations==1.1.1
+code-annotations==1.1.2
     # via -r requirements/test.in
 coverage[toml]==5.5
     # via pytest-cov
@@ -61,7 +61,7 @@ django-model-utils==4.1.1
     #   -r requirements/base.txt
     #   edx-celeryutils
     #   super-csv
-django-waffle==2.1.0
+django-waffle==2.2.0
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
@@ -69,7 +69,6 @@ django-waffle==2.1.0
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -c requirements/constraints.txt
     #   -r requirements/base.txt
-    #   code-annotations
     #   django-crum
     #   django-model-utils
     #   djangorestframework
@@ -89,7 +88,7 @@ edx-django-utils==4.0.0
     # via
     #   -r requirements/base.txt
     #   super-csv
-edx-opaque-keys==2.2.0
+edx-opaque-keys==2.2.1
     # via -r requirements/base.txt
 future==0.18.2
     # via
@@ -118,7 +117,7 @@ markupsafe==1.1.1
     #   jinja2
 mock==4.0.3
     # via -r requirements/test.in
-newrelic==6.2.0.156
+newrelic==6.4.0.157
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
@@ -148,7 +147,7 @@ pyparsing==2.4.7
     # via packaging
 pytest-cov==2.12.0
     # via -r requirements/test.in
-pytest-django==4.2.0
+pytest-django==4.3.0
     # via -r requirements/test.in
 pytest==6.2.4
     # via
@@ -195,7 +194,7 @@ toml==0.10.2
     # via
     #   coverage
     #   pytest
-urllib3==1.26.4
+urllib3==1.26.5
     # via
     #   -r requirements/base.txt
     #   requests
@@ -203,7 +202,11 @@ urllib3==1.26.4
     #   -r requirements/base.txt
     #   amqp
     #   celery
+    #   kombu
 wcwidth==0.2.5
     # via
     #   -r requirements/base.txt
     #   prompt-toolkit
+
+# The following packages are considered to be unsafe in a requirements file:
+# setuptools

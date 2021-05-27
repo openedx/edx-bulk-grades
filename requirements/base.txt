@@ -8,7 +8,7 @@ amqp==5.0.6
     # via kombu
 billiard==3.6.4.0
     # via celery
-celery==5.0.5
+celery==5.1.0
     # via
     #   -c requirements/constraints.txt
     #   edx-celeryutils
@@ -38,7 +38,7 @@ django-model-utils==4.1.1
     #   -r requirements/base.in
     #   edx-celeryutils
     #   super-csv
-django-waffle==2.1.0
+django-waffle==2.2.0
     # via edx-django-utils
 django==2.2.23
     # via
@@ -58,7 +58,7 @@ edx-celeryutils==1.0.0
     # via super-csv
 edx-django-utils==4.0.0
     # via super-csv
-edx-opaque-keys==2.2.0
+edx-opaque-keys==2.2.1
     # via -r requirements/base.in
 future==0.18.2
     # via edx-celeryutils
@@ -66,9 +66,9 @@ idna==2.10
     # via requests
 jsonfield2==4.0.0.post0
     # via edx-celeryutils
-kombu==5.0.2
+kombu==5.1.0
     # via celery
-newrelic==6.2.0.156
+newrelic==6.4.0.157
     # via edx-django-utils
 pbr==5.6.0
     # via stevedore
@@ -102,11 +102,15 @@ stevedore==3.3.0
     #   edx-opaque-keys
 super-csv==2.0.1
     # via -r requirements/base.in
-urllib3==1.26.4
+urllib3==1.26.5
     # via requests
 vine==5.0.0
     # via
     #   amqp
     #   celery
+    #   kombu
 wcwidth==0.2.5
     # via prompt-toolkit
+
+# The following packages are considered to be unsafe in a requirements file:
+# setuptools

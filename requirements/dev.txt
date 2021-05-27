@@ -25,7 +25,7 @@ billiard==3.6.4.0
     # via
     #   -r requirements/quality.txt
     #   celery
-celery==5.0.5
+celery==5.1.0
     # via
     #   -c requirements/constraints.txt
     #   -r requirements/quality.txt
@@ -70,7 +70,7 @@ click==7.1.2
     #   code-annotations
     #   edx-lint
     #   pip-tools
-code-annotations==1.1.1
+code-annotations==1.1.2
     # via
     #   -r requirements/quality.txt
     #   edx-lint
@@ -100,7 +100,7 @@ django-model-utils==4.1.1
     #   -r requirements/quality.txt
     #   edx-celeryutils
     #   super-csv
-django-waffle==2.1.0
+django-waffle==2.2.0
     # via
     #   -r requirements/quality.txt
     #   edx-django-utils
@@ -109,7 +109,6 @@ django==2.2.23
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -c requirements/constraints.txt
     #   -r requirements/quality.txt
-    #   code-annotations
     #   django-crum
     #   django-model-utils
     #   djangorestframework
@@ -135,7 +134,7 @@ edx-i18n-tools==0.5.3
     # via -r requirements/dev.in
 edx-lint==5.0.0
     # via -r requirements/quality.txt
-edx-opaque-keys==2.2.0
+edx-opaque-keys==2.2.1
     # via -r requirements/quality.txt
 filelock==3.0.12
     # via
@@ -174,7 +173,7 @@ jsonfield2==4.0.0.post0
     # via
     #   -r requirements/quality.txt
     #   edx-celeryutils
-kombu==5.0.2
+kombu==5.1.0
     # via
     #   -r requirements/quality.txt
     #   celery
@@ -193,7 +192,7 @@ mccabe==0.6.1
     #   pylint
 mock==4.0.3
     # via -r requirements/quality.txt
-newrelic==6.2.0.156
+newrelic==6.4.0.157
     # via
     #   -r requirements/quality.txt
     #   edx-django-utils
@@ -242,7 +241,7 @@ py==1.10.0
     #   tox
 pycodestyle==2.7.0
     # via -r requirements/quality.txt
-pydocstyle==6.0.0
+pydocstyle==6.1.1
     # via -r requirements/quality.txt
 pygments==2.9.0
     # via diff-cover
@@ -277,7 +276,7 @@ pyparsing==2.4.7
     #   packaging
 pytest-cov==2.12.0
     # via -r requirements/quality.txt
-pytest-django==4.2.0
+pytest-django==4.3.0
     # via -r requirements/quality.txt
 pytest==6.2.4
     # via
@@ -355,7 +354,7 @@ tox==3.23.1
     # via
     #   -r requirements/travis.txt
     #   tox-battery
-urllib3==1.26.4
+urllib3==1.26.5
     # via
     #   -r requirements/quality.txt
     #   -r requirements/travis.txt
@@ -365,7 +364,8 @@ vine==5.0.0
     #   -r requirements/quality.txt
     #   amqp
     #   celery
-virtualenv==20.4.6
+    #   kombu
+virtualenv==20.4.7
     # via
     #   -r requirements/travis.txt
     #   tox
@@ -380,3 +380,4 @@ wrapt==1.12.1
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
+# setuptools
