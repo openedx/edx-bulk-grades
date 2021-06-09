@@ -591,6 +591,48 @@ class TestGradeProcessor(BaseTests):
         assert len(rows) == self.NUM_USERS + 1
 
     @patch('lms.djangoapps.grades.api.graded_subsections_for_course_id')
+    def test_filter_override_history_limited_columns(self, mocked_graded_subsections):
+        # Given a set of overrides
+        mocked_graded_subsections.return_value = self._mock_graded_subsections()
+        processor = api.GradeCSVProcessor(course_id=self.course_id)
+        processor.result_data = self._mock_result_data()
+
+        processor.result_data[0].update({'new_override-lab_ques': '1', 'status': 'Success'})
+        processor.result_data[2].update({'new_override-lab_ques': '2', 'status': 'Success'})
+
+        # Where some subsection were not included in the original override
+        for row in processor.result_data:
+            row.pop('name-homework')
+            row.pop('original_grade-homework')
+            row.pop('previous_override-homework')
+            row.pop('new_override-homework')
+
+        # When columns are filtered and I request a copy of the report
+        processor.columns = processor.filtered_column_headers()
+        rows = list(processor.get_iterator(error_data='1'))
+
+        # Then my headers include the correct subsections (and don't crash like they used to)
+        headers = rows[0].strip().split(',')
+        expected_headers = [
+            'user_id',
+            'username',
+            'student_key',
+            'course_id',
+            'track',
+            'cohort',
+            'name-lab_ques',
+            'grade-lab_ques',
+            'original_grade-lab_ques',
+            'previous_override-lab_ques',
+            'new_override-lab_ques',
+            'status',
+            'error'
+        ]
+
+        assert headers == expected_headers
+        assert len(rows) == self.NUM_USERS + 1
+
+    @patch('lms.djangoapps.grades.api.graded_subsections_for_course_id')
     def test_filter_override_history_noop(self, mocked_graded_subsections):
         # Given no overrides for a given report
         mocked_graded_subsections.return_value = self._mock_graded_subsections()
