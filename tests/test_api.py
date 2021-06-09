@@ -63,13 +63,21 @@ class BaseTests(TestCase):
             return_value.append(subsection)
         return return_value
 
-    def _mock_result_data(self, override=True):
+    def _headers_for_subsections(self, subsections):
+        """ For a list of subsections, return a list of headers (e.g. original subsection grade/ new override) """
+        headers = []
+        subsection_prefixes = ['name', 'grade', 'original_grade', 'previous_override', 'new_override']
+
+        for short_id, prefix in product(subsections, subsection_prefixes):
+            headers.append(f'{prefix}-{short_id}')
+
+        return headers
+
+    def _mock_result_data(self, subsections=['homework', 'lab_ques']):
         """
         Return some row data that mocks what would be loaded from an override history CSV
         """
         result_data = []
-        prefixes = ['name', 'original_grade', 'previous_override', 'new_override']
-        subsections = ['homework', 'lab_ques']
 
         for learner in self.learners:
             row = {
@@ -83,8 +91,8 @@ class BaseTests(TestCase):
                 'status': 'No Action'
             }
             # Add subsection data
-            for short_id, prefix in product(subsections, prefixes):
-                row[f'{prefix}-{short_id}'] = ''
+            for header in self._headers_for_subsections(subsections):
+                row[header] = ''
             result_data.append(row)
 
         return result_data
@@ -296,6 +304,7 @@ class TestGradeProcessor(BaseTests):
     Tests exercising the processing performed by GradeCSVProcessor
     """
     NUM_USERS = 3
+    default_headers = ['user_id', 'username', 'student_key', 'course_id', 'track', 'cohort']
 
     @patch('lms.djangoapps.grades.api.CourseGradeFactory.read', return_value=Mock(percent=0.50))
     def test_export(self, course_grade_factory_mock):  # pylint: disable=unused-argument
@@ -356,22 +365,8 @@ class TestGradeProcessor(BaseTests):
 
         assert processor_1.columns == processor_2.columns
         expected_columns = [
-            'user_id',
-            'username',
-            'student_key',
-            'course_id',
-            'track',
-            'cohort',
-            'name-homework',
-            'grade-homework',
-            'original_grade-homework',
-            'previous_override-homework',
-            'new_override-homework',
-            'name-lab_ques',
-            'grade-lab_ques',
-            'original_grade-lab_ques',
-            'previous_override-lab_ques',
-            'new_override-lab_ques'
+            *self.default_headers,
+            *self._headers_for_subsections(['homework', 'lab_ques']),
         ]
         assert expected_columns == processor_1.columns
 
@@ -546,7 +541,7 @@ class TestGradeProcessor(BaseTests):
             for user_row in rows[1:]
         ]
 
-        # If there's an overrride, use that, if not, use the original grade
+        # If there's an override, use that, if not, use the original grade
         for learner_data_row in table:
             assert learner_data_row['grade-homework'] == '3'
             assert learner_data_row['original_grade-homework'] == '3'
@@ -573,17 +568,8 @@ class TestGradeProcessor(BaseTests):
         # Then my headers include the modified subsection headers, and exclude the unmodified section
         headers = rows[0].strip().split(',')
         expected_headers = [
-            'user_id',
-            'username',
-            'student_key',
-            'course_id',
-            'track',
-            'cohort',
-            'name-homework',
-            'grade-homework',
-            'original_grade-homework',
-            'previous_override-homework',
-            'new_override-homework',
+            *self.default_headers,
+            *self._headers_for_subsections(['homework']),
             'status',
             'error']
 
@@ -614,17 +600,8 @@ class TestGradeProcessor(BaseTests):
         # Then my headers include the correct subsections (and don't crash like they used to)
         headers = rows[0].strip().split(',')
         expected_headers = [
-            'user_id',
-            'username',
-            'student_key',
-            'course_id',
-            'track',
-            'cohort',
-            'name-lab_ques',
-            'grade-lab_ques',
-            'original_grade-lab_ques',
-            'previous_override-lab_ques',
-            'new_override-lab_ques',
+            *self.default_headers,
+            *self._headers_for_subsections(['lab_ques']),
             'status',
             'error'
         ]
@@ -646,12 +623,7 @@ class TestGradeProcessor(BaseTests):
         # Then my headers don't include any subsections
         headers = rows[0].strip().split(',')
         expected_headers = [
-            'user_id',
-            'username',
-            'student_key',
-            'course_id',
-            'track',
-            'cohort',
+            *self.default_headers,
             'status',
             'error']
 
