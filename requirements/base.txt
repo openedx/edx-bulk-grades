@@ -12,7 +12,7 @@ celery==5.1.0
     # via
     #   -c requirements/constraints.txt
     #   edx-celeryutils
-certifi==2020.12.5
+certifi==2021.5.30
     # via requests
 chardet==4.0.0
     # via requests
@@ -20,7 +20,7 @@ click-didyoumean==0.0.3
     # via celery
 click-plugins==1.1.1
     # via celery
-click-repl==0.1.6
+click-repl==0.2.0
     # via celery
 click==7.1.2
     # via
@@ -40,7 +40,7 @@ django-model-utils==4.1.1
     #   super-csv
 django-waffle==2.2.0
     # via edx-django-utils
-django==2.2.23
+django==2.2.24
     # via
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -c requirements/constraints.txt
@@ -56,7 +56,7 @@ djangorestframework==3.12.4
     # via super-csv
 edx-celeryutils==1.0.0
     # via super-csv
-edx-django-utils==4.0.0
+edx-django-utils==4.1.0
     # via super-csv
 edx-opaque-keys==2.2.1
     # via -r requirements/base.in
@@ -68,7 +68,7 @@ jsonfield2==4.0.0.post0
     # via edx-celeryutils
 kombu==5.1.0
     # via celery
-newrelic==6.4.0.157
+newrelic==6.4.1.158
     # via edx-django-utils
 pbr==5.6.0
     # via stevedore
