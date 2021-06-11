@@ -366,7 +366,16 @@ class TestGradeProcessor(BaseTests):
         assert processor_1.columns == processor_2.columns
         expected_columns = [
             *self.default_headers,
-            *self._headers_for_subsections(['homework', 'lab_ques']),
+            'name-homework',
+            'grade-homework',
+            'original_grade-homework',
+            'previous_override-homework',
+            'new_override-homework',
+            'name-lab_ques',
+            'grade-lab_ques',
+            'original_grade-lab_ques',
+            'previous_override-lab_ques',
+            'new_override-lab_ques',
         ]
         assert expected_columns == processor_1.columns
 
@@ -569,7 +578,11 @@ class TestGradeProcessor(BaseTests):
         headers = rows[0].strip().split(',')
         expected_headers = [
             *self.default_headers,
-            *self._headers_for_subsections(['homework']),
+            'name-homework',
+            'grade-homework',
+            'original_grade-homework',
+            'previous_override-homework',
+            'new_override-homework',
             'status',
             'error']
 
@@ -601,7 +614,11 @@ class TestGradeProcessor(BaseTests):
         headers = rows[0].strip().split(',')
         expected_headers = [
             *self.default_headers,
-            *self._headers_for_subsections(['lab_ques']),
+            'name-lab_ques',
+            'grade-lab_ques',
+            'original_grade-lab_ques',
+            'previous_override-lab_ques',
+            'new_override-lab_ques',
             'status',
             'error'
         ]
