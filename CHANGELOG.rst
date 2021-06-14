@@ -14,6 +14,22 @@ Change Log
 Unreleased
 ~~~~~~~~~~
 
+[0.8.11] - 2021-07-09
+~~~~~~~~~~~~~~~~~~~~~
+* Fixed a bug causing bulk management import history to break when import had pre-filtered columns
+
+[0.8.10] - 2021-05-14
+~~~~~~~~~~~~~~~~~~~~~
+* Updated dependencies
+
+[0.8.9] - 2021-04-09
+~~~~~~~~~~~~~~~~~~~~~
+* Updated dependencies
+
+[0.8.8] - 2021-04-08
+~~~~~~~~~~~~~~~~~~~~~
+* Added excludedCourseRoles to grade export endpoint
+
 [0.8.7] - 2021-03-15
 ~~~~~~~~~~~~~~~~~~~~~
 * Upgrade super-csv to 2.0.1

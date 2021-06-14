@@ -63,13 +63,21 @@ class BaseTests(TestCase):
             return_value.append(subsection)
         return return_value
 
-    def _mock_result_data(self, override=True):
+    def _headers_for_subsections(self, subsections):
+        """ For a list of subsections, return a list of headers (e.g. original subsection grade/ new override) """
+        headers = []
+        subsection_prefixes = ['name', 'grade', 'original_grade', 'previous_override', 'new_override']
+
+        for short_id, prefix in product(subsections, subsection_prefixes):
+            headers.append(f'{prefix}-{short_id}')
+
+        return headers
+
+    def _mock_result_data(self, subsections=['homework', 'lab_ques']):
         """
         Return some row data that mocks what would be loaded from an override history CSV
         """
         result_data = []
-        prefixes = ['name', 'original_grade', 'previous_override', 'new_override']
-        subsections = ['homework', 'lab_ques']
 
         for learner in self.learners:
             row = {
@@ -83,8 +91,8 @@ class BaseTests(TestCase):
                 'status': 'No Action'
             }
             # Add subsection data
-            for short_id, prefix in product(subsections, prefixes):
-                row[f'{prefix}-{short_id}'] = ''
+            for header in self._headers_for_subsections(subsections):
+                row[header] = ''
             result_data.append(row)
 
         return result_data
@@ -296,6 +304,7 @@ class TestGradeProcessor(BaseTests):
     Tests exercising the processing performed by GradeCSVProcessor
     """
     NUM_USERS = 3
+    default_headers = ['user_id', 'username', 'student_key', 'course_id', 'track', 'cohort']
 
     @patch('lms.djangoapps.grades.api.CourseGradeFactory.read', return_value=Mock(percent=0.50))
     def test_export(self, course_grade_factory_mock):  # pylint: disable=unused-argument
@@ -356,12 +365,7 @@ class TestGradeProcessor(BaseTests):
 
         assert processor_1.columns == processor_2.columns
         expected_columns = [
-            'user_id',
-            'username',
-            'student_key',
-            'course_id',
-            'track',
-            'cohort',
+            *self.default_headers,
             'name-homework',
             'grade-homework',
             'original_grade-homework',
@@ -371,7 +375,7 @@ class TestGradeProcessor(BaseTests):
             'grade-lab_ques',
             'original_grade-lab_ques',
             'previous_override-lab_ques',
-            'new_override-lab_ques'
+            'new_override-lab_ques',
         ]
         assert expected_columns == processor_1.columns
 
@@ -546,7 +550,7 @@ class TestGradeProcessor(BaseTests):
             for user_row in rows[1:]
         ]
 
-        # If there's an overrride, use that, if not, use the original grade
+        # If there's an override, use that, if not, use the original grade
         for learner_data_row in table:
             assert learner_data_row['grade-homework'] == '3'
             assert learner_data_row['original_grade-homework'] == '3'
@@ -573,12 +577,7 @@ class TestGradeProcessor(BaseTests):
         # Then my headers include the modified subsection headers, and exclude the unmodified section
         headers = rows[0].strip().split(',')
         expected_headers = [
-            'user_id',
-            'username',
-            'student_key',
-            'course_id',
-            'track',
-            'cohort',
+            *self.default_headers,
             'name-homework',
             'grade-homework',
             'original_grade-homework',
@@ -586,6 +585,43 @@ class TestGradeProcessor(BaseTests):
             'new_override-homework',
             'status',
             'error']
+
+        assert headers == expected_headers
+        assert len(rows) == self.NUM_USERS + 1
+
+    @patch('lms.djangoapps.grades.api.graded_subsections_for_course_id')
+    def test_filter_override_history_limited_columns(self, mocked_graded_subsections):
+        # Given a set of overrides
+        mocked_graded_subsections.return_value = self._mock_graded_subsections()
+        processor = api.GradeCSVProcessor(course_id=self.course_id)
+        processor.result_data = self._mock_result_data()
+
+        processor.result_data[0].update({'new_override-lab_ques': '1', 'status': 'Success'})
+        processor.result_data[2].update({'new_override-lab_ques': '2', 'status': 'Success'})
+
+        # Where some subsection were not included in the original override
+        for row in processor.result_data:
+            row.pop('name-homework')
+            row.pop('original_grade-homework')
+            row.pop('previous_override-homework')
+            row.pop('new_override-homework')
+
+        # When columns are filtered and I request a copy of the report
+        processor.columns = processor.filtered_column_headers()
+        rows = list(processor.get_iterator(error_data='1'))
+
+        # Then my headers include the correct subsections (and don't crash like they used to)
+        headers = rows[0].strip().split(',')
+        expected_headers = [
+            *self.default_headers,
+            'name-lab_ques',
+            'grade-lab_ques',
+            'original_grade-lab_ques',
+            'previous_override-lab_ques',
+            'new_override-lab_ques',
+            'status',
+            'error'
+        ]
 
         assert headers == expected_headers
         assert len(rows) == self.NUM_USERS + 1
@@ -604,12 +640,7 @@ class TestGradeProcessor(BaseTests):
         # Then my headers don't include any subsections
         headers = rows[0].strip().split(',')
         expected_headers = [
-            'user_id',
-            'username',
-            'student_key',
-            'course_id',
-            'track',
-            'cohort',
+            *self.default_headers,
             'status',
             'error']
 
