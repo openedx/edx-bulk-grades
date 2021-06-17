@@ -22,7 +22,7 @@ billiard==3.6.4.0
     #   celery
 bleach==3.3.0
     # via readme-renderer
-celery==5.1.0
+celery==5.1.1
     # via
     #   -c requirements/constraints.txt
     #   -r requirements/test.txt
