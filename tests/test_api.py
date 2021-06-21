@@ -446,16 +446,32 @@ class TestGradeProcessor(BaseTests):
         processor = api.GradeCSVProcessor(course_id=self.course_id)
         row = {
             'block_id': self.usage_key,
+            'new_override-123402db': '1',
             'new_override-85bb02db': '-1',
             'user_id': self.learner.id,
             'csum': '07ec',
             'Previous Points': '',
         }
-        with self.assertRaisesMessage(ValidationError, 'Grade must be positive'):
+        with self.assertRaisesMessage(ValidationError, 'Grade must not be negative'):
             processor.preprocess_row(row)
         row['new_override-85bb02db'] = 'not a number'
-        with self.assertRaisesMessage(ValidationError, 'Grade must be a number'):
+        with self.assertRaisesMessage(ValueError, 'Grade must be a number'):
             processor.preprocess_row(row)
+
+    def test_multiple_subsection_override(self):
+        processor = api.GradeCSVProcessor(course_id=self.course_id)
+        row = {
+            'block_id': self.usage_key,
+            'new_override-12f402db': '3',
+            'new_override-123402db': '2',
+            'new_override-85bb02db': '1',
+            'user_id': self.learner.id,
+            'Previous Points': '',
+        }
+        operation = processor.preprocess_row(row)
+        assert operation
+        # 3 grades are getting override
+        assert len(operation['new_override_grades']) == 3
 
     def test_repeat_user(self):
         processor = api.GradeCSVProcessor(course_id=self.course_id)
@@ -466,25 +482,36 @@ class TestGradeProcessor(BaseTests):
             'Previous Points': '',
         }
         operation = processor.preprocess_row(row)
-        assert len(operation) == 4
-        operation = processor.preprocess_row(row)
-        assert len(operation) == 0
+        assert operation
+        
+        row2 = {
+            'block_id': self.usage_key,
+            'new_override-123402db': '2',
+            'user_id': self.learner.id,
+            'Previous Points': ''
+        }
+
+        # different row with the same user id should not get processed
+        operation = processor.preprocess_row(row2)
+        assert not operation
 
     def test_empty_grade(self):
         processor = api.GradeCSVProcessor(course_id=self.course_id)
         row = {
             'block_id': self.usage_key,
+            'new_override-123402db': '   ',
             'new_override-85bb02db': '   ',
             'user_id': self.learner.id,
             'Previous Points': '',
         }
         operation = processor.preprocess_row(row)
-        assert len(operation) == 0
+        assert len(operation['new_override_grades']) == 0
 
     def test_validate_row(self):
         processor = api.GradeCSVProcessor(course_id=self.course_id)
         row = {
             'block_id': self.usage_key,
+            'new_override-123402db': '2',
             'new_override-85bb02db': '1',
             'user_id': self.learner.id,
             'Previous Points': '',

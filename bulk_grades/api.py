@@ -359,21 +359,27 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         operation = {}
         if row['user_id'] in self._users_seen:
             return operation
+
+        operation['new_override_grades'] = []
+        operation['course_id'] = self.course_id
+        operation['user_id'] = row['user_id']
+
         for key in row:
             if key.startswith('new_override-'):
                 value = row[key].strip()
                 if value:
                     short_id = key.split('-', 1)[1]
                     subsection = self._subsections[short_id][0]
-                    operation['user_id'] = row['user_id']
-                    operation['course_id'] = self.course_id
-                    operation['block_id'] = str(subsection.location)
+                    block_id = str(subsection.location)
                     try:
-                        operation['new_override'] = float(value)
+                        new_grade = float(value)
                     except ValueError as error:
                         raise ValidationError(_('Grade must be a number')) from error
-                    if operation['new_override'] < 0:
-                        raise ValidationError(_('Grade must be positive'))
+                    else:
+                        if new_grade < 0:
+                            raise ValidationError(_('Grade must not be negative'))
+                        operation['new_override_grades'].append((block_id, new_grade))
+
         self._users_seen.add(row['user_id'])
         return operation
 
@@ -381,15 +387,17 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         """
         Save a row to the persistent subsection override table.
         """
-        grades_api.override_subsection_grade(
-            row['user_id'],
-            row['course_id'],
-            row['block_id'],
-            overrider=self._user,
-            earned_graded=row['new_override'],
-            feature='grade-import',
-            comment='Bulk Grade Import',
-        )
+        for block_id, new_grade in row['new_override_grades']:
+            grades_api.override_subsection_grade(
+                row['user_id'],
+                row['course_id'],
+                block_id,
+                overrider=self._user,
+                earned_graded=new_grade,
+                feature='grade-import',
+                comment='Bulk Grade Import',
+            )
+
         return True, None
 
     def get_rows_to_export(self):
