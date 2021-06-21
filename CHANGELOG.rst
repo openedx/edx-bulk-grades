@@ -14,6 +14,9 @@ Change Log
 Unreleased
 ~~~~~~~~~~
 
+[0.8.12] - 2012-06-21
+* Fixed import csv to not working with multiple sections per-user override
+
 [0.8.11] - 2021-07-09
 ~~~~~~~~~~~~~~~~~~~~~
 * Fixed a bug causing bulk management import history to break when import had pre-filtered columns
