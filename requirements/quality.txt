@@ -20,7 +20,7 @@ billiard==3.6.4.0
     # via
     #   -r requirements/test.txt
     #   celery
-celery==5.1.0
+celery==5.1.1
     # via
     #   -c requirements/constraints.txt
     #   -r requirements/test.txt
@@ -123,7 +123,7 @@ iniconfig==1.1.1
     # via
     #   -r requirements/test.txt
     #   pytest
-isort==5.8.0
+isort==5.9.1
     # via
     #   -r requirements/quality.in
     #   pylint
@@ -151,7 +151,7 @@ mccabe==0.6.1
     # via pylint
 mock==4.0.3
     # via -r requirements/test.txt
-newrelic==6.4.1.158
+newrelic==6.4.2.159
     # via
     #   -r requirements/test.txt
     #   edx-django-utils
@@ -167,7 +167,7 @@ pluggy==0.13.1
     # via
     #   -r requirements/test.txt
     #   pytest
-prompt-toolkit==3.0.18
+prompt-toolkit==3.0.19
     # via
     #   -r requirements/test.txt
     #   click-repl
