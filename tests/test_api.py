@@ -475,10 +475,12 @@ class TestGradeProcessor(BaseTests):
 
     def test_repeat_user(self):
         processor = api.GradeCSVProcessor(course_id=self.course_id)
+        username = 'ditto'
         row = {
             'block_id': self.usage_key,
             'new_override-85bb02db': '1',
             'user_id': self.learner.id,
+            'username': username,
             'Previous Points': '',
         }
         operation = processor.preprocess_row(row)
@@ -488,12 +490,13 @@ class TestGradeProcessor(BaseTests):
             'block_id': self.usage_key,
             'new_override-123402db': '2',
             'user_id': self.learner.id,
+            'username': username,
             'Previous Points': ''
         }
 
-        # different row with the same user id should not get processed
-        operation = processor.preprocess_row(row2)
-        assert not operation
+        # different row with the same user id throw error
+        with self.assertRaisesMessage(ValidationError, 'Repeated user'):
+            processor.preprocess_row(row2)
 
     def test_empty_grade(self):
         processor = api.GradeCSVProcessor(course_id=self.course_id)

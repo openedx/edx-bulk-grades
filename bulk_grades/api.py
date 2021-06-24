@@ -357,12 +357,13 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         Preprocess the CSV row.
         """
         operation = {}
-        if row['user_id'] in self._users_seen:
-            return operation
+        user_id = row['user_id']
+        if user_id in self._users_seen:
+            raise ValidationError(_('Repeated user_id: ') + str(user_id))
 
         operation['new_override_grades'] = []
         operation['course_id'] = self.course_id
-        operation['user_id'] = row['user_id']
+        operation['user_id'] = user_id
 
         for key in row:
             if key.startswith('new_override-'):
@@ -380,7 +381,7 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
                             raise ValidationError(_('Grade must not be negative'))
                         operation['new_override_grades'].append((block_id, new_grade))
 
-        self._users_seen.add(row['user_id'])
+        self._users_seen.add(user_id)
         return operation
 
     def process_row(self, row):

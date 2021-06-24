@@ -91,6 +91,11 @@ class GradeImportExport(GradeOnlyExport):
             the_file = request.FILES['csv']
             self.processor.process_file(the_file, autocommit=True)
             data = self.processor.status()
+            data['error_messages'] = []
+            for error_message in self.processor.error_messages:
+                line_numbers = ', #'.join(str(line_number+1) for line_number in self.processor.error_messages[error_message])
+                data['error_messages'].append(f'{error_message} on lines (#{line_numbers})')
+
             log.info('Processed file %s for %s -> %s saved, %s processed, %s error. (async=%s)',
                      the_file.name,
                      course_id,
