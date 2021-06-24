@@ -13,8 +13,10 @@ Change Log
 
 Unreleased
 ~~~~~~~~~~
+[0.8.13] - 2021-07-12
+* Fix bug where we ignore repeat user in the csv import
 
-[0.8.12] - 2012-06-21
+[0.8.12] - 2021-06-21
 * Fixed import csv to not working with multiple sections per-user override
 
 [0.8.11] - 2021-07-09
