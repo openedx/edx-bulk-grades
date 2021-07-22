@@ -44,7 +44,6 @@ class GradeOnlyExport(View):
         self.initialize_processor(request, course_id)
         return super().dispatch(request, course_id, *args, **kwargs)
 
-    # pylint: disable=unused-argument
     def get(self, request, course_id, *args, **kwargs):
         """
         Export grades in CSV format.
@@ -73,7 +72,6 @@ class GradeImportExport(GradeOnlyExport):
     CSV Grade import/export view.
     """
 
-    # pylint: disable=unused-argument
     def post(self, request, course_id, *args, **kwargs):
         """
         Import grades from a CSV file.
