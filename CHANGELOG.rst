@@ -12,13 +12,17 @@ Change Log
 .. There should always be an "Unreleased" section for changes pending release.
 
 Unreleased
-[0.8.14] - 2021-07-12
-* Update csv import error message
+[0.9.1] - 2021-08-02
+* Feat repeat user error should also show the first occurence
 ~~~~~~~~~~
 
 [0.9.0] - 2021-07-20
 ~~~~~~~~~~~~~~~~~~~~
 * Added support for django 3.2
+
+[0.8.14] - 2021-07-12
+* Update csv import error message
+=======
 
 [0.8.13] - 2021-07-12
 ~~~~~~~~~~~~~~~~~~~~~

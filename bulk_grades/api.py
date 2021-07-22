@@ -4,7 +4,7 @@ Bulk Grading API.
 
 
 import logging
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 from itertools import product
 
 from django.apps import apps
@@ -316,7 +316,8 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
                 self.subsection_prefixes
             )
         )
-        self._users_seen = set()
+        self._users_seen = defaultdict(list)
+        self._row_num = 0
 
     # pylint: disable=inconsistent-return-statements
     @cached_property
@@ -349,6 +350,7 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         """
         Preprocess the file, saving original data no matter whether there are errors.
         """
+        self._row_num = 0   # reset private row number count
         super().preprocess_file(reader)
         self.save()
 
@@ -356,10 +358,15 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         """
         Preprocess the CSV row.
         """
+        self._row_num += 1
         operation = {}
         user_id = row['user_id']
         if user_id in self._users_seen:
+            if len(self._users_seen[user_id]) == 1:
+                self.add_error(_('Repeated user_id: ') + str(user_id), self._users_seen[user_id][0])
+            self._users_seen[user_id].append(self._row_num)
             raise ValidationError(_('Repeated user_id: ') + str(user_id))
+        self._users_seen[user_id].append(self._row_num)
 
         operation['new_override_grades'] = []
         operation['course_id'] = self.course_id
@@ -381,7 +388,6 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
                             raise ValidationError(_('Grade must not be negative'))
                         operation['new_override_grades'].append((block_id, new_grade))
 
-        self._users_seen.add(user_id)
         return operation
 
     def process_row(self, row):

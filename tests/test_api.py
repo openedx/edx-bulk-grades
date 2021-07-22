@@ -442,7 +442,7 @@ class TestGradeProcessor(BaseTests):
         rows = list(processor.get_iterator())
         self.assertEqual(len(rows), (self.NUM_USERS - 2)+1)
 
-    def test_preprocess_error(self):
+    def test_preprocess_negative_number_error(self):
         processor = api.GradeCSVProcessor(course_id=self.course_id)
         row = {
             'block_id': self.usage_key,
@@ -454,7 +454,17 @@ class TestGradeProcessor(BaseTests):
         }
         with self.assertRaisesMessage(ValidationError, 'Grade must not be negative'):
             processor.preprocess_row(row)
-        row['new_override-85bb02db'] = 'not a number'
+
+    def test_preprocess_nan_error(self):
+        processor = api.GradeCSVProcessor(course_id=self.course_id)
+        row = {
+            'block_id': self.usage_key,
+            'new_override-123402db': '1',
+            'new_override-85bb02db': 'not a number',
+            'user_id': self.learner.id,
+            'csum': '07ec',
+            'Previous Points': '',
+        }
         with self.assertRaisesMessage(ValueError, 'Grade must be a number'):
             processor.preprocess_row(row)
 
@@ -497,6 +507,13 @@ class TestGradeProcessor(BaseTests):
         # different row with the same user id throw error
         with self.assertRaisesMessage(ValidationError, 'Repeated user'):
             processor.preprocess_row(row2)
+            # there should be 2 errors for the first repeat user error
+            self.assertCountEqual(len(processor.error_messages), 2)
+        
+        with self.assertRaisesMessage(ValidationError, 'Repeated user'):
+            processor.preprocess_row(row2)
+            # there should be 3 errors for the second repeat user error
+            self.assertCountEqual(len(processor.error_messages), 3)
 
     def test_empty_grade(self):
         processor = api.GradeCSVProcessor(course_id=self.course_id)
