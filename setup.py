@@ -11,6 +11,10 @@ from io import open as open_as_of_py3
 from setuptools import setup
 
 
+# We open files with one-line shorthands, it's ok.
+# pylint: disable=consider-using-with
+
+
 def get_version(*file_paths):
     """
     Extract the version string from the file at the given relative path fragments.
