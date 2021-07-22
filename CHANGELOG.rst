@@ -12,6 +12,8 @@ Change Log
 .. There should always be an "Unreleased" section for changes pending release.
 
 Unreleased
+[0.8.14] - 2021-07-12
+* Update csv import error message
 ~~~~~~~~~~
 [0.8.13] - 2021-07-12
 * Fix bug where we ignore repeat user in the csv import
