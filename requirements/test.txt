@@ -20,7 +20,7 @@ certifi==2021.5.30
     # via
     #   -r requirements/base.txt
     #   requests
-charset-normalizer==2.0.3
+charset-normalizer==2.0.4
     # via
     #   -r requirements/base.txt
     #   requests
@@ -117,7 +117,7 @@ markupsafe==1.1.1
     #   jinja2
 mock==4.0.3
     # via -r requirements/test.in
-newrelic==6.4.4.161
+newrelic==6.8.0.163
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
