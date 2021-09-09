@@ -92,7 +92,7 @@ class GradeImportExport(GradeOnlyExport):
             data['error_messages'] = []
             for error_message in self.processor.error_messages:
                 line_numbers = ', '.join(str(line_number+1) for line_number in self.processor.error_messages[error_message])
-                new_message = '{error_message} on line{is_plural} {line_numbers}'.format(
+                new_message = '{error_message} (on line{is_plural} {line_numbers})'.format(
                                     error_message=error_message,
                                     is_plural='s' if len(line_numbers) > 1 else '',
                                     line_numbers=line_numbers
