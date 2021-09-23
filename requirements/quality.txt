@@ -8,7 +8,7 @@ amqp==5.0.6
     # via
     #   -r requirements/test.txt
     #   kombu
-astroid==2.6.6
+astroid==2.8.0
     # via
     #   pylint
     #   pylint-celery
@@ -29,7 +29,7 @@ certifi==2021.5.30
     # via
     #   -r requirements/test.txt
     #   requests
-charset-normalizer==2.0.4
+charset-normalizer==2.0.6
     # via
     #   -r requirements/test.txt
     #   requests
@@ -78,7 +78,6 @@ django==2.2.24
     #   djangorestframework
     #   edx-celeryutils
     #   edx-django-utils
-    #   edx-lint
     #   jsonfield2
     #   super-csv
 django-crum==0.7.9
@@ -103,11 +102,11 @@ edx-celeryutils==1.1.0
     # via
     #   -r requirements/test.txt
     #   super-csv
-edx-django-utils==4.2.0
+edx-django-utils==4.4.0
     # via
     #   -r requirements/test.txt
     #   super-csv
-edx-lint==5.0.0
+edx-lint==5.1.0
     # via -r requirements/quality.in
 edx-opaque-keys==2.2.2
     # via -r requirements/test.txt
@@ -151,7 +150,7 @@ mccabe==0.6.1
     # via pylint
 mock==4.0.3
     # via -r requirements/test.txt
-newrelic==6.8.0.163
+newrelic==7.0.0.166
     # via
     #   -r requirements/test.txt
     #   edx-django-utils
@@ -163,11 +162,13 @@ pbr==5.6.0
     # via
     #   -r requirements/test.txt
     #   stevedore
-pluggy==0.13.1
+platformdirs==2.3.0
+    # via pylint
+pluggy==1.0.0
     # via
     #   -r requirements/test.txt
     #   pytest
-prompt-toolkit==3.0.19
+prompt-toolkit==3.0.20
     # via
     #   -r requirements/test.txt
     #   click-repl
@@ -183,7 +184,7 @@ pycodestyle==2.7.0
     # via -r requirements/quality.in
 pydocstyle==6.1.1
     # via -r requirements/quality.in
-pylint==2.9.6
+pylint==2.11.1
     # via
     #   edx-lint
     #   pylint-celery
@@ -205,7 +206,7 @@ pyparsing==2.4.7
     # via
     #   -r requirements/test.txt
     #   packaging
-pytest==6.2.4
+pytest==6.2.5
     # via
     #   -r requirements/test.txt
     #   pytest-cov
@@ -231,7 +232,7 @@ requests==2.26.0
     # via
     #   -r requirements/test.txt
     #   slumber
-simplejson==3.17.3
+simplejson==3.17.5
     # via
     #   -r requirements/test.txt
     #   super-csv
@@ -244,11 +245,11 @@ slumber==0.7.1
     # via -r requirements/test.txt
 snowballstemmer==2.1.0
     # via pydocstyle
-sqlparse==0.4.1
+sqlparse==0.4.2
     # via
     #   -r requirements/test.txt
     #   django
-stevedore==3.3.0
+stevedore==3.4.0
     # via
     #   -r requirements/test.txt
     #   code-annotations
@@ -266,7 +267,11 @@ toml==0.10.2
     #   pylint
     #   pytest
     #   pytest-cov
-urllib3==1.26.6
+typing-extensions==3.10.0.2
+    # via
+    #   astroid
+    #   pylint
+urllib3==1.26.7
     # via
     #   -r requirements/test.txt
     #   requests

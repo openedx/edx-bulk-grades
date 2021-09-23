@@ -20,7 +20,7 @@ certifi==2021.5.30
     # via
     #   -r requirements/base.txt
     #   requests
-charset-normalizer==2.0.4
+charset-normalizer==2.0.6
     # via
     #   -r requirements/base.txt
     #   requests
@@ -84,7 +84,7 @@ edx-celeryutils==1.1.0
     # via
     #   -r requirements/base.txt
     #   super-csv
-edx-django-utils==4.2.0
+edx-django-utils==4.4.0
     # via
     #   -r requirements/base.txt
     #   super-csv
@@ -117,7 +117,7 @@ markupsafe==1.1.1
     #   jinja2
 mock==4.0.3
     # via -r requirements/test.in
-newrelic==6.8.0.163
+newrelic==7.0.0.166
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
@@ -127,9 +127,9 @@ pbr==5.6.0
     # via
     #   -r requirements/base.txt
     #   stevedore
-pluggy==0.13.1
+pluggy==1.0.0
     # via pytest
-prompt-toolkit==3.0.19
+prompt-toolkit==3.0.20
     # via
     #   -r requirements/base.txt
     #   click-repl
@@ -145,7 +145,7 @@ pymongo==3.12.0
     #   edx-opaque-keys
 pyparsing==2.4.7
     # via packaging
-pytest==6.2.4
+pytest==6.2.5
     # via
     #   pytest-cov
     #   pytest-django
@@ -166,7 +166,7 @@ requests==2.26.0
     # via
     #   -r requirements/base.txt
     #   slumber
-simplejson==3.17.3
+simplejson==3.17.5
     # via
     #   -r requirements/base.txt
     #   super-csv
@@ -176,11 +176,11 @@ six==1.16.0
     #   click-repl
 slumber==0.7.1
     # via -r requirements/base.txt
-sqlparse==0.4.1
+sqlparse==0.4.2
     # via
     #   -r requirements/base.txt
     #   django
-stevedore==3.3.0
+stevedore==3.4.0
     # via
     #   -r requirements/base.txt
     #   code-annotations
@@ -194,7 +194,7 @@ toml==0.10.2
     # via
     #   pytest
     #   pytest-cov
-urllib3==1.26.6
+urllib3==1.26.7
     # via
     #   -r requirements/base.txt
     #   requests
