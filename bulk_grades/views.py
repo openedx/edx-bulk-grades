@@ -44,6 +44,18 @@ class GradeOnlyExport(View):
         self.initialize_processor(request, course_id)
         return super().dispatch(request, course_id, *args, **kwargs)
 
+    def get_export_filename(self, course_id):
+        """
+        Create filename for export
+        """
+        filename_elements = [course_id]
+
+        if self.extra_filename:
+            filename_elements.append(self.extra_filename)
+        filename_elements.append(datetime.datetime.utcnow().isoformat())
+
+        return '-'.join(filename_elements) + '.csv'
+
     def get(self, request, course_id, *args, **kwargs):
         """
         Export grades in CSV format.
@@ -54,14 +66,10 @@ class GradeOnlyExport(View):
         subsection: block id of graded subsection
         """
         iterator = self.get_export_iterator(request)
-        filename = [course_id]
-
-        if self.extra_filename:
-            filename.append(self.extra_filename)
-        filename.append(datetime.datetime.utcnow().isoformat())
+        filename = self.get_export_filename(course_id)
 
         response = StreamingHttpResponse(iterator, content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="%s.csv"' % '-'.join(filename)
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
 
         log.info('Exporting %s CSV for %s', course_id, self.__class__)
         return response
@@ -91,12 +99,10 @@ class GradeImportExport(GradeOnlyExport):
             data = self.processor.status()
             data['error_messages'] = []
             for error_message in self.processor.error_messages:
+                is_plural='s' if len(line_numbers) > 1 else ''
                 line_numbers = ', '.join(str(line_number+1) for line_number in self.processor.error_messages[error_message])
-                new_message = '{error_message} on line{is_plural} {line_numbers}'.format(
-                                    error_message=error_message,
-                                    is_plural='s' if len(line_numbers) > 1 else '',
-                                    line_numbers=line_numbers
-                                )
+                new_message = f'{error_message} on line{is_plural} {line_numbers}'
+
                 data['error_messages'].append(new_message)
 
             log.info('Processed file %s for %s -> %s saved, %s processed, %s error. (async=%s)',
