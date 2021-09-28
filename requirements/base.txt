@@ -14,7 +14,7 @@ celery==5.1.2
     #   edx-celeryutils
 certifi==2021.5.30
     # via requests
-charset-normalizer==2.0.4
+charset-normalizer==2.0.6
     # via requests
 click==7.1.2
     # via
@@ -56,7 +56,7 @@ djangorestframework==3.12.4
     # via super-csv
 edx-celeryutils==1.1.0
     # via super-csv
-edx-django-utils==4.2.0
+edx-django-utils==4.4.0
     # via super-csv
 edx-opaque-keys==2.2.2
     # via -r requirements/base.in
@@ -68,11 +68,11 @@ jsonfield2==4.0.0.post0
     # via edx-celeryutils
 kombu==5.1.0
     # via celery
-newrelic==6.8.0.163
+newrelic==7.0.0.166
     # via edx-django-utils
 pbr==5.6.0
     # via stevedore
-prompt-toolkit==3.0.19
+prompt-toolkit==3.0.20
     # via click-repl
 psutil==5.8.0
     # via edx-django-utils
@@ -86,7 +86,7 @@ requests==2.26.0
     # via
     #   -r requirements/base.in
     #   slumber
-simplejson==3.17.3
+simplejson==3.17.5
     # via super-csv
 six==1.16.0
     # via
@@ -94,15 +94,15 @@ six==1.16.0
     #   click-repl
 slumber==0.7.1
     # via -r requirements/base.in
-sqlparse==0.4.1
+sqlparse==0.4.2
     # via django
-stevedore==3.3.0
+stevedore==3.4.0
     # via
     #   edx-django-utils
     #   edx-opaque-keys
 super-csv==2.1.1
     # via -r requirements/base.in
-urllib3==1.26.6
+urllib3==1.26.7
     # via requests
 vine==5.0.0
     # via

@@ -312,7 +312,7 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         )
         self.append_columns(
             self._subsection_column_names(
-                self._subsections.keys(),  # pylint: disable=dict-keys-not-iterating, useless-suppression
+                self._subsections.keys(),  # pylint: disable=useless-suppression
                 self.subsection_prefixes
             )
         )
@@ -549,7 +549,7 @@ class InterventionCSVProcessor(GradedSubsectionMixin, CSVProcessor):
         )
         self.append_columns(
             self._subsection_column_names(
-                self._subsections.keys(),  # pylint: disable=dict-keys-not-iterating, useless-suppression
+                self._subsections.keys(),  # pylint: disable=useless-suppression
                 self.subsection_prefixes
             )
         )
