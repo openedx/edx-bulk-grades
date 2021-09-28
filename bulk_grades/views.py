@@ -101,7 +101,7 @@ class GradeImportExport(GradeOnlyExport):
             for error_message in self.processor.error_messages:
                 is_plural = 's' if len(line_numbers) > 1 else ''
                 line_numbers = ', '.join(str(line_number+1) for line_number in self.processor.error_messages[error_message])
-                new_message = f'{error_message} on line{is_plural} {line_numbers}'
+                new_message = f'{error_message} (on line{is_plural} {line_numbers})'
 
                 data['error_messages'].append(new_message)
 
