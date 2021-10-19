@@ -17,11 +17,11 @@ celery==5.1.2
     #   -c requirements/constraints.txt
     #   -r requirements/base.txt
     #   edx-celeryutils
-certifi==2021.5.30
+certifi==2021.10.8
     # via
     #   -r requirements/base.txt
     #   requests
-charset-normalizer==2.0.6
+charset-normalizer==2.0.7
     # via
     #   -r requirements/base.txt
     #   requests
@@ -34,7 +34,7 @@ click==7.1.2
     #   click-plugins
     #   click-repl
     #   code-annotations
-click-didyoumean==0.0.3
+click-didyoumean==0.3.0
     # via
     #   -r requirements/base.txt
     #   celery
@@ -58,14 +58,14 @@ django==2.2.24
     #   djangorestframework
     #   edx-celeryutils
     #   edx-django-utils
-    #   jsonfield2
+    #   jsonfield
     #   super-csv
 django-crum==0.7.9
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
     #   super-csv
-django-model-utils==4.1.1
+django-model-utils==4.2.0
     # via
     #   -r requirements/base.txt
     #   edx-celeryutils
@@ -78,7 +78,7 @@ djangorestframework==3.12.4
     # via
     #   -r requirements/base.txt
     #   super-csv
-edx-celeryutils==1.1.0
+edx-celeryutils==1.1.1
     # via
     #   -r requirements/base.txt
     #   super-csv
@@ -92,7 +92,7 @@ future==0.18.2
     # via
     #   -r requirements/base.txt
     #   edx-celeryutils
-idna==3.2
+idna==3.3
     # via
     #   -r requirements/base.txt
     #   requests
@@ -100,7 +100,7 @@ jinja2==2.11.3
     # via
     #   -c requirements/constraints.txt
     #   code-annotations
-jsonfield2==4.0.0.post0
+jsonfield==3.1.0
     # via
     #   -r requirements/base.txt
     #   edx-celeryutils
@@ -112,7 +112,7 @@ markupsafe==1.1.1
     # via
     #   -c requirements/constraints.txt
     #   jinja2
-newrelic==7.0.0.166
+newrelic==7.2.2.169
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
@@ -134,12 +134,12 @@ pymongo==3.12.0
     #   edx-opaque-keys
 python-slugify==5.0.2
     # via code-annotations
-pytz==2021.1
+pytz==2021.3
     # via
     #   -r requirements/base.txt
     #   celery
     #   django
-pyyaml==5.4.1
+pyyaml==6.0
     # via code-annotations
 requests==2.26.0
     # via
@@ -159,7 +159,7 @@ sqlparse==0.4.2
     # via
     #   -r requirements/base.txt
     #   django
-stevedore==3.4.0
+stevedore==3.5.0
     # via
     #   -r requirements/base.txt
     #   code-annotations
