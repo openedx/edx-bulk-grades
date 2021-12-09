@@ -21,7 +21,7 @@ certifi==2021.10.8
     # via
     #   -r requirements/base.txt
     #   requests
-charset-normalizer==2.0.8
+charset-normalizer==2.0.9
     # via
     #   -r requirements/base.txt
     #   requests
@@ -47,7 +47,7 @@ click-repl==0.2.0
     #   celery
 code-annotations==1.2.0
     # via -r requirements/pii_check.in
-django==2.2.24
+django==2.2.25
     # via
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -c requirements/constraints.txt
@@ -115,7 +115,7 @@ pbr==5.8.0
     # via
     #   -r requirements/base.txt
     #   stevedore
-prompt-toolkit==3.0.23
+prompt-toolkit==3.0.24
     # via
     #   -r requirements/base.txt
     #   click-repl
@@ -123,7 +123,7 @@ psutil==5.8.0
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
-pymongo==3.12.1
+pymongo==4.0.1
     # via
     #   -r requirements/base.txt
     #   edx-opaque-keys
