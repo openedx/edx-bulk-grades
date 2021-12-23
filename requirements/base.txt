@@ -4,7 +4,7 @@
 #
 #    make upgrade
 #
-amqp==5.0.6
+amqp==5.0.9
     # via kombu
 billiard==3.6.4.0
     # via celery
@@ -14,7 +14,7 @@ celery==5.2.1
     #   edx-celeryutils
 certifi==2021.10.8
     # via requests
-charset-normalizer==2.0.8
+charset-normalizer==2.0.9
     # via requests
 click==8.0.3
     # via
@@ -28,7 +28,7 @@ click-plugins==1.1.1
     # via celery
 click-repl==0.2.0
     # via celery
-django==2.2.24
+django==2.2.25
     # via
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -c requirements/constraints.txt
@@ -51,11 +51,11 @@ django-model-utils==4.2.0
     #   super-csv
 django-waffle==2.2.1
     # via edx-django-utils
-djangorestframework==3.12.4
+djangorestframework==3.13.1
     # via super-csv
 edx-celeryutils==1.1.1
     # via super-csv
-edx-django-utils==4.4.0
+edx-django-utils==4.4.1
     # via super-csv
 edx-opaque-keys==2.2.2
     # via -r requirements/base.in
@@ -71,16 +71,17 @@ newrelic==7.2.4.171
     # via edx-django-utils
 pbr==5.8.0
     # via stevedore
-prompt-toolkit==3.0.23
+prompt-toolkit==3.0.24
     # via click-repl
 psutil==5.8.0
     # via edx-django-utils
-pymongo==3.12.1
+pymongo==4.0.1
     # via edx-opaque-keys
 pytz==2021.3
     # via
     #   celery
     #   django
+    #   djangorestframework
 requests==2.26.0
     # via
     #   -r requirements/base.in
