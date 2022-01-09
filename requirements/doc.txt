@@ -6,11 +6,11 @@
 #
 alabaster==0.7.12
     # via sphinx
-amqp==5.0.6
+amqp==5.0.9
     # via
     #   -r requirements/test.txt
     #   kombu
-attrs==21.2.0
+attrs==21.4.0
     # via
     #   -r requirements/test.txt
     #   pytest
@@ -22,7 +22,7 @@ billiard==3.6.4.0
     #   celery
 bleach==4.1.0
     # via readme-renderer
-celery==5.2.1
+celery==5.2.3
     # via
     #   -c requirements/constraints.txt
     #   -r requirements/test.txt
@@ -33,7 +33,7 @@ certifi==2021.10.8
     #   requests
 cffi==1.15.0
     # via cryptography
-charset-normalizer==2.0.8
+charset-normalizer==2.0.10
     # via
     #   -r requirements/test.txt
     #   requests
@@ -65,11 +65,11 @@ coverage[toml]==6.2
     # via
     #   -r requirements/test.txt
     #   pytest-cov
-cryptography==36.0.0
+cryptography==36.0.1
     # via secretstorage
 ddt==1.4.4
     # via -r requirements/test.txt
-django==2.2.24
+django==2.2.26
     # via
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -c requirements/constraints.txt
@@ -95,7 +95,7 @@ django-waffle==2.2.1
     # via
     #   -r requirements/test.txt
     #   edx-django-utils
-djangorestframework==3.12.4
+djangorestframework==3.13.1
     # via
     #   -r requirements/test.txt
     #   super-csv
@@ -111,7 +111,7 @@ edx-celeryutils==1.1.1
     # via
     #   -r requirements/test.txt
     #   super-csv
-edx-django-utils==4.4.0
+edx-django-utils==4.4.1
     # via
     #   -r requirements/test.txt
     #   super-csv
@@ -129,7 +129,7 @@ idna==3.3
     #   requests
 imagesize==1.3.0
     # via sphinx
-importlib-metadata==4.8.2
+importlib-metadata==4.10.0
     # via
     #   keyring
     #   twine
@@ -150,9 +150,9 @@ jsonfield==3.1.0
     # via
     #   -r requirements/test.txt
     #   edx-celeryutils
-keyring==23.4.0
+keyring==23.5.0
     # via twine
-kombu==5.2.2
+kombu==5.2.3
     # via
     #   -r requirements/test.txt
     #   celery
@@ -176,17 +176,17 @@ pbr==5.8.0
     # via
     #   -r requirements/test.txt
     #   stevedore
-pkginfo==1.8.1
+pkginfo==1.8.2
     # via twine
 pluggy==1.0.0
     # via
     #   -r requirements/test.txt
     #   pytest
-prompt-toolkit==3.0.23
+prompt-toolkit==3.0.24
     # via
     #   -r requirements/test.txt
     #   click-repl
-psutil==5.8.0
+psutil==5.9.0
     # via
     #   -r requirements/test.txt
     #   edx-django-utils
@@ -196,12 +196,12 @@ py==1.11.0
     #   pytest
 pycparser==2.21
     # via cffi
-pygments==2.10.0
+pygments==2.11.2
     # via
     #   doc8
     #   readme-renderer
     #   sphinx
-pymongo==3.12.1
+pymongo==4.0.1
     # via
     #   -r requirements/test.txt
     #   edx-opaque-keys
@@ -216,7 +216,7 @@ pytest==6.2.5
     #   pytest-django
 pytest-cov==3.0.0
     # via -r requirements/test.txt
-pytest-django==4.4.0
+pytest-django==4.5.2
     # via -r requirements/test.txt
 python-slugify==5.0.2
     # via
@@ -228,15 +228,16 @@ pytz==2021.3
     #   babel
     #   celery
     #   django
+    #   djangorestframework
 pyyaml==6.0
     # via
     #   -r requirements/test.txt
     #   code-annotations
-readme-renderer==30.0
+readme-renderer==32.0
     # via
     #   -r requirements/doc.in
     #   twine
-requests==2.26.0
+requests==2.27.1
     # via
     #   -r requirements/test.txt
     #   requests-toolbelt
@@ -265,7 +266,7 @@ slumber==0.7.1
     # via -r requirements/test.txt
 snowballstemmer==2.2.0
     # via sphinx
-sphinx==4.3.1
+sphinx==4.3.2
     # via
     #   -r requirements/doc.in
     #   edx-sphinx-theme
@@ -302,15 +303,15 @@ toml==0.10.2
     # via
     #   -r requirements/test.txt
     #   pytest
-tomli==1.2.2
+tomli==2.0.0
     # via
     #   -r requirements/test.txt
     #   coverage
 tqdm==4.62.3
     # via twine
-twine==3.6.0
+twine==3.7.1
     # via -r requirements/doc.in
-urllib3==1.26.7
+urllib3==1.26.8
     # via
     #   -r requirements/test.txt
     #   requests
@@ -326,7 +327,7 @@ wcwidth==0.2.5
     #   prompt-toolkit
 webencodings==0.5.1
     # via bleach
-zipp==3.6.0
+zipp==3.7.0
     # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
