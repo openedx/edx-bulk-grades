@@ -13,6 +13,11 @@ Change Log
 
 Unreleased
 
+[1.0.0] - 2022-02-16
+* Dropped Support for Django22, 30 and 31
+* Added Support for Django40
+~~~~~~~~~~
+
 [0.9.12 - 2021-09-02
 * Fix grade history not rendering on error
 ~~~~~~~~~~
