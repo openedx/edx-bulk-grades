@@ -28,7 +28,7 @@ charset-normalizer==2.0.12
     # via
     #   -r requirements/base.txt
     #   requests
-click==8.0.3
+click==8.0.4
     # via
     #   -r requirements/base.txt
     #   celery
@@ -50,7 +50,7 @@ click-repl==0.2.0
     #   celery
 code-annotations==1.3.0
     # via -r requirements/test.in
-coverage[toml]==6.3.1
+coverage[toml]==6.3.2
     # via pytest-cov
 ddt==1.4.4
     # via -r requirements/test.in
@@ -112,11 +112,11 @@ jsonfield==3.1.0
     # via
     #   -r requirements/base.txt
     #   celery
-markupsafe==2.0.1
+markupsafe==2.1.0
     # via jinja2
 mock==4.0.3
     # via -r requirements/test.in
-newrelic==7.4.0.172
+newrelic==7.6.0.173
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
@@ -152,7 +152,7 @@ pytest-cov==3.0.0
     # via -r requirements/test.in
 pytest-django==4.5.2
     # via -r requirements/test.in
-python-slugify==5.0.2
+python-slugify==6.1.1
     # via code-annotations
 pytz==2021.3
     # via
@@ -186,7 +186,7 @@ stevedore==3.5.0
     #   code-annotations
     #   edx-django-utils
     #   edx-opaque-keys
-super-csv==2.1.4
+super-csv==3.0.0
     # via -r requirements/base.txt
 text-unidecode==1.3
     # via python-slugify
