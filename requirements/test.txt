@@ -87,7 +87,7 @@ edx-celeryutils==1.2.1
     # via
     #   -r requirements/base.txt
     #   super-csv
-edx-django-utils==4.5.0
+edx-django-utils==4.6.0
     # via
     #   -r requirements/base.txt
     #   super-csv
@@ -112,7 +112,7 @@ jsonfield==3.1.0
     # via
     #   -r requirements/base.txt
     #   celery
-markupsafe==2.1.0
+markupsafe==2.1.1
     # via jinja2
 mock==4.0.3
     # via -r requirements/test.in
@@ -144,7 +144,7 @@ pymongo==3.12.3
     #   edx-opaque-keys
 pyparsing==3.0.7
     # via packaging
-pytest==7.0.1
+pytest==7.1.1
     # via
     #   pytest-cov
     #   pytest-django
@@ -154,7 +154,7 @@ pytest-django==4.5.2
     # via -r requirements/test.in
 python-slugify==6.1.1
     # via code-annotations
-pytz==2021.3
+pytz==2022.1
     # via
     #   -r requirements/base.txt
     #   celery
@@ -194,7 +194,7 @@ tomli==2.0.1
     # via
     #   coverage
     #   pytest
-urllib3==1.26.8
+urllib3==1.26.9
     # via
     #   -r requirements/base.txt
     #   requests
