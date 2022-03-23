@@ -85,7 +85,7 @@ edx-celeryutils==1.2.1
     # via
     #   -r requirements/base.txt
     #   super-csv
-edx-django-utils==4.5.0
+edx-django-utils==4.6.0
     # via
     #   -r requirements/base.txt
     #   super-csv
@@ -109,7 +109,7 @@ kombu==5.2.4
     # via
     #   -r requirements/base.txt
     #   celery
-markupsafe==2.1.0
+markupsafe==2.1.1
     # via jinja2
 newrelic==7.6.0.173
     # via
@@ -133,7 +133,7 @@ pymongo==3.12.3
     #   edx-opaque-keys
 python-slugify==6.1.1
     # via code-annotations
-pytz==2021.3
+pytz==2022.1
     # via
     #   -r requirements/base.txt
     #   celery
@@ -169,7 +169,7 @@ super-csv==3.0.0
     # via -r requirements/base.txt
 text-unidecode==1.3
     # via python-slugify
-urllib3==1.26.8
+urllib3==1.26.9
     # via
     #   -r requirements/base.txt
     #   requests
