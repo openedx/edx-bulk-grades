@@ -6,7 +6,7 @@
 #
 alabaster==0.7.12
     # via sphinx
-amqp==5.1.0
+amqp==5.1.1
     # via
     #   -r requirements/test.txt
     #   kombu
@@ -18,7 +18,7 @@ attrs==21.4.0
     # via
     #   -r requirements/test.txt
     #   pytest
-babel==2.9.1
+babel==2.10.1
     # via sphinx
 billiard==3.6.4.0
     # via
@@ -73,7 +73,7 @@ cryptography==36.0.2
     # via secretstorage
 ddt==1.4.4
     # via -r requirements/test.txt
-django==3.2.12
+django==3.2.13
     # via
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -c requirements/constraints.txt
@@ -210,11 +210,11 @@ pymongo==3.12.3
     # via
     #   -r requirements/test.txt
     #   edx-opaque-keys
-pyparsing==3.0.7
+pyparsing==3.0.8
     # via
     #   -r requirements/test.txt
     #   packaging
-pytest==7.1.1
+pytest==7.1.2
     # via
     #   -r requirements/test.txt
     #   pytest-cov
@@ -238,7 +238,7 @@ pyyaml==6.0
     # via
     #   -r requirements/test.txt
     #   code-annotations
-readme-renderer==34.0
+readme-renderer==35.0
     # via
     #   -r requirements/doc.in
     #   twine
@@ -257,7 +257,7 @@ rfc3986==2.0.0
     # via twine
 rich==12.2.0
     # via twine
-secretstorage==3.3.1
+secretstorage==3.3.2
     # via keyring
 simplejson==3.17.6
     # via
@@ -313,7 +313,7 @@ tomli==2.0.1
     #   pytest
 twine==4.0.0
     # via -r requirements/doc.in
-typing-extensions==4.1.1
+typing-extensions==4.2.0
     # via rich
 urllib3==1.26.9
     # via
