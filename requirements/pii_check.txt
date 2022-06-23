@@ -21,7 +21,7 @@ celery==5.2.7
     #   -c requirements/constraints.txt
     #   -r requirements/base.txt
     #   edx-celeryutils
-certifi==2022.5.18.1
+certifi==2022.6.15
     # via
     #   -r requirements/base.txt
     #   requests
