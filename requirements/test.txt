@@ -20,7 +20,7 @@ attrs==21.4.0
     #   -c requirements/constraints.txt
     #   -r requirements/base.txt
     #   edx-celeryutils
-certifi==2022.5.18.1
+certifi==2022.6.15
     # via
     #   -r requirements/base.txt
     #   requests
