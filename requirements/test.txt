@@ -24,11 +24,11 @@ certifi==2022.6.15
     # via
     #   -r requirements/base.txt
     #   requests
-cffi==1.15.0
+cffi==1.15.1
     # via
     #   -r requirements/base.txt
     #   pynacl
-charset-normalizer==2.0.12
+charset-normalizer==2.1.0
     # via
     #   -r requirements/base.txt
     #   requests
@@ -121,7 +121,7 @@ markupsafe==2.1.1
     # via jinja2
 mock==4.0.3
     # via -r requirements/test.in
-newrelic==7.12.0.176
+newrelic==7.14.0.177
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
@@ -133,7 +133,7 @@ pbr==5.9.0
     #   stevedore
 pluggy==1.0.0
     # via pytest
-prompt-toolkit==3.0.29
+prompt-toolkit==3.0.30
     # via
     #   -r requirements/base.txt
     #   click-repl
@@ -175,7 +175,7 @@ pytz==2022.1
     #   djangorestframework
 pyyaml==6.0
     # via code-annotations
-requests==2.28.0
+requests==2.28.1
     # via
     #   -r requirements/base.txt
     #   slumber
@@ -207,7 +207,7 @@ tomli==2.0.1
     # via
     #   coverage
     #   pytest
-urllib3==1.26.9
+urllib3==1.26.10
     # via
     #   -r requirements/base.txt
     #   requests

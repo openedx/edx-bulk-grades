@@ -12,7 +12,7 @@ asgiref==3.5.2
     # via
     #   -r requirements/quality.txt
     #   django
-astroid==2.11.6
+astroid==2.11.7
     # via
     #   -r requirements/quality.txt
     #   pylint
@@ -25,6 +25,10 @@ billiard==3.6.4.0
     # via
     #   -r requirements/quality.txt
     #   celery
+build==0.8.0
+    # via
+    #   -r requirements/pip-tools.txt
+    #   pip-tools
 celery==5.2.7
     # via
     #   -c requirements/constraints.txt
@@ -35,13 +39,13 @@ certifi==2022.6.15
     #   -r requirements/ci.txt
     #   -r requirements/quality.txt
     #   requests
-cffi==1.15.0
+cffi==1.15.1
     # via
     #   -r requirements/quality.txt
     #   pynacl
-chardet==4.0.0
+chardet==5.0.0
     # via diff-cover
-charset-normalizer==2.0.12
+charset-normalizer==2.1.0
     # via
     #   -r requirements/ci.txt
     #   -r requirements/quality.txt
@@ -99,7 +103,7 @@ distlib==0.3.4
     # via
     #   -r requirements/ci.txt
     #   virtualenv
-django==3.2.13
+django==3.2.14
     # via
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -c requirements/constraints.txt
@@ -193,14 +197,16 @@ mccabe==0.7.0
     #   pylint
 mock==4.0.3
     # via -r requirements/quality.txt
-newrelic==7.12.0.176
+newrelic==7.14.0.177
     # via
     #   -r requirements/quality.txt
     #   edx-django-utils
 packaging==21.3
     # via
     #   -r requirements/ci.txt
+    #   -r requirements/pip-tools.txt
     #   -r requirements/quality.txt
+    #   build
     #   pytest
     #   tox
 path==16.4.0
@@ -212,8 +218,8 @@ pbr==5.9.0
 pep517==0.12.0
     # via
     #   -r requirements/pip-tools.txt
-    #   pip-tools
-pip-tools==6.6.2
+    #   build
+pip-tools==6.8.0
     # via -r requirements/pip-tools.txt
 platformdirs==2.5.2
     # via
@@ -230,7 +236,7 @@ pluggy==1.0.0
     #   tox
 polib==1.1.1
     # via edx-i18n-tools
-prompt-toolkit==3.0.29
+prompt-toolkit==3.0.30
     # via
     #   -r requirements/quality.txt
     #   click-repl
@@ -254,7 +260,7 @@ pydocstyle==6.1.1
     # via -r requirements/quality.txt
 pygments==2.12.0
     # via diff-cover
-pylint==2.14.3
+pylint==2.14.4
     # via
     #   -r requirements/quality.txt
     #   edx-lint
@@ -285,6 +291,7 @@ pynacl==1.5.0
 pyparsing==3.0.9
     # via
     #   -r requirements/ci.txt
+    #   -r requirements/pip-tools.txt
     #   -r requirements/quality.txt
     #   packaging
 pytest==7.1.2
@@ -311,7 +318,7 @@ pyyaml==6.0
     #   -r requirements/quality.txt
     #   code-annotations
     #   edx-i18n-tools
-requests==2.28.0
+requests==2.28.1
     # via
     #   -r requirements/ci.txt
     #   -r requirements/quality.txt
@@ -359,26 +366,27 @@ tomli==2.0.1
     # via
     #   -r requirements/pip-tools.txt
     #   -r requirements/quality.txt
+    #   build
     #   coverage
     #   pep517
     #   pylint
     #   pytest
-tomlkit==0.11.0
+tomlkit==0.11.1
     # via
     #   -r requirements/quality.txt
     #   pylint
-tox==3.25.0
+tox==3.25.1
     # via
     #   -r requirements/ci.txt
     #   tox-battery
 tox-battery==0.6.1
     # via -r requirements/ci.txt
-typing-extensions==4.2.0
+typing-extensions==4.3.0
     # via
     #   -r requirements/quality.txt
     #   astroid
     #   pylint
-urllib3==1.26.9
+urllib3==1.26.10
     # via
     #   -r requirements/ci.txt
     #   -r requirements/quality.txt
@@ -389,7 +397,7 @@ vine==5.0.0
     #   amqp
     #   celery
     #   kombu
-virtualenv==20.14.1
+virtualenv==20.15.1
     # via
     #   -r requirements/ci.txt
     #   tox
