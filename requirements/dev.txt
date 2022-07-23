@@ -85,7 +85,7 @@ code-annotations==1.3.0
     #   edx-lint
 codecov==2.1.12
     # via -r requirements/ci.txt
-coverage[toml]==6.4.1
+coverage[toml]==6.4.2
     # via
     #   -r requirements/ci.txt
     #   -r requirements/quality.txt
@@ -99,7 +99,7 @@ dill==0.3.5.1
     # via
     #   -r requirements/quality.txt
     #   pylint
-distlib==0.3.4
+distlib==0.3.5
     # via
     #   -r requirements/ci.txt
     #   virtualenv
@@ -126,7 +126,7 @@ django-model-utils==4.2.0
     #   -r requirements/quality.txt
     #   edx-celeryutils
     #   super-csv
-django-waffle==2.5.0
+django-waffle==2.6.0
     # via
     #   -r requirements/quality.txt
     #   edx-django-utils
@@ -197,7 +197,7 @@ mccabe==0.7.0
     #   pylint
 mock==4.0.3
     # via -r requirements/quality.txt
-newrelic==7.14.0.177
+newrelic==7.16.0.178
     # via
     #   -r requirements/quality.txt
     #   edx-django-utils
@@ -260,7 +260,7 @@ pydocstyle==6.1.1
     # via -r requirements/quality.txt
 pygments==2.12.0
     # via diff-cover
-pylint==2.14.4
+pylint==2.14.5
     # via
     #   -r requirements/quality.txt
     #   edx-lint
@@ -346,7 +346,7 @@ sqlparse==0.4.2
     # via
     #   -r requirements/quality.txt
     #   django
-stevedore==3.5.0
+stevedore==4.0.0
     # via
     #   -r requirements/quality.txt
     #   code-annotations
