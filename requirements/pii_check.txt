@@ -56,7 +56,7 @@ click-repl==0.2.0
     #   celery
 code-annotations==1.3.0
     # via -r requirements/pii_check.in
-django==3.2.14
+django==3.2.15
     # via
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -c requirements/constraints.txt
@@ -78,7 +78,7 @@ django-model-utils==4.2.0
     #   -r requirements/base.txt
     #   edx-celeryutils
     #   super-csv
-django-waffle==2.5.0
+django-waffle==2.6.0
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
@@ -116,7 +116,7 @@ kombu==5.2.4
     #   celery
 markupsafe==2.1.1
     # via jinja2
-newrelic==7.14.0.177
+newrelic==7.16.0.178
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
@@ -172,7 +172,7 @@ sqlparse==0.4.2
     # via
     #   -r requirements/base.txt
     #   django
-stevedore==3.5.0
+stevedore==4.0.0
     # via
     #   -r requirements/base.txt
     #   code-annotations
@@ -182,7 +182,7 @@ super-csv==3.0.0
     # via -r requirements/base.txt
 text-unidecode==1.3
     # via python-slugify
-urllib3==1.26.10
+urllib3==1.26.11
     # via
     #   -r requirements/base.txt
     #   requests
