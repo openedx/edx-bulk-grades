@@ -71,7 +71,7 @@ setup(
     long_description=README + '\n\n' + CHANGELOG,
     author='edX',
     author_email='oscm@edx.org',
-    url='https://github.com/edx/edx-bulk-grades',
+    url='https://github.com/openedx/edx-bulk-grades',
     packages=[
         'bulk_grades',
     ],
