@@ -18,7 +18,7 @@ In order to use, the library must be installed into edx-platform.
 
 Using with Docker Devstack
 --------------------------
-Prerequisite: Have your Open edX https://github.com/edx/devstack properly installed.
+Prerequisite: Have your Open edX https://github.com/openedx/devstack properly installed.
 Note: When you see "from inside the lms" below, it means that you've run ``make lms-shell`` from your devstack directory
 and are on a command prompt inside the LMS container.
 
@@ -86,16 +86,16 @@ How To Contribute
 
 Contributions are very welcome.
 
-Please read `How To Contribute <https://github.com/edx/edx-platform/blob/master/CONTRIBUTING.rst>`_ for details.
+Please read `How To Contribute <https://github.com/openedx/edx-platform/blob/master/CONTRIBUTING.rst>`_ for details.
 
 Even though they were written with ``edx-platform`` in mind, the guidelines
 should be followed for Open edX code in general.
 
 The pull request description template should be automatically applied if you are creating a pull request from GitHub. Otherwise you
-can find it at `PULL_REQUEST_TEMPLATE.md <https://github.com/edx/edx-bulk-grades/blob/master/.github/PULL_REQUEST_TEMPLATE.md>`_.
+can find it at `PULL_REQUEST_TEMPLATE.md <https://github.com/openedx/edx-bulk-grades/blob/master/.github/PULL_REQUEST_TEMPLATE.md>`_.
 
 The issue report template should be automatically applied if you are creating an issue on GitHub as well. Otherwise you
-can find it at `ISSUE_TEMPLATE.md <https://github.com/edx/edx-bulk-grades/blob/master/.github/ISSUE_TEMPLATE.md>`_.
+can find it at `ISSUE_TEMPLATE.md <https://github.com/openedx/edx-bulk-grades/blob/master/.github/ISSUE_TEMPLATE.md>`_.
 
 Reporting Security Issues
 -------------------------
@@ -132,5 +132,5 @@ refer to this `list of resources`_ if you need any assistance.
     :alt: Supported Python versions
 
 .. |license-badge| image:: https://img.shields.io/github/license/edx/edx-bulk-grades.svg
-    :target: https://github.com/edx/edx-bulk-grades/blob/master/LICENSE.txt
+    :target: https://github.com/openedx/edx-bulk-grades/blob/master/LICENSE.txt
     :alt: License
