@@ -11,7 +11,7 @@ asgiref==3.5.2
     # via
     #   -r requirements/base.txt
     #   django
-attrs==21.4.0
+attrs==22.1.0
     # via pytest
     # via
     #   -r requirements/base.txt
@@ -20,7 +20,7 @@ attrs==21.4.0
     #   -c requirements/constraints.txt
     #   -r requirements/base.txt
     #   edx-celeryutils
-certifi==2022.6.15
+certifi==2022.9.24
     # via
     #   -r requirements/base.txt
     #   requests
@@ -28,7 +28,7 @@ cffi==1.15.1
     # via
     #   -r requirements/base.txt
     #   pynacl
-charset-normalizer==2.1.0
+charset-normalizer==2.1.1
     # via
     #   -r requirements/base.txt
     #   requests
@@ -55,9 +55,9 @@ click-repl==0.2.0
     #   celery
 code-annotations==1.3.0
     # via -r requirements/test.in
-coverage[toml]==6.4.1
+coverage[toml]==6.5.0
     # via pytest-cov
-ddt==1.5.0
+ddt==1.6.0
     # via -r requirements/test.in
     # via
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
@@ -75,16 +75,16 @@ django-crum==0.7.9
     #   -r requirements/base.txt
     #   edx-django-utils
     #   super-csv
-django-model-utils==4.2.0
+django-model-utils==4.3.1
     # via
     #   -r requirements/base.txt
     #   edx-celeryutils
     #   super-csv
-django-waffle==2.5.0
+django-waffle==3.0.0
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
-djangorestframework==3.13.1
+djangorestframework==3.14.0
     # via
     #   -r requirements/base.txt
     #   super-csv
@@ -92,17 +92,19 @@ edx-celeryutils==1.2.1
     # via
     #   -r requirements/base.txt
     #   super-csv
-edx-django-utils==5.0.0
+edx-django-utils==5.2.0
     # via
     #   -r requirements/base.txt
     #   super-csv
 edx-opaque-keys==2.3.0
     # via -r requirements/base.txt
+exceptiongroup==1.0.4
+    # via pytest
 future==0.18.2
     # via
     #   -r requirements/base.txt
     #   edx-celeryutils
-idna==3.3
+idna==3.4
     # via
     #   -r requirements/base.txt
     #   requests
@@ -121,33 +123,31 @@ markupsafe==2.1.1
     # via jinja2
 mock==4.0.3
     # via -r requirements/test.in
-newrelic==7.14.0.177
+newrelic==8.4.0
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
 packaging==21.3
     # via pytest
-pbr==5.9.0
+pbr==5.11.0
     # via
     #   -r requirements/base.txt
     #   stevedore
 pluggy==1.0.0
     # via pytest
-prompt-toolkit==3.0.30
+prompt-toolkit==3.0.33
     # via
     #   -r requirements/base.txt
     #   click-repl
-psutil==5.9.1
+psutil==5.9.4
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
-py==1.11.0
-    # via pytest
 pycparser==2.21
     # via
     #   -r requirements/base.txt
     #   cffi
-pymongo==3.12.3
+pymongo==3.13.0
     # via
     #   -r requirements/base.txt
     #   edx-opaque-keys
@@ -157,17 +157,17 @@ pynacl==1.5.0
     #   edx-django-utils
 pyparsing==3.0.9
     # via packaging
-pytest==7.1.2
+pytest==7.2.0
     # via
     #   pytest-cov
     #   pytest-django
-pytest-cov==3.0.0
+pytest-cov==4.0.0
     # via -r requirements/test.in
 pytest-django==4.5.2
     # via -r requirements/test.in
-python-slugify==6.1.2
+python-slugify==7.0.0
     # via code-annotations
-pytz==2022.1
+pytz==2022.6
     # via
     #   -r requirements/base.txt
     #   celery
@@ -179,7 +179,7 @@ requests==2.28.1
     # via
     #   -r requirements/base.txt
     #   slumber
-simplejson==3.17.6
+simplejson==3.18.0
     # via
     #   -r requirements/base.txt
     #   super-csv
@@ -189,17 +189,17 @@ six==1.16.0
     #   click-repl
 slumber==0.7.1
     # via -r requirements/base.txt
-sqlparse==0.4.2
+sqlparse==0.4.3
     # via
     #   -r requirements/base.txt
     #   django
-stevedore==3.5.0
+stevedore==4.1.1
     # via
     #   -r requirements/base.txt
     #   code-annotations
     #   edx-django-utils
     #   edx-opaque-keys
-super-csv==3.0.0
+super-csv==3.0.1
     # via -r requirements/base.txt
 text-unidecode==1.3
     # via python-slugify
@@ -207,7 +207,7 @@ tomli==2.0.1
     # via
     #   coverage
     #   pytest
-urllib3==1.26.10
+urllib3==1.26.12
     # via
     #   -r requirements/base.txt
     #   requests
