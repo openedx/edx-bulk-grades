@@ -99,9 +99,9 @@ class GradeImportExport(GradeOnlyExport):
             data = self.processor.status()
             data['error_messages'] = []
             for error_message in self.processor.error_messages:
+                line_numbers = [str(line_number+1) for line_number in self.processor.error_messages[error_message]]
                 is_plural = 's' if len(line_numbers) > 1 else ''
-                line_numbers = ', '.join(str(line_number+1) for line_number in self.processor.error_messages[error_message])
-                new_message = f'{error_message} (on line{is_plural} {line_numbers})'
+                new_message = f'{error_message} (on line{is_plural} {", ".join(line_numbers)})'
 
                 data['error_messages'].append(new_message)
 
