@@ -122,6 +122,36 @@ class GradeImportExportViewTests(ViewTestsMixin, TestCase):
             }
         )
 
+    def test_post_error(self):
+        # Given bad CSV content
+        csv_content = 'bad'
+        csv_file = SimpleUploadedFile('test_file.csv', csv_content.encode('utf8'), content_type='text/csv')
+
+        # When I post the file
+        self.client.login(username=self.staff.username, password=self.password)
+        response = self.client.post(
+            reverse('bulk_grades', args=[self.course_id]),
+            {'csv': csv_file},
+        )
+
+        # Then I get an error response back
+        self.assertEqual(response.status_code, 200)
+        self.assertDictEqual(
+            response.json(),
+            {
+                'saved': 0,
+                'error_messages': ['Missing column: user_id (on line 1)'],
+                'can_commit': False,
+                'error_rows': [],
+                'waiting': False,
+                'processed': 0,
+                'saved_error_id': None,
+                'percentage': '0.0%',
+                'total': 0,
+                'result_id': None
+            }
+        )
+
 
 class GradeOperationHistoryViewTests(ViewTestsMixin, TestCase):
 
