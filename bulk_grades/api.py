@@ -54,10 +54,10 @@ def _get_enrollments(course_id, track=None, cohort=None, active_only=False, excl
     if active_only:
         enrollments = enrollments.filter(is_active=True)
     if excluded_course_roles:
-        course_access_role_filters = dict(
-            user=OuterRef('user'),
-            course_id=course_id
-        )
+        course_access_role_filters = {
+            "user": OuterRef('user'),
+            "course_id": course_id
+        }
         if 'all' not in excluded_course_roles:
             course_access_role_filters['role__in'] = excluded_course_roles
         enrollments = enrollments.annotate(has_excluded_course_role=Exists(
@@ -383,10 +383,10 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
                         new_grade = float(value)
                     except ValueError as error:
                         raise ValidationError(_('Grade must be a number')) from error
-                    else:
-                        if new_grade < 0:
-                            raise ValidationError(_('Grade must not be negative'))
-                        operation['new_override_grades'].append((block_id, new_grade))
+
+                    if new_grade < 0:
+                        raise ValidationError(_('Grade must not be negative'))
+                    operation['new_override_grades'].append((block_id, new_grade))
 
         return operation
 
@@ -586,7 +586,7 @@ class InterventionCSVProcessor(GradedSubsectionMixin, CSVProcessor):
             # pylint: disable=E1111
             course_grade = grades_api.CourseGradeFactory().read(enrollment['user'], course_key=self._course_key)
             if self.course_grade_min or self.course_grade_max:
-                course_grade_normalized = (course_grade.percent * 100)
+                course_grade_normalized = course_grade.percent * 100
 
                 if (
                         (self.course_grade_min and (course_grade_normalized < self.course_grade_min))
