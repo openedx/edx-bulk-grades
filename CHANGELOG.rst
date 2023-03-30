@@ -13,6 +13,10 @@ Change Log
 
 Unreleased
 
+* Switch from ``edx-sphinx-theme`` to ``sphinx-book-theme`` since the former is
+  deprecated
+
+
 [1.0.1] - 2022-12-21
 * Fix a bug in building error response messaging.
 
