@@ -14,11 +14,7 @@ asgiref==3.6.0
     # via
     #   -r requirements/test.txt
     #   django
-attrs==22.2.0
-    # via
-    #   -r requirements/test.txt
-    #   pytest
-babel==2.11.0
+babel==2.12.1
     # via sphinx
 billiard==3.6.4.0
     # via
@@ -40,7 +36,7 @@ cffi==1.15.1
     #   -r requirements/test.txt
     #   cryptography
     #   pynacl
-charset-normalizer==3.0.1
+charset-normalizer==3.1.0
     # via
     #   -r requirements/test.txt
     #   requests
@@ -67,11 +63,11 @@ click-repl==0.2.0
     #   celery
 code-annotations==1.3.0
     # via -r requirements/test.txt
-coverage[toml]==7.2.0
+coverage[toml]==7.2.3
     # via
     #   -r requirements/test.txt
     #   pytest-cov
-cryptography==39.0.1
+cryptography==40.0.1
     # via secretstorage
 ddt==1.6.0
     # via -r requirements/test.txt
@@ -117,7 +113,7 @@ edx-celeryutils==1.2.2
     # via
     #   -r requirements/test.txt
     #   super-csv
-edx-django-utils==5.2.0
+edx-django-utils==5.3.0
     # via
     #   -r requirements/test.txt
     #   super-csv
@@ -125,7 +121,7 @@ edx-opaque-keys==2.3.0
     # via -r requirements/test.txt
 edx-sphinx-theme==3.1.0
     # via -r requirements/doc.in
-exceptiongroup==1.1.0
+exceptiongroup==1.1.1
     # via
     #   -r requirements/test.txt
     #   pytest
@@ -135,7 +131,7 @@ idna==3.4
     #   requests
 imagesize==1.4.1
     # via sphinx
-importlib-metadata==6.0.0
+importlib-metadata==6.2.1
     # via
     #   keyring
     #   sphinx
@@ -177,9 +173,9 @@ mdurl==0.1.2
     # via markdown-it-py
 mock==5.0.1
     # via -r requirements/test.txt
-more-itertools==9.0.0
+more-itertools==9.1.0
     # via jaraco-classes
-newrelic==8.7.0
+newrelic==8.8.0
     # via
     #   -r requirements/test.txt
     #   edx-django-utils
@@ -198,7 +194,7 @@ pluggy==1.0.0
     # via
     #   -r requirements/test.txt
     #   pytest
-prompt-toolkit==3.0.37
+prompt-toolkit==3.0.38
     # via
     #   -r requirements/test.txt
     #   click-repl
@@ -224,7 +220,7 @@ pynacl==1.5.0
     # via
     #   -r requirements/test.txt
     #   edx-django-utils
-pytest==7.2.1
+pytest==7.3.0
     # via
     #   -r requirements/test.txt
     #   pytest-cov
@@ -233,11 +229,11 @@ pytest-cov==4.0.0
     # via -r requirements/test.txt
 pytest-django==4.5.2
     # via -r requirements/test.txt
-python-slugify==8.0.0
+python-slugify==8.0.1
     # via
     #   -r requirements/test.txt
     #   code-annotations
-pytz==2022.7.1
+pytz==2023.3
     # via
     #   -r requirements/test.txt
     #   babel
@@ -265,11 +261,11 @@ restructuredtext-lint==1.4.0
     # via doc8
 rfc3986==2.0.0
     # via twine
-rich==13.3.1
+rich==13.3.3
     # via twine
 secretstorage==3.3.3
     # via keyring
-simplejson==3.18.3
+simplejson==3.19.1
     # via
     #   -r requirements/test.txt
     #   super-csv
@@ -327,7 +323,7 @@ twine==4.0.2
     # via -r requirements/doc.in
 typing-extensions==4.5.0
     # via rich
-urllib3==1.26.14
+urllib3==1.26.15
     # via
     #   -r requirements/test.txt
     #   requests
@@ -344,7 +340,7 @@ wcwidth==0.2.6
     #   prompt-toolkit
 webencodings==0.5.1
     # via bleach
-zipp==3.14.0
+zipp==3.15.0
     # via
     #   importlib-metadata
     #   importlib-resources
