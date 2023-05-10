@@ -17,3 +17,6 @@ django<4.0
 # pinning celery to latest release
 celery<6.0
 
+# pytz>2022 has major changes which are causing test failures.
+# https://github.com/openedx/edx-platform/pull/32084
+pytz<2023
