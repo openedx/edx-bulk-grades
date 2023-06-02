@@ -82,3 +82,6 @@ csv/
 
 # virtualenvs
 bulk-grades-env/
+
+# Translation
+bulk_grades/conf/locale/*/LC_MESSAGES/*
