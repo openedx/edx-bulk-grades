@@ -24,6 +24,8 @@ jobs:
             django32-celery50,
             django40-celery44,
             django40-celery50,
+            django41-celery50,
+            django42-celery50,
           ]
 
     steps:
