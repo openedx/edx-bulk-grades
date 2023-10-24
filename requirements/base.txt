@@ -14,17 +14,17 @@ backports-zoneinfo[tzdata]==0.2.1
     #   kombu
 billiard==4.1.0
     # via celery
-celery==5.3.1
+celery==5.3.4
     # via
     #   -c requirements/constraints.txt
     #   edx-celeryutils
 certifi==2023.7.22
     # via requests
-cffi==1.15.1
+cffi==1.16.0
     # via pynacl
-charset-normalizer==3.2.0
+charset-normalizer==3.3.1
     # via requests
-click==8.1.6
+click==8.1.7
     # via
     #   celery
     #   click-didyoumean
@@ -37,13 +37,14 @@ click-plugins==1.1.1
     # via celery
 click-repl==0.3.0
     # via celery
-django==3.2.20
+django==3.2.22
     # via
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -c requirements/constraints.txt
     #   -r requirements/base.in
     #   django-crum
     #   django-model-utils
+    #   django-waffle
     #   djangorestframework
     #   edx-celeryutils
     #   edx-django-utils
@@ -58,29 +59,29 @@ django-model-utils==4.3.1
     #   -r requirements/base.in
     #   edx-celeryutils
     #   super-csv
-django-waffle==3.0.0
+django-waffle==4.0.0
     # via edx-django-utils
 djangorestframework==3.14.0
     # via super-csv
-edx-celeryutils==1.2.2
+edx-celeryutils==1.2.3
     # via super-csv
-edx-django-utils==5.6.0
+edx-django-utils==5.7.0
     # via super-csv
-edx-opaque-keys==2.3.0
+edx-opaque-keys==2.5.1
     # via -r requirements/base.in
 idna==3.4
     # via requests
 jsonfield==3.1.0
     # via edx-celeryutils
-kombu==5.3.1
+kombu==5.3.2
     # via celery
-newrelic==8.8.1
+newrelic==9.1.1
     # via edx-django-utils
 pbr==5.11.1
     # via stevedore
 prompt-toolkit==3.0.39
     # via click-repl
-psutil==5.9.5
+psutil==5.9.6
     # via edx-django-utils
 pycparser==2.21
     # via cffi
@@ -90,7 +91,7 @@ pynacl==1.5.0
     # via edx-django-utils
 python-dateutil==2.8.2
     # via celery
-pytz==2023.3
+pytz==2023.3.post1
     # via
     #   django
     #   djangorestframework
@@ -98,7 +99,7 @@ requests==2.31.0
     # via
     #   -r requirements/base.in
     #   slumber
-simplejson==3.19.1
+simplejson==3.19.2
     # via super-csv
 six==1.16.0
     # via python-dateutil
@@ -110,22 +111,23 @@ stevedore==5.1.0
     # via
     #   edx-django-utils
     #   edx-opaque-keys
-super-csv==3.0.1
+super-csv==3.1.0
     # via -r requirements/base.in
-typing-extensions==4.7.1
+typing-extensions==4.8.0
     # via
     #   asgiref
+    #   edx-opaque-keys
     #   kombu
 tzdata==2023.3
     # via
     #   backports-zoneinfo
     #   celery
-urllib3==2.0.4
+urllib3==2.0.7
     # via requests
 vine==5.0.0
     # via
     #   amqp
     #   celery
     #   kombu
-wcwidth==0.2.6
+wcwidth==0.2.8
     # via prompt-toolkit
