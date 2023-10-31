@@ -14,6 +14,7 @@ asgiref==3.7.2
 backports-zoneinfo[tzdata]==0.2.1
     # via
     #   -r requirements/base.txt
+    #   backports-zoneinfo
     #   celery
     #   kombu
     # via
@@ -59,7 +60,9 @@ click-repl==0.3.0
 code-annotations==1.5.0
     # via -r requirements/test.in
 coverage[toml]==7.2.7
-    # via pytest-cov
+    # via
+    #   coverage
+    #   pytest-cov
 ddt==1.6.0
     # via -r requirements/test.in
     # via

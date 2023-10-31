@@ -15,6 +15,7 @@ asgiref==3.7.2
 backports-zoneinfo[tzdata]==0.2.1
     # via
     #   -r requirements/base.txt
+    #   backports-zoneinfo
     #   celery
     #   kombu
 billiard==4.1.0
