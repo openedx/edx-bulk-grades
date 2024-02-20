@@ -17,7 +17,7 @@ astroid==2.15.6
     #   -r requirements/quality.txt
     #   pylint
     #   pylint-celery
-backports-zoneinfo[tzdata]==0.2.1
+backports-zoneinfo[tzdata]==0.2.1; python_version < '3.9'
     # via
     #   -r requirements/quality.txt
     #   backports-zoneinfo

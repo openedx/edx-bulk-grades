@@ -69,7 +69,8 @@ class GradeOnlyExport(View):
         filename = self.get_export_filename(course_id)
 
         response = StreamingHttpResponse(iterator, content_type='text/csv')
-        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        response_content = 'attachment;'
+        response['Content-Disposition'] = f'{response_content} filename="{filename}"'
 
         log.info('Exporting %s CSV for %s', course_id, self.__class__)
         return response
