@@ -11,9 +11,8 @@
 # Common constraints for edx repos
 -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
 
-# Stay on an LTS release
-django<4.0
-
 # pinning celery to latest release
 celery<6.0
 
+# For python greater than or equal to 3.9 backports.zoneinfo causing failures
+backports.zoneinfo;python_version<'3.9'
