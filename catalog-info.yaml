@@ -1,0 +1,18 @@
+# This file records information about this repo. Its use is described in OEP-55:
+# https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0055-proc-project-maintainers.html
+
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: 'edx-bulk-grades'
+  description: "Support for bulk scoring and grading. This adds models and an API for reading and modifying scores and grades in bulk."
+  links:
+    - url: "https://github.com/openedx/edx-bulk-grades"
+      title: "edX Bulk Grades"
+      icon: "Web"
+  annotations:
+    openedx.org/arch-interest-groups: ""
+spec:
+  owner: group:2u-aurora
+  type: 'service'
+  lifecycle: 'production'
