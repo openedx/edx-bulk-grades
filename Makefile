@@ -33,7 +33,7 @@ upgrade: export CUSTOM_COMPILE_COMMAND=make upgrade
 upgrade: ## update the requirements/*.txt files with the latest packages satisfying requirements/*.in
 	pip install -qr requirements/pip-tools.txt
 	# Make sure to compile files after any other files they include!
-	pip-compile --allow-unsafe --rebuild -o requirements/pip.txt requirements/pip.in
+	pip-compile --allow-unsafe --rebuild --upgrade -o requirements/pip.txt requirements/pip.in
 	pip-compile --upgrade -o requirements/pip-tools.txt requirements/pip-tools.in
 	pip install -qr requirements/pip.txt
 	pip install -qr requirements/pip-tools.txt
@@ -47,7 +47,7 @@ upgrade: ## update the requirements/*.txt files with the latest packages satisfy
 	# Let tox control the Django,celery versions for tests
 	sed '/^[dD]jango==/d' requirements/test.txt > requirements/test.tmp
 	mv requirements/test.tmp requirements/test.txt
-	grep -e "^amqp==\|^anyjson==\|^billiard==\|^celery==\|^kombu==\|^click-didyoumean==\|^click-repl==\|^click==\|^prompt-toolkit==\|^vine==" requirements/base.txt > requirements/celery50.txt
+	grep -e "^amqp==\|^anyjson==\|^billiard==\|^celery==\|^kombu==\|^click-didyoumean==\|^click-repl==\|^click==\|^prompt-toolkit==\|^vine==" requirements/base.txt > requirements/celery53.txt
 	sed -i.tmp '/^amqp==/d' requirements/test.txt
 	sed -i.tmp '/^anyjson==/d' requirements/test.txt
 	sed -i.tmp '/^billiard==/d' requirements/test.txt
