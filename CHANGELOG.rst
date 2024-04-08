@@ -16,6 +16,10 @@ Change Log
 
 * Added support for python 3.12.
 
+[1.1.0] - 2024-03-22
+~~~~~~~~~~~~~~~~~~~~
+* Support added for ``Python 3.11``
+* Support dropped for ``Django<4.2``
 
 [1.0.2] - 2023-06-14
 ~~~~~~~~~~~~~~~~~~~~
