@@ -11,7 +11,7 @@ Change Log
 
 .. There should always be an "Unreleased" section for changes pending release.
 
-[1.1.0] - Unreleased
+[1.1.1] - 
 ~~~~~~~~~~~~~~~~~~~~
 
 * Added support for python 3.12.

@@ -8,7 +8,7 @@ amqp==5.2.0
     # via
     #   -r requirements/base.txt
     #   kombu
-asgiref==3.8.0
+asgiref==3.8.1
     # via
     #   -r requirements/base.txt
     #   django
@@ -50,7 +50,7 @@ click==8.1.7
     #   click-repl
     #   code-annotations
     #   edx-django-utils
-click-didyoumean==0.3.0
+click-didyoumean==0.3.1
     # via
     #   -r requirements/base.txt
     #   celery
@@ -62,7 +62,7 @@ click-repl==0.3.0
     # via
     #   -r requirements/base.txt
     #   celery
-code-annotations==1.7.0
+code-annotations==1.8.0
     # via -r requirements/pii_check.in
 django==4.2.11
     # via
@@ -81,7 +81,7 @@ django-crum==0.7.9
     #   -r requirements/base.txt
     #   edx-django-utils
     #   super-csv
-django-model-utils==4.4.0
+django-model-utils==4.5.0
     # via
     #   -r requirements/base.txt
     #   edx-celeryutils
@@ -90,15 +90,15 @@ django-waffle==4.1.0
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
-djangorestframework==3.15.0
+djangorestframework==3.15.1
     # via
     #   -r requirements/base.txt
     #   super-csv
-edx-celeryutils==1.2.5
+edx-celeryutils==1.3.0
     # via
     #   -r requirements/base.txt
     #   super-csv
-edx-django-utils==5.11.0
+edx-django-utils==5.12.0
     # via
     #   -r requirements/base.txt
     #   super-csv
@@ -114,13 +114,13 @@ jsonfield==3.1.0
     # via
     #   -r requirements/base.txt
     #   edx-celeryutils
-kombu==5.3.5
+kombu==5.3.6
     # via
     #   -r requirements/base.txt
     #   celery
 markupsafe==2.1.5
     # via jinja2
-newrelic==9.7.1
+newrelic==9.8.0
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
@@ -136,7 +136,7 @@ psutil==5.9.8
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
-pycparser==2.21
+pycparser==2.22
     # via
     #   -r requirements/base.txt
     #   cffi
@@ -184,7 +184,7 @@ super-csv==3.1.0
     # via -r requirements/base.txt
 text-unidecode==1.3
     # via python-slugify
-typing-extensions==4.10.0
+typing-extensions==4.11.0
     # via
     #   -r requirements/base.txt
     #   asgiref

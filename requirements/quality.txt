@@ -8,7 +8,7 @@ amqp==5.2.0
     # via
     #   -r requirements/test.txt
     #   kombu
-asgiref==3.8.0
+asgiref==3.8.1
     # via
     #   -r requirements/test.txt
     #   django
@@ -56,7 +56,7 @@ click==8.1.7
     #   code-annotations
     #   edx-django-utils
     #   edx-lint
-click-didyoumean==0.3.0
+click-didyoumean==0.3.1
     # via
     #   -r requirements/test.txt
     #   celery
@@ -70,7 +70,7 @@ click-repl==0.3.0
     # via
     #   -r requirements/test.txt
     #   celery
-code-annotations==1.7.0
+code-annotations==1.8.0
     # via
     #   -r requirements/test.txt
     #   edx-lint
@@ -99,7 +99,7 @@ django-crum==0.7.9
     #   -r requirements/test.txt
     #   edx-django-utils
     #   super-csv
-django-model-utils==4.4.0
+django-model-utils==4.5.0
     # via
     #   -r requirements/test.txt
     #   edx-celeryutils
@@ -108,15 +108,15 @@ django-waffle==4.1.0
     # via
     #   -r requirements/test.txt
     #   edx-django-utils
-djangorestframework==3.15.0
+djangorestframework==3.15.1
     # via
     #   -r requirements/test.txt
     #   super-csv
-edx-celeryutils==1.2.5
+edx-celeryutils==1.3.0
     # via
     #   -r requirements/test.txt
     #   super-csv
-edx-django-utils==5.11.0
+edx-django-utils==5.12.0
     # via
     #   -r requirements/test.txt
     #   super-csv
@@ -148,7 +148,7 @@ jsonfield==3.1.0
     # via
     #   -r requirements/test.txt
     #   edx-celeryutils
-kombu==5.3.5
+kombu==5.3.6
     # via
     #   -r requirements/test.txt
     #   celery
@@ -160,7 +160,7 @@ mccabe==0.7.0
     # via pylint
 mock==5.1.0
     # via -r requirements/test.txt
-newrelic==9.7.1
+newrelic==9.8.0
     # via
     #   -r requirements/test.txt
     #   edx-django-utils
@@ -188,7 +188,7 @@ psutil==5.9.8
     #   edx-django-utils
 pycodestyle==2.11.1
     # via -r requirements/quality.in
-pycparser==2.21
+pycparser==2.22
     # via
     #   -r requirements/test.txt
     #   cffi
@@ -221,7 +221,7 @@ pytest==8.1.1
     #   -r requirements/test.txt
     #   pytest-cov
     #   pytest-django
-pytest-cov==4.1.0
+pytest-cov==5.0.0
     # via -r requirements/test.txt
 pytest-django==4.8.0
     # via -r requirements/test.txt
@@ -278,7 +278,7 @@ tomli==2.0.1
     #   pytest
 tomlkit==0.12.4
     # via pylint
-typing-extensions==4.10.0
+typing-extensions==4.11.0
     # via
     #   -r requirements/test.txt
     #   asgiref
