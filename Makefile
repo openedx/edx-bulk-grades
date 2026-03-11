@@ -39,7 +39,12 @@ upgrade: ## update the requirements/*.txt files with the latest packages satisfy
 	pip install -qr requirements/pip-tools.txt
 	pip-compile --upgrade -o requirements/base.txt requirements/base.in
 	pip-compile --upgrade -o requirements/test.txt requirements/test.in
-	pip-compile --upgrade -o requirements/doc.txt requirements/doc.in
+	# --allow-unsafe is required here because doc.in explicitly requires setuptools
+	# (needed by `python setup.py bdist_wheel` in the docs tox env). Python 3.12 venvs
+	# no longer include setuptools by default.
+	# TODO: remove setuptools from doc.in and --allow-unsafe once setup.py is replaced
+	# by pyproject.toml.
+	pip-compile --upgrade --allow-unsafe -o requirements/doc.txt requirements/doc.in
 	pip-compile --upgrade -o requirements/quality.txt requirements/quality.in
 	pip-compile --upgrade -o requirements/ci.txt requirements/ci.in
 	pip-compile --upgrade -o requirements/pii_check.txt requirements/pii_check.in
