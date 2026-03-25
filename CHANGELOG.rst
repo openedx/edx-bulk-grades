@@ -13,6 +13,7 @@ Change Log
 
 Unreleased
 
+* Dropped Django 4.2 support; upgraded Django 4.2→5.2; bumped celery and related dependencies
 
 [1.1.0] - 2024-03-22
 ~~~~~~~~~~~~~~~~~~~~
