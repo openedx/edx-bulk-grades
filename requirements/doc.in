@@ -8,3 +8,7 @@ sphinx-book-theme         # Common theme for all Open edX projects
 readme_renderer           # Validates README.rst for usage on PyPI
 Sphinx                    # Documentation builder
 twine                     # Docs Checking tool
+# setuptools is required because the docs tox env runs `python setup.py bdist_wheel`.
+# Python 3.12 venvs no longer include setuptools by default, so it must be listed here.
+# TODO: remove this once setup.py is replaced by pyproject.toml.
+setuptools
