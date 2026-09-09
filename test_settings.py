@@ -66,6 +66,11 @@ MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
+# Required by super_csv.tasks.expire_data. super_csv's post_save receiver fires it
+# for every third CSVOperation (pk % 3), so any test that reaches a real commit
+# may need it.
+CSV_EXPIRATION_DAYS = 30
+
 CELERY_ALWAYS_EAGER = True
 CELERY_RESULT_BACKEND = f'file://{results_dir.name}'
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = False

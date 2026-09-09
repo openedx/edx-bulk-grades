@@ -342,6 +342,10 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         """
         Validate row.
         """
+        # Counted here rather than in preprocess_row, which super_csv skips for any row
+        # that fails validation. Counting there let the number drift behind the CSV line,
+        # so a repeated user_id could be reported against the wrong line.
+        self._row_num += 1
         super().validate_row(row)
         if row['course_id'] != self.course_id:
             raise ValidationError(_('Wrong course id {} != {}').format(row['course_id'], self.course_id))
@@ -349,16 +353,29 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
     def preprocess_file(self, reader):
         """
         Preprocess the file, saving original data no matter whether there are errors.
+
+        Records an error if no row turned out to have a grade to apply, so a file that
+        cannot change anything is not reported as a successful import.
         """
         self._row_num = 0   # reset private row number count
         super().preprocess_file(reader)
+        if not self.stage and not self.error_messages:
+            # No row had anything to apply. Guarded on an empty stage so a partly-filled
+            # file still commits its graded rows, and on there being no other errors so a
+            # more specific message is never displaced by this one.
+            if not self.total_rows:
+                self.add_error(_('The file has no data rows.'))
+            else:
+                self.add_error(
+                    _('No grades were changed. Enter grades in a "new_override" column '
+                      'and upload the file again.')
+                )
         self.save()
 
     def preprocess_row(self, row):
         """
         Preprocess the CSV row.
         """
-        self._row_num += 1
         operation = {}
         user_id = row['user_id']
         if user_id in self._users_seen:
@@ -387,6 +404,13 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
                     if new_grade < 0:
                         raise ValidationError(_('Grade must not be negative'))
                     operation['new_override_grades'].append((block_id, new_grade))
+
+        if not operation['new_override_grades']:
+            # No `new_override-*` cell in this row carried a value, so process_row() would
+            # iterate an empty list and write nothing. Return a falsy value so super_csv
+            # marks the row 'No Action' rather than staging it and counting it as saved.
+            # ScoreCSVProcessor.preprocess_row follows the same contract.
+            return None
 
         return operation
 
