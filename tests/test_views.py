@@ -122,6 +122,94 @@ class GradeImportExportViewTests(ViewTestsMixin, TestCase):
             }
         )
 
+    def test_post_no_grades(self):
+        """
+        Uploading a file with a blank override column must report that nothing changed,
+        rather than a successful import.
+        """
+        csv_content = 'user_id,username,course_id,track,cohort'
+        csv_content += ',new_override-' + self.subsection_short_ids[0]
+        csv_content += ',new_override-' + self.subsection_short_ids[1] + '\n'
+        for learner in (self.audit_learner, self.verified_learner, self.masters_learner):
+            csv_content += ','.join([str(learner.id), learner.username, self.course_id, '', '', '', ''])
+            csv_content += '\n'
+        csv_file = SimpleUploadedFile('test_file.csv', csv_content.encode('utf8'), content_type='text/csv')
+
+        self.client.login(username=self.staff.username, password=self.password)
+        response = self.client.post(
+            reverse('bulk_grades', args=[self.course_id]),
+            {'csv': csv_file},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertDictEqual(
+            response.json(),
+            {
+                'saved': 0,
+                'error_messages': [
+                    'No grades were changed. Enter grades in a "new_override" column and upload the file again.'
+                ],
+                'can_commit': False,
+                'error_rows': [],
+                'waiting': False,
+                'processed': 0,
+                'saved_error_id': None,
+                'percentage': '0.0%',
+                'total': 3,
+                'result_id': None
+            }
+        )
+
+    def test_post_row_error_reports_line_number(self):
+        """
+        A row-level error names the line it came from, unlike a file-level one. The number
+        is the CSV line, so the first data row is line 2 rather than line 1.
+        """
+        csv_content = 'user_id,username,course_id,track,cohort'
+        csv_content += ',new_override-' + self.subsection_short_ids[0]
+        csv_content += ',new_override-' + self.subsection_short_ids[1] + '\n'
+        csv_content += ','.join([
+            str(self.audit_learner.id), self.audit_learner.username,
+            'course-v1:Some+Other+Course', '', '', '1', '',
+        ]) + '\n'
+        csv_file = SimpleUploadedFile('test_file.csv', csv_content.encode('utf8'), content_type='text/csv')
+
+        self.client.login(username=self.staff.username, password=self.password)
+        response = self.client.post(
+            reverse('bulk_grades', args=[self.course_id]),
+            {'csv': csv_file},
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(
+            data['error_messages'],
+            [f'Wrong course id course-v1:Some+Other+Course != {self.course_id} (on line 2)'],
+        )
+        self.assertEqual(data['saved'], 0)
+
+    def test_post_row_errors_report_every_line(self):
+        """
+        Several rows failing the same way are named together, and pluralised.
+        """
+        csv_content = 'user_id,username,course_id,track,cohort'
+        csv_content += ',new_override-' + self.subsection_short_ids[0]
+        csv_content += ',new_override-' + self.subsection_short_ids[1] + '\n'
+        for learner in (self.audit_learner, self.verified_learner):
+            csv_content += ','.join([
+                str(learner.id), learner.username, 'course-v1:Some+Other+Course', '', '', '1', '',
+            ]) + '\n'
+        csv_file = SimpleUploadedFile('test_file.csv', csv_content.encode('utf8'), content_type='text/csv')
+
+        self.client.login(username=self.staff.username, password=self.password)
+        response = self.client.post(
+            reverse('bulk_grades', args=[self.course_id]),
+            {'csv': csv_file},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json()['error_messages'],
+            [f'Wrong course id course-v1:Some+Other+Course != {self.course_id} (on lines 2, 3)'],
+        )
+
     def test_post_error(self):
         # Given bad CSV content
         csv_content = 'bad'
@@ -140,7 +228,7 @@ class GradeImportExportViewTests(ViewTestsMixin, TestCase):
             response.json(),
             {
                 'saved': 0,
-                'error_messages': ['Missing column: user_id (on line 1)'],
+                'error_messages': ['Missing column: user_id'],
                 'can_commit': False,
                 'error_rows': [],
                 'waiting': False,
