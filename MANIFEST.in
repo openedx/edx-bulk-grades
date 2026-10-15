@@ -1,5 +1,4 @@
 include CHANGELOG.rst
 include LICENSE.txt
 include README.rst
-include requirements/base.in
 recursive-include bulk_grades *.html *.png *.gif *js *.css *jpg *jpeg *svg *py

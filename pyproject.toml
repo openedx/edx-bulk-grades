@@ -1,0 +1,82 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm>8.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "edx-bulk-grades"
+description = "Support for bulk scoring and grading"
+requires-python = ">=3.12"
+license = "AGPL-3.0-or-later"
+license-files = ["LICENSE.txt"]
+authors = [
+    {name = "Open edX Project", email = "oscm@openedx.org"},
+]
+classifiers = [
+    'Development Status :: 3 - Alpha',
+    'Framework :: Django',
+    'Framework :: Django :: 4.2',
+    'Framework :: Django :: 5.2',
+    'Intended Audience :: Developers',
+    'Natural Language :: English',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.12',
+]
+keywords = [
+    "Django",
+    "edx",
+]
+
+dynamic = ["readme", "version"]
+
+dependencies = [
+    "Django",
+    "django-model-utils",
+    "edx-opaque-keys",
+    "super-csv",
+    "requests",
+    "slumber",
+]
+
+[project.entry-points."lms.djangoapp"]
+bulk_grades = "bulk_grades.apps:BulkGradesConfig"
+
+[project.urls]
+Homepage = "https://github.com/openedx/edx-bulk-grades"
+Repository = "https://github.com/openedx/edx-bulk-grades"
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.dynamic]
+readme = {file = ["README.rst", "CHANGELOG.rst"], content-type = "text/x-rst"}
+
+[tool.setuptools.packages.find]
+include = ["bulk_grades", "bulk_grades.*"]
+exclude = ["*tests*"]
+
+[tool.setuptools.package-data]
+bulk_grades = ["templates/**/*.html"]
+
+[tool.setuptools_scm]
+version_scheme = "only-version"
+local_scheme = "no-local-version"
+
+[tool.isort]
+indent = '    '
+line_length = 120
+multi_line_output = 3
+
+[tool.coverage.run]
+branch = true
+data_file = ".coverage"
+source = [
+    "bulk_grades",
+    "tests",
+]
+omit = [
+    "*migrations*",
+    "*admin.py",
+    "*static*",
+    "*templates*",
+    "bulk_grades/settings*",
+]
