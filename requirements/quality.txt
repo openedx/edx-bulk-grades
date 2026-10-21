@@ -25,7 +25,7 @@ celery==5.6.2
     #   -c requirements/constraints.txt
     #   -r requirements/test.txt
     #   edx-celeryutils
-certifi==2026.2.25
+certifi==2026.10.19
     # via
     #   -r requirements/test.txt
     #   requests
