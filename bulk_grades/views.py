@@ -98,10 +98,16 @@ class GradeImportExport(GradeOnlyExport):
             self.processor.process_file(the_file, autocommit=True)
             data = self.processor.status()
             data['error_messages'] = []
-            for error_message in self.processor.error_messages:
-                line_numbers = [str(line_number+1) for line_number in self.processor.error_messages[error_message]]
-                is_plural = 's' if len(line_numbers) > 1 else ''
-                new_message = f'{error_message} (on line{is_plural} {", ".join(line_numbers)})'
+            for error_message, rows in self.processor.error_messages.items():
+                # super_csv numbers data rows from 1 and uses 0 for an error about the file
+                # as a whole, which has no line to point at. Only append line numbers for
+                # errors that actually have one, so a file-level message is not reported
+                # against the header row.
+                line_numbers = [str(line_number+1) for line_number in rows if line_number]
+                new_message = error_message
+                if line_numbers:
+                    is_plural = 's' if len(line_numbers) > 1 else ''
+                    new_message = f'{error_message} (on line{is_plural} {", ".join(line_numbers)})'
 
                 data['error_messages'].append(new_message)
 
