@@ -1,9 +1,8 @@
-.. DEPRECATED: This changelog is no longer maintained. Release notes are
-   published only on the GitHub Releases page:
-   https://github.com/openedx/edx-bulk-grades/releases
-
 Change Log
 ----------
+
+This changelog is no longer maintained. Release notes are published only on
+the `GitHub Releases page <https://github.com/openedx/edx-bulk-grades/releases>`_.
 
 ..
    All enhancements and patches to bulk_grades will be documented
