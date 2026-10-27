@@ -13,7 +13,7 @@ Change Log
 
 Unreleased
 
-[2.0.1] - 2026-09-08
+[2.1.0] - 2026-10-27
 ~~~~~~~~~~~~~~~~~~~~
 * Report a grade import that has no ``new_override`` values as an error instead of a
   100%-successful import. Rows with nothing to apply are now marked ``No Action``.
