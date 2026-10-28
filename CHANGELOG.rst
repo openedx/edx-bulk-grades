@@ -16,6 +16,17 @@ the `GitHub Releases page <https://github.com/openedx/edx-bulk-grades/releases>`
 
 Unreleased
 
+[2.1.0] - 2026-10-27
+~~~~~~~~~~~~~~~~~~~~
+* Report a grade import that has no ``new_override`` values as an error instead of a
+  100%-successful import. Rows with nothing to apply are now marked ``No Action``.
+* Because those rows are no longer staged, ``processed``/``saved`` count only the rows
+  that carried a grade. A partly-filled file now reports the rest as skipped in Bulk
+  Management History, where it previously counted every row as processed.
+* Report a file that has no data rows, rather than accepting it silently.
+* Number a repeated ``user_id`` by its CSV line even when an earlier row failed
+  validation.
+
 
 [1.1.0] - 2024-03-22
 ~~~~~~~~~~~~~~~~~~~~

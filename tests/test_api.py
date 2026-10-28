@@ -516,6 +516,11 @@ class TestGradeProcessor(BaseTests):
             self.assertCountEqual(len(processor.error_messages), 3)
 
     def test_empty_grade(self):
+        """
+        A row whose ``new_override-*`` cells are blank has nothing to write, so
+        preprocess_row must return a falsy value. That makes super_csv mark the
+        row 'No Action' rather than staging it and counting it as saved.
+        """
         processor = api.GradeCSVProcessor(course_id=self.course_id)
         row = {
             'block_id': self.usage_key,
@@ -524,8 +529,7 @@ class TestGradeProcessor(BaseTests):
             'user_id': self.learner.id,
             'Previous Points': '',
         }
-        operation = processor.preprocess_row(row)
-        assert len(operation['new_override_grades']) == 0
+        assert not processor.preprocess_row(row)
 
     def test_validate_row(self):
         processor = api.GradeCSVProcessor(course_id=self.course_id)
@@ -566,6 +570,112 @@ class TestGradeProcessor(BaseTests):
         mock_csv += ','.join('' if v is None else str(v) for v in mock_csv_data.values())
         buf = ContentFile(mock_csv.encode('utf-8'))
         processor.process_file(buf)
+
+    def _build_csv(self, *override_values):
+        """
+        Build a grade CSV with one row per value, each written to new_override-homework.
+        """
+        columns = [
+            'user_id', 'username', 'course_id', 'track', 'cohort',
+            'name-homework', 'original_grade-homework',
+            'previous_override-homework', 'new_override-homework',
+        ]
+        csv = ','.join(columns) + '\n'
+        for user_id, value in enumerate(override_values, 1):
+            csv += f'{user_id},learner{user_id},{self.course_id},,,Homework,0,,{value}\n'
+        return ContentFile(csv.encode('utf-8'))
+
+    @patch('lms.djangoapps.grades.api.graded_subsections_for_course_id')
+    def test_process_file_no_grades_reports_error(self, mock_graded_subsections):
+        """
+        A file whose new_override column is blank must explain that nothing changed,
+        rather than reporting a successful import that wrote no grades.
+        """
+        mock_graded_subsections.return_value = self._mock_graded_subsections()
+        processor = api.GradeCSVProcessor(course_id=self.course_id)
+        with patch.object(grades_api, 'override_subsection_grade') as mock_override:
+            processor.process_file(self._build_csv('', '', ''), autocommit=True)
+            status = processor.status()
+
+        assert mock_override.call_count == 0
+        assert status['saved'] == 0
+        assert status['percentage'] == '0.0%'
+        assert [row['status'] for row in processor.result_data] == ['No Action'] * 3
+        assert status['error_messages'] == [
+            'No grades were changed. Enter grades in a "new_override" column and upload the file again.'
+        ]
+        # Reported against the file, not a line: row 0 is the file-level sentinel.
+        assert list(processor.error_messages.values()) == [[0]]
+
+    @patch('lms.djangoapps.grades.api.graded_subsections_for_course_id')
+    def test_process_file_no_rows_reports_error(self, mock_graded_subsections):
+        """
+        A file with only a header row must say so, rather than reporting a successful
+        import.
+        """
+        mock_graded_subsections.return_value = self._mock_graded_subsections()
+        processor = api.GradeCSVProcessor(course_id=self.course_id)
+        with patch.object(grades_api, 'override_subsection_grade') as mock_override:
+            processor.process_file(self._build_csv(), autocommit=True)
+            status = processor.status()
+
+        assert mock_override.call_count == 0
+        assert status['total'] == 0
+        assert status['saved'] == 0
+        assert status['error_messages'] == ['The file has no data rows.']
+
+    @patch('lms.djangoapps.grades.api.graded_subsections_for_course_id')
+    def test_row_numbers_survive_an_earlier_invalid_row(self, mock_graded_subsections):
+        """
+        Row numbers must track the CSV line even when an earlier row fails validation.
+        super_csv skips preprocess_row for such a row, so the counter has to advance in
+        validate_row, which runs for every row.
+        """
+        mock_graded_subsections.return_value = self._mock_graded_subsections()
+        processor = api.GradeCSVProcessor(course_id=self.course_id)
+        short_id = list(processor._subsections.keys())[0]  # pylint: disable=protected-access
+        repeated = self.verified_learner.id
+        csv = f'user_id,course_id,new_override-{short_id}\n'
+        csv += f'{self.audit_learner.id},course-v1:Wrong+Course+X,1\n'   # line 2, invalid
+        csv += f'{repeated},{self.course_id},2\n'                        # line 3
+        csv += f'{repeated},{self.course_id},3\n'                        # line 4, a repeat
+
+        with patch.object(grades_api, 'override_subsection_grade'):
+            processor.process_file(ContentFile(csv.encode('utf-8')), autocommit=True)
+
+        # Rows are recorded 1-indexed, so the repeat on CSV lines 3 and 4 is rows 2 and 3.
+        assert processor.error_messages[f'Repeated user_id: {repeated}'] == [2, 3]
+
+    @patch('lms.djangoapps.grades.api.graded_subsections_for_course_id')
+    def test_process_file_partial_grades_has_no_error(self, mock_graded_subsections):
+        """
+        Grading only some learners is normal, so a partly-filled file must still commit
+        its graded rows without the 'nothing changed' error blocking the import.
+        """
+        mock_graded_subsections.return_value = self._mock_graded_subsections()
+        processor = api.GradeCSVProcessor(course_id=self.course_id)
+        with patch.object(grades_api, 'override_subsection_grade') as mock_override:
+            processor.process_file(self._build_csv('', '5', ''), autocommit=True)
+            status = processor.status()
+
+        assert mock_override.call_count == 1
+        assert status['saved'] == 1
+        assert status['error_messages'] == []
+        assert [row['status'] for row in processor.result_data] == ['No Action', 'Success', 'No Action']
+
+    @patch('lms.djangoapps.grades.api.graded_subsections_for_course_id')
+    def test_process_file_row_error_is_not_displaced(self, mock_graded_subsections):
+        """
+        A row-level error is more specific than 'nothing changed', so it must be the
+        message the user sees.
+        """
+        mock_graded_subsections.return_value = self._mock_graded_subsections()
+        processor = api.GradeCSVProcessor(course_id=self.course_id)
+        processor.process_file(self._build_csv('-1'), autocommit=True)
+        status = processor.status()
+
+        assert status['saved'] == 0
+        assert status['error_messages'] == ['Grade must not be negative']
 
     @patch('lms.djangoapps.grades.api.CourseGradeFactory.read')
     @patch('lms.djangoapps.grades.api.get_subsection_grades')
