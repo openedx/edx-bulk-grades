@@ -36,26 +36,25 @@ and are on a command prompt inside the LMS container.
 3. Now, get your bulk-grades development environment set up::
 
     cd /edx/src/edx-bulk-grades
-    virtualenv edx-bulk-grades-env
-    source edx-bulk-grades-env/bin/activate
+    pip install uv  # if uv isn't already installed in the container
     make requirements
+    source .venv/bin/activate
 
 Making Code Changes
 -------------------
 
-1. | After checking out a new branch, increment ``__version__`` by the smallest possible value located in ``bulk_grades/__init__.py``.
-   | This will allow edx-platform to pick up the new version.
+1. | Use `conventional commit`_ messages. When a PR merges to master, python-semantic-release picks the next
+   | version from the commit types, then tags it, publishes it to PyPI and creates a GitHub Release.
 
-2. | Once a branch has been merged, it is necessary to make a release on github, specifying the new version from
-   | ``__version__`` set above.
-
-3. In order for platform to use the newest version of bulk-grades, it is necessary to run the::
+2. In order for platform to use the newest version of bulk-grades, it is necessary to run the::
 
     $ make upgrade
 
 from docker shell of edx-platform. This will increment the version of edx-bulk-grades to the correct one.
 
-4. Once the code from step 3 is merged, this will trigger deployment of the correct versions of edx platform and bulk-grades.
+3. Once the code from step 2 is merged, this will trigger deployment of the correct versions of edx platform and bulk-grades.
+
+.. _conventional commit: https://open-edx-proposals.readthedocs.io/en/latest/best-practices/oep-0051-bp-conventional-commits.html
 
 Unit Testing
 ------------
