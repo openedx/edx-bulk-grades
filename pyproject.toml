@@ -65,7 +65,7 @@ celery55 = [
 ]
 quality = [
     {include-group = "test"},
-    "edx-lint",
+    "edx-lint>=6.2",
     "isort",
     "pycodestyle",
     "pydocstyle",
